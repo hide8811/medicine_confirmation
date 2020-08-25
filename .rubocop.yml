@@ -1,0 +1,14 @@
+AllCops:
+  NewCops: enable
+  Exclude:
+    - 'Gemfile'
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+    - 'db/schema.rb'
+    - 'bin/**/*'
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
