@@ -15,3 +15,11 @@ Style/Documentation:
 
 Metrics/LineLength:
   Max: 160
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Style/BlockComments:
+  Exclude:
+    - 'spec/spec_helper.rb'
