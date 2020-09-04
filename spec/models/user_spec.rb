@@ -8,12 +8,12 @@ RSpec.describe User, type: :model do
     end
 
     it 'パスワード に 英大文字・英小文字・数字 がそれぞれ1文字以上あり、文字数 が 8文字以上16文字以下 の場合、有効であること' do
-      user = build(:user, encrypted_password: 'TEst1234')
+      user = build(:user, password: 'TEst1234')
       expect(user).to be_valid
     end
 
     it 'パスワード の 英大文字・英小文字・数字 が順不同でも、有効であること' do
-      user = build(:user, encrypted_password: '1te23St4')
+      user = build(:user, password: '1te23St4')
       expect(user).to be_valid
     end
 
@@ -57,57 +57,57 @@ RSpec.describe User, type: :model do
     end
 
     it 'パスワード がない場合、無効であること' do
-      user = build(:user, encrypted_password: '')
+      user = build(:user, password: '')
       user.valid?
-      expect(user.errors[:encrypted_password]).to include("can't be blank")
+      expect(user.errors[:password]).to include("can't be blank")
     end
 
     it 'パスワード に 半角英大文字 がない場合、無効であること' do
-      user = build(:user, encrypted_password: 'test1234')
+      user = build(:user, password: 'test1234')
       user.valid?
-      expect(user.errors[:encrypted_password]).to include('is invalid')
+      expect(user.errors[:password]).to include('is invalid')
     end
 
     it 'パスワード に 半角英小文字 がない場合、無効であること' do
-      user = build(:user, encrypted_password: 'TEST1234')
+      user = build(:user, password: 'TEST1234')
       user.valid?
-      expect(user.errors[:encrypted_password]).to include('is invalid')
+      expect(user.errors[:password]).to include('is invalid')
     end
 
     it 'パスワード に 半角数字 がない場合、無効であること' do
-      user = build(:user, encrypted_password: 'TestTest')
+      user = build(:user, password: 'TestTest')
       user.valid?
-      expect(user.errors[:encrypted_password]).to include('is invalid')
+      expect(user.errors[:password]).to include('is invalid')
     end
 
     it 'パスワード に 全角英大文字 がある場合、無効であること' do
-      user = build(:user, encrypted_password: 'Ｔest1234')
+      user = build(:user, password: 'Ｔest1234')
       user.valid?
-      expect(user.errors[:encrypted_password]).to include('is invalid')
+      expect(user.errors[:password]).to include('is invalid')
     end
 
     it 'パスワード に 全角英小文字 がある場合、無効であること' do
-      user = build(:user, encrypted_password: 'Tｅｓｔ1234')
+      user = build(:user, password: 'Tｅｓｔ1234')
       user.valid?
-      expect(user.errors[:encrypted_password]).to include('is invalid')
+      expect(user.errors[:password]).to include('is invalid')
     end
 
     it 'パスワード に 全角数字 がある場合、無効であること' do
-      user = build(:user, encrypted_password: 'Test１２３４')
+      user = build(:user, password: 'Test１２３４')
       user.valid?
-      expect(user.errors[:encrypted_password]).to include('is invalid')
+      expect(user.errors[:password]).to include('is invalid')
     end
 
     it 'パスワード が 7文字以下 の場合、無効であること' do
-      user = build(:user, encrypted_password: 'Test123')
+      user = build(:user, password: 'Test123')
       user.valid?
-      expect(user.errors[:encrypted_password]).to include('is too short (minimum is 8 characters)')
+      expect(user.errors[:password]).to include('is too short (minimum is 8 characters)')
     end
 
     it 'パスワード が 17文字以上 の場合、無効であること' do
-      user = build(:user, encrypted_password: 'test1234567890abc')
+      user = build(:user, password: 'test1234567890abc')
       user.valid?
-      expect(user.errors[:encrypted_password]).to include('is too long (maximum is 16 characters)')
+      expect(user.errors[:password]).to include('is too long (maximum is 16 characters)')
     end
 
     it '姓 がない場合、無効であること' do
