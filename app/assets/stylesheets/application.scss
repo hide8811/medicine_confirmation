@@ -16,3 +16,8 @@
 
 @import 'sanitize.css';
 @import 'color';
+
+body {
+  background-color: $base-background;
+  color: $main-font;
+}
