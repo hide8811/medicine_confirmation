@@ -17,8 +17,6 @@ services:
     stdin_open: true
     depends_on:
       - db
-    links:
-      - db
 
   db:
     image: mysql
