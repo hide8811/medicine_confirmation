@@ -378,4 +378,73 @@ RSpec.describe 'Users', type: :system do
       end
     end
   end
+
+  describe 'ログイン' do
+    context '全ての値が正しく入力されている時' do
+      it 'ログイン後、メインページに遷移すること' do
+        user = create(:user)
+        visit new_user_session_path
+        fill_in 'user[employee_id]', with: user.employee_id
+        fill_in 'user[password]', with: user.password
+        click_on 'ログイン'
+        expect(current_path).to eq root_path
+      end
+    end
+
+    context '社員IDが入力されていない時' do
+      before do
+        user = create(:user)
+        visit new_user_session_path
+        fill_in 'user[employee_id]', with: ''
+        fill_in 'user[password]', with: user.password
+        click_on 'ログイン'
+      end
+
+      it 'ログインできないこと' do
+        expect(current_path).to eq new_user_session_path
+      end
+    end
+
+    context '社員IDが間違っている時' do
+      before do
+        user = create(:user, employee_id: 'id1234')
+        visit new_user_session_path
+        fill_in 'user[employee_id]', with: 'test5678'
+        fill_in 'user[password]', with: user.password
+        click_on 'ログイン'
+      end
+
+      it 'ログインできないこと' do
+        expect(current_path).to eq new_user_session_path
+      end
+    end
+
+    context 'パスワードが入力されていない時' do
+      before do
+        user = create(:user)
+        visit new_user_session_path
+        fill_in 'user[employee_id]', with: user.employee_id
+        fill_in 'user[password]', with: ''
+        click_on 'ログイン'
+      end
+
+      it 'ログインできないこと' do
+        expect(current_path).to eq new_user_session_path
+      end
+    end
+
+    context 'パスワードが間違っている時' do
+      before do
+        user = create(:user, password: 'Test1234')
+        visit new_user_session_path
+        fill_in 'user[employee_id]', with: user.employee_id
+        fill_in 'user[password]', with: 'user5678'
+        click_on 'ログイン'
+      end
+
+      it 'ログインできないこと' do
+        expect(current_path).to eq new_user_session_path
+      end
+    end
+  end
 end
