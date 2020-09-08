@@ -39,6 +39,7 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
+    # 追加・修正 予定-----------------------------------------------------
     context '社員IDがすでに使われているものである時' do
       before do
         create(:user, employee_id: 'ID1234')
@@ -56,6 +57,7 @@ RSpec.describe 'Users', type: :system do
         expect(current_path).to eq user_registration_path
       end
     end
+    # ------------------------------------------------------------------------
 
     context 'パスワードが空の時' do
       it 'エラーメッセージが出ること' do
@@ -77,8 +79,15 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
+    # 追加・修正 予定 --------------------------------------------------------
     context 'パスワードが8文字以下の時' do
-      before do
+      it 'エラーメッセージが出ること' do
+        fill_in 'user[password]', with: 'Test12'
+        fill_in 'user[password_confirmation]', with: 'Test1234'
+        expect(page).to have_content 'パスワードは8文字以上で入力してください'
+      end
+
+      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test12'
         fill_in 'user[password_confirmation]', with: 'Test1234'
@@ -87,15 +96,18 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
-      end
-
-      it 'ページ遷移しないこと' do
-        expect(current_path).to eq user_registration_path
+        expect(current_path).to eq new_user_registration_path
       end
     end
 
     context 'パスワードが16文字以上の時' do
-      before do
+      it 'エラーメッセージが出ること' do
+        fill_in 'user[password]', with: 'Test1234567890abcd'
+        fill_in 'user[password_confirmation]', with: 'Test1234'
+        expect(page).to have_content 'パスワードは16文字以下で入力してください'
+      end
+
+      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234567890abcd'
         fill_in 'user[password_confirmation]', with: 'Test1234'
@@ -104,13 +116,12 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
-      end
-
-      it 'ページ遷移しないこと' do
-        expect(current_path).to eq user_registration_path
+        expect(current_path).to eq new_user_registration_path
       end
     end
+    # ---------------------------------------------------------------------------
 
+    # 追加・修正 予定 -----------------------------------------------------------------
     context 'パスワードに英大文字が入っていない時' do
       before do
         fill_in 'user[employee_id]', with: 'ID1234'
@@ -127,6 +138,8 @@ RSpec.describe 'Users', type: :system do
         expect(current_path).to eq user_registration_path
       end
     end
+
+    # ----------
 
     context 'パスワードに英小文字が入っていない時' do
       before do
@@ -145,6 +158,8 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
+    # --------------
+
     context 'パスワードに数字が入っていない時' do
       before do
         fill_in 'user[employee_id]', with: 'ID1234'
@@ -161,6 +176,16 @@ RSpec.describe 'Users', type: :system do
         expect(current_path).to eq user_registration_path
       end
     end
+
+    # ------------
+    context 'パスワードに英大小数字以外が使われている時' do
+      it 'エラーメッセージが出ること' do
+      end
+
+      it 'ページ遷移しないこと' do
+      end
+    end
+    # --------------------------------------------------------------------
 
     context 'パスワード(確認)が空の時' do
       it 'エラーメッセージが出ること' do
@@ -182,6 +207,7 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
+    # 追加・修正 予定 ------------------------------------------------------
     context 'パスワード(確認)がパスワードに入力した値と違う時' do
       before do
         fill_in 'user[employee_id]', with: 'ID1234'
@@ -198,6 +224,7 @@ RSpec.describe 'Users', type: :system do
         expect(current_path).to eq user_registration_path
       end
     end
+    # ----------------------------------------------------------------------
 
     context '名字が空の時' do
       it 'エラーメッセージが出ること' do
@@ -259,6 +286,7 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
+    # 追加・修正 予定 --------------------------------------------------------------
     context 'みょうじが漢字の時' do
       before do
         fill_in 'user[employee_id]', with: 'ID1234'
@@ -275,6 +303,8 @@ RSpec.describe 'Users', type: :system do
         expect(current_path).to eq user_registration_path
       end
     end
+
+    # -----------------------
 
     context 'みょうじがカタカナの時' do
       before do
@@ -293,6 +323,8 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
+    # ------------------------
+
     context 'みょうじが英字の時' do
       before do
         fill_in 'user[employee_id]', with: 'ID1234'
@@ -309,6 +341,7 @@ RSpec.describe 'Users', type: :system do
         expect(current_path).to eq user_registration_path
       end
     end
+    # ----------------------------------------------------------------------------------
 
     context 'なまえが空の時' do
       it 'エラーメッセージが出ること' do
@@ -330,6 +363,7 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
+    # 追加・修正 予定 ----------------------------------------------------------------------
     context 'なまえが漢字の時' do
       before do
         fill_in 'user[employee_id]', with: 'ID1234'
@@ -347,6 +381,8 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
+    # ------------------
+
     context 'みょうじがカタカナの時' do
       before do
         fill_in 'user[employee_id]', with: 'ID1234'
@@ -363,6 +399,8 @@ RSpec.describe 'Users', type: :system do
         expect(current_path).to eq user_registration_path
       end
     end
+
+    # ------------------
 
     context 'なまえが英字の時' do
       before do
@@ -382,6 +420,7 @@ RSpec.describe 'Users', type: :system do
     end
   end
 
+  # =======================================================================
   describe 'ログイン' do
     before do
       visit new_user_session_path
@@ -396,6 +435,7 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
+    # 追加・修正 予定 -------------------------------------------------------
     context '社員IDが入力されていない時' do
       before do
         user = create(:user)
@@ -408,7 +448,9 @@ RSpec.describe 'Users', type: :system do
         expect(current_path).to eq new_user_session_path
       end
     end
+    # ------------------------------------------------------------------------
 
+    # 追加・修正 予定 -------------------------------------------------------
     context '社員IDが間違っている時' do
       before do
         user = create(:user, employee_id: 'id1234')
@@ -421,7 +463,9 @@ RSpec.describe 'Users', type: :system do
         expect(current_path).to eq new_user_session_path
       end
     end
+    # ------------------------------------------------------------------------
 
+    # 追加・修正 予定 -------------------------------------------------------
     context 'パスワードが入力されていない時' do
       before do
         user = create(:user)
@@ -434,7 +478,9 @@ RSpec.describe 'Users', type: :system do
         expect(current_path).to eq new_user_session_path
       end
     end
+    # --------------------------------------------------------------------------
 
+    # 追加・修正 予定 -------------------------------------------------------
     context 'パスワードが間違っている時' do
       before do
         user = create(:user, password: 'Test1234')
@@ -447,5 +493,6 @@ RSpec.describe 'Users', type: :system do
         expect(current_path).to eq new_user_session_path
       end
     end
+    # --------------------------------------------------------------------------
   end
 end
