@@ -5,10 +5,10 @@
     新規登録
 
   .new-user-form
-    = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
+    = form_for(resource, as: resource_name, url: registration_path(resource_name), html: {id: 'new-user'}) do |f|
       .new-user-employee
         = f.label :employee_id, '社員ID', class: 'new-user-employee__title-label'
-        = f.text_field :employee_id, autofocus: true, autocomplete: "username", class: 'new-user-employee__input-text'
+        = f.text_field :employee_id, autocomplete: "username", id: 'user-employee', class: 'new-user-employee__input-text'
 
       .new-user-password
         .new-user-password__new-password
@@ -29,29 +29,29 @@
               8文字以上 16文字以下
             で作成してください。
 
-          = f.password_field :password, autocomplete: "new-password", class: 'new-user-password__new-password--input-password'
+          = f.password_field :password, autocomplete: "new-password", id: 'user-password', class: 'new-user-password__new-password--input-password'
 
         .new-user-password__password-confirmation
           = f.label :password_confirmation, 'パスワード(確認)', class: 'new-user-password__password-confirmation--title-label'
-          = f.password_field :password_confirmation, autocomplete: "new-password", class: 'new-user-password__password-confirmation--input-password'
+          = f.password_field :password_confirmation, autocomplete: "new-password", id: 'user-confirmation-password', class: 'new-user-password__password-confirmation--input-password'
 
       .new-user-name
         .new-user-name__last-name
           = f.label :last_name, '名字', class: 'new-user-name__last-name--title-label'
-          = f.text_field :last_name, autocomplete: "family-name", class: 'new-user-name__last-name--input-text'
+          = f.text_field :last_name, autocomplete: "family-name", id: 'user-last-name', class: 'new-user-name__last-name--input-text'
 
         .new-user-name__first-name
           = f.label :first_name, '名前', class: 'new-user-name__first-name--title-label'
-          = f.text_field :first_name, autocomplete: "given-name", class: 'new-user-name__first-name--input-text'
+          = f.text_field :first_name, autocomplete: "given-name", id: 'user-first-name', class: 'new-user-name__first-name--input-text'
 
       .new-user-kana
         .new-user-kana__last-name-kana
           = f.label :last_name_kana, 'みょうじ', class: 'new-user-kana__last-name-kana--title-label'
-          = f.text_field :last_name_kana, autocomplete: "family-name", class: 'new-user-kana__last-name-kana--input-text'
+          = f.text_field :last_name_kana, autocomplete: "family-name", id: 'user-last-name-kana', class: 'new-user-kana__last-name-kana--input-text'
 
         .new-user-kana__first-name-kana
           = f.label :first_name_kana, 'なまえ', class: 'new-user-kana__first-name-kana--title-label'
-          = f.text_field :first_name_kana, autocomplete: "given-nmame", class: 'new-user-kana__first-name-kana--input-text'
+          = f.text_field :first_name_kana, autocomplete: "given-nmame", id: 'user-first-name-kana', class: 'new-user-kana__first-name-kana--input-text'
 
       .new-user-actions
         = f.submit "新規登録", class: 'user-register-button'

@@ -1,0 +1,15 @@
+@import 'color';
+
+@mixin error-text {
+  color: $error-color;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.error-message {
+  @include error-text;
+}
+
+.error-frame {
+  border: solid 3px $error-color;
+}
