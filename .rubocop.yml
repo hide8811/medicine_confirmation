@@ -13,6 +13,9 @@ Style/FrozenStringLiteralComment:
 Style/Documentation:
   Enabled: false
 
+Style/AsciiComments:
+  Enabled: false
+
 Layout/LineLength:
   Max: 160
 
