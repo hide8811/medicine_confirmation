@@ -27,13 +27,13 @@ $(document).on('turbolinks:load', function(){
 
     // 文字数制限エラー 8文字以上
     if ($(this).val().length < 8 && !$(this).prev().hasClass('error-message')) {
-      $(this).before(`<div id='max-length-error' class='error-message'>パスワードは8文字以上で入力してください</div>`);
+      $(this).before(`<div id='max-length-error' class='error-message'>8文字以上で入力してください</div>`);
       $(this).addClass('error-frame');
     };
 
     // 文字数制限エラー 16文字以下
     if ($(this).val().length > 16 && !$(this).prev().hasClass('error-message')) {
-      $(this).before(`<div id='min-length-error' class='error-message'>パスワードは16文字以下で入力してください</div>`);
+      $(this).before(`<div id='min-length-error' class='error-message'>16文字以下で入力してください</div>`);
       $(this).addClass('error-frame');
     };
 

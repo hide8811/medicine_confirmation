@@ -79,12 +79,11 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
-    # 追加・修正 予定 --------------------------------------------------------
     context 'パスワードが8文字以下の時' do
       it 'エラーメッセージが出ること' do
         fill_in 'user[password]', with: 'Test12'
         fill_in 'user[password_confirmation]', with: 'Test1234'
-        expect(page).to have_content 'パスワードは8文字以上で入力してください'
+        expect(page).to have_content '8文字以上で入力してください'
       end
 
       it 'ページ遷移しないこと' do
@@ -104,7 +103,7 @@ RSpec.describe 'Users', type: :system do
       it 'エラーメッセージが出ること' do
         fill_in 'user[password]', with: 'Test1234567890abcd'
         fill_in 'user[password_confirmation]', with: 'Test1234'
-        expect(page).to have_content 'パスワードは16文字以下で入力してください'
+        expect(page).to have_content '16文字以下で入力してください'
       end
 
       it 'ページ遷移しないこと' do
@@ -119,7 +118,6 @@ RSpec.describe 'Users', type: :system do
         expect(current_path).to eq new_user_registration_path
       end
     end
-    # ---------------------------------------------------------------------------
 
     # 追加・修正 予定 -----------------------------------------------------------------
     context 'パスワードに英大文字が入っていない時' do
