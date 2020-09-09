@@ -37,13 +37,29 @@ $(document).on('turbolinks:load', function(){
       $(this).addClass('error-frame');
     };
 
-    // 使用文字エラー 半角英大小数字以外
+    // 使用文字エラー 英大小数字以外
+    if ($(this).val().match(/[^A-Za-z\d]/) && !$(this).prev().hasClass('error-message')) {
+      $(this).before(`<div id='non-caracter-error' class='error-message'>半角英数字以外は使用できません</div>`);
+      $(this).addClass('error-frame');
+    };
 
-    // 使用文字エラー 半角英大文字
+    // 使用文字エラー 英大文字
+    if (!$(this).val().match(/[A-Z]/) && !$(this).prev().hasClass('error-message')) {
+      $(this).before(`<div id='upper-case-error' class='error-message'>"英大文字"を含めてください</div>`);
+      $(this).addClass('error-frame');
+    };
 
-    // 使用文字エラー 半角英小文字
+    // 使用文字エラー 英小文字
+    if (!$(this).val().match(/[a-z]/) && !$(this).prev().hasClass('error-message')) {
+      $(this).before(`<div id='lower-case-error' class='error-message'>"英小文字"を含めてください</div>`);
+      $(this).addClass('error-frame');
+    };
 
-    // 使用文字エラー 半角数字
+    // 使用文字エラー 数字
+    if (!$(this).val().match(/\d/) && !$(this).prev().hasClass('error-message')) {
+      $(this).before(`<div id='number-error' class='error-message'>"数字"を含めてください</div>`);
+      $(this).addClass('error-frame');
+    };
   });
 
   // パスワード(確認)

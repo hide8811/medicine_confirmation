@@ -151,9 +151,42 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
-    # 追加・修正 予定 -----------------------------------------------------------------
+    context 'パスワードに英大小数字以外が使われている時' do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
+        fill_in 'user[password]', with: '%test@1234&'
+        find('#user-confirmation-password').click
+        expect(page).to have_content '半角英数字以外は使用できません'
+      end
+
+      it 'ページ遷移しないこと' do
+        fill_in 'user[employee_id]', with: 'ID1234'
+        fill_in 'user[password]', with: '%test@1234&'
+        fill_in 'user[password_confirmation]', with: 'Test1234'
+        fill_in 'user[last_name]', with: 'テスト'
+        fill_in 'user[first_name]', with: 'ユーザー'
+        fill_in 'user[last_name_kana]', with: 'てすと'
+        fill_in 'user[first_name_kana]', with: 'ゆーざー'
+        click_on '新規登録'
+        expect(current_path).to eq new_user_registration_path
+      end
+
+      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[password]', with: '%test@1234&'
+        find('#user-confirmation-password').click
+        fill_in 'user[password]', with: 'test1234'
+        find('#user-confirmation-password').click
+        expect(page).not_to have_content '半角英数字以外は使用できません'
+      end
+    end
+
     context 'パスワードに英大文字が入っていない時' do
-      before do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
+        fill_in 'user[password]', with: 'test1234'
+        find('#user-confirmation-password').click
+        expect(page).to have_content '"英大文字"を含めてください'
+      end
+
+      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
@@ -162,17 +195,26 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
+        expect(current_path).to eq new_user_registration_path
       end
 
-      it 'ページ遷移しないこと' do
-        expect(current_path).to eq user_registration_path
+      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[password]', with: 'test1234'
+        find('#user-confirmation-password').click
+        fill_in 'user[password]', with: 'Test1234'
+        find('#user-confirmation-password').click
+        expect(page).not_to have_content '"英大文字"を含めてください'
       end
     end
 
-    # ----------
-
     context 'パスワードに英小文字が入っていない時' do
-      before do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
+        fill_in 'user[password]', with: 'TEST1234'
+        find('#user-confirmation-password').click
+        expect(page).to have_content '"英小文字"を含めてください'
+      end
+
+      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'TEST1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
@@ -181,17 +223,26 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
+        expect(current_path).to eq new_user_registration_path
       end
 
-      it 'ページ遷移しないこと' do
-        expect(current_path).to eq user_registration_path
+      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[password]', with: 'TEST1234'
+        find('#user-confirmation-password').click
+        fill_in 'user[password]', with: 'Test1234'
+        find('#user-confirmation-password').click
+        expect(page).not_to have_content '"英小文字"を含めてください'
       end
     end
 
-    # --------------
-
     context 'パスワードに数字が入っていない時' do
-      before do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
+        fill_in 'user[password]', with: 'TestTest'
+        find('#user-confirmation-password').click
+        expect(page).to have_content '"数字"を含めてください'
+      end
+
+      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'TestTest'
         fill_in 'user[password_confirmation]', with: 'Test1234'
@@ -200,22 +251,17 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
+        expect(current_path).to eq new_user_registration_path
       end
 
-      it 'ページ遷移しないこと' do
-        expect(current_path).to eq user_registration_path
+      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[password]', with: 'TestTest'
+        find('#user-confirmation-password').click
+        fill_in 'user[password]', with: 'Test1234'
+        find('#user-confirmation-password').click
+        expect(page).not_to have_content '"英小文字"を含めてください'
       end
     end
-
-    # ------------
-    context 'パスワードに英大小数字以外が使われている時' do
-      it 'エラーメッセージが出ること' do
-      end
-
-      it 'ページ遷移しないこと' do
-      end
-    end
-    # --------------------------------------------------------------------
 
     context 'パスワード(確認)が空の時' do
       it 'フォーカスが外れると、エラーメッセージが出ること' do
