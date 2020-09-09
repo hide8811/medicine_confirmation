@@ -20,9 +20,9 @@ RSpec.describe 'Users', type: :system do
     end
 
     context '社員IDが空の時' do
-      it 'エラーメッセージが出ること' do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[employee_id]', with: ''
-        fill_in 'user[password]', with: 'Test1234'
+        find('#user-password').click
         expect(page).to have_content '社員IDを入力してください'
       end
 
@@ -36,6 +36,14 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
         expect(current_path).to eq new_user_registration_path
+      end
+
+      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[employee_id]', with: ''
+        find('#user-password').click
+        fill_in 'user[employee_id]', with: 'ID1234'
+        find('#user-password').click
+        expect(page).not_to have_content '社員IDを入力してください'
       end
     end
 
@@ -60,9 +68,9 @@ RSpec.describe 'Users', type: :system do
     # ------------------------------------------------------------------------
 
     context 'パスワードが空の時' do
-      it 'エラーメッセージが出ること' do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[password]', with: ''
-        fill_in 'user[password_confirmation]', with: 'Test1234'
+        find('#user-confirmation-password').click
         expect(page).to have_content 'パスワードを入力してください'
       end
 
@@ -77,12 +85,20 @@ RSpec.describe 'Users', type: :system do
         click_on '新規登録'
         expect(current_path).to eq new_user_registration_path
       end
+
+      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[password]', with: ''
+        find('#user-confirmation-password').click
+        fill_in 'user[password]', with: 'Test1234'
+        find('#user-confirmation-password').click
+        expect(page).not_to have_content 'パスワードを入力してください'
+      end
     end
 
     context 'パスワードが8文字以下の時' do
-      it 'エラーメッセージが出ること' do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[password]', with: 'Test12'
-        fill_in 'user[password_confirmation]', with: 'Test1234'
+        find('#user-confirmation-password').click
         expect(page).to have_content '8文字以上で入力してください'
       end
 
@@ -97,12 +113,20 @@ RSpec.describe 'Users', type: :system do
         click_on '新規登録'
         expect(current_path).to eq new_user_registration_path
       end
+
+      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[password]', with: 'Test12'
+        find('#user-confirmation-password').click
+        fill_in 'user[password]', with: 'Test1234'
+        find('#user-confirmation-password').click
+        expect(page).not_to have_content '8文字以上で入力してください'
+      end
     end
 
     context 'パスワードが16文字以上の時' do
-      it 'エラーメッセージが出ること' do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[password]', with: 'Test1234567890abcd'
-        fill_in 'user[password_confirmation]', with: 'Test1234'
+        find('#user-confirmation-password').click
         expect(page).to have_content '16文字以下で入力してください'
       end
 
@@ -116,6 +140,14 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
         expect(current_path).to eq new_user_registration_path
+      end
+
+      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[password]', with: 'Test1234567890abcd'
+        find('#user-confirmation-password').click
+        fill_in 'user[password]', with: 'Test1234'
+        find('#user-confirmation-password').click
+        expect(page).not_to have_content '16文字以下で入力してください'
       end
     end
 
@@ -186,9 +218,9 @@ RSpec.describe 'Users', type: :system do
     # --------------------------------------------------------------------
 
     context 'パスワード(確認)が空の時' do
-      it 'エラーメッセージが出ること' do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[password_confirmation]', with: ''
-        fill_in 'user[last_name]', with: 'テスト'
+        find('#user-last-name').click
         expect(page).to have_content 'パスワード(確認)を入力してください'
       end
 
@@ -202,6 +234,14 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
         expect(current_path).to eq new_user_registration_path
+      end
+
+      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[password_confirmation]', with: ''
+        find('#user-last-name').click
+        fill_in 'user[password_confirmation]', with: 'Test1234'
+        find('#user-last-name').click
+        expect(page).not_to have_content 'パスワード(確認)を入力してください'
       end
     end
 
@@ -225,9 +265,9 @@ RSpec.describe 'Users', type: :system do
     # ----------------------------------------------------------------------
 
     context '名字が空の時' do
-      it 'エラーメッセージが出ること' do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[last_name]', with: ''
-        fill_in 'user[first_name]', with: 'ユーザー'
+        find('#user-first-name').click
         expect(page).to have_content '名字を入力してください'
       end
 
@@ -242,12 +282,20 @@ RSpec.describe 'Users', type: :system do
         click_on '新規登録'
         expect(current_path).to eq new_user_registration_path
       end
+
+      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[last_name]', with: ''
+        find('#user-first-name').click
+        fill_in 'user[last_name]', with: 'テスト'
+        find('#user-first-name').click
+        expect(page).not_to have_content '名字を入力してください'
+      end
     end
 
     context '名前が空の時' do
-      it 'エラーメッセージが出ること' do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[first_name]', with: ''
-        fill_in 'user[last_name_kana]', with: 'てすと'
+        find('#user-last-name-kana').click
         expect(page).to have_content '名前を入力してください'
       end
 
@@ -262,12 +310,20 @@ RSpec.describe 'Users', type: :system do
         click_on '新規登録'
         expect(current_path).to eq new_user_registration_path
       end
+
+      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[first_name]', with: ''
+        find('#user-last-name-kana').click
+        fill_in 'user[first_name]', with: 'ユーザー'
+        find('#user-last-name-kana').click
+        expect(page).not_to have_content '名前を入力してください'
+      end
     end
 
     context 'みょうじが空の時' do
-      it 'エラーメッセージが出ること' do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[last_name_kana]', with: ''
-        fill_in 'user[first_name_kana]', with: 'ゆーざー'
+        find('#user-first-name-kana').click
         expect(page).to have_content 'みょうじを入力してください'
       end
 
@@ -281,6 +337,14 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
         expect(current_path).to eq new_user_registration_path
+      end
+
+      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[last_name_kana]', with: ''
+        find('#user-first-name-kana').click
+        fill_in 'user[last_name_kana]', with: 'てすと'
+        find('#user-first-name-kana').click
+        expect(page).not_to have_content 'みょうじを入力してください'
       end
     end
 
@@ -342,9 +406,9 @@ RSpec.describe 'Users', type: :system do
     # ----------------------------------------------------------------------------------
 
     context 'なまえが空の時' do
-      it 'エラーメッセージが出ること' do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[first_name_kana]', with: ''
-        click_on '新規登録'
+        find('#user-last-name-kana').click
         expect(page).to have_content 'なまえを入力してください'
       end
 
@@ -358,6 +422,14 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[first_name_kana]', with: ''
         click_on '新規登録'
         expect(current_path).to eq new_user_registration_path
+      end
+
+      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[first_name_kana]', with: ''
+        find('#user-first-name-kana').click
+        fill_in 'user[first_name_kana]', with: 'ゆーざー'
+        find('#user-first-name-kana').click
+        expect(page).not_to have_content 'なまえを入力してください'
       end
     end
 
