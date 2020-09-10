@@ -16,6 +16,9 @@ Style/Documentation:
 Style/AsciiComments:
   Enabled: false
 
+Style/ClassAndModuleChildren:
+  Enabled: false
+
 Layout/LineLength:
   Max: 160
 
