@@ -33,6 +33,8 @@
 
         .new-user-password__password-confirmation
           = f.label :password_confirmation, 'パスワード(確認)', class: 'new-user-password__password-confirmation--title-label'
+          %p.new-user-password__password-confirmation--explanation
+            確認のため、もう1度 "パスワード" を入力してください。
           = f.password_field :password_confirmation, autocomplete: "new-password", id: 'user-confirmation-password', class: 'new-user-password__password-confirmation--input-password'
 
       .new-user-name

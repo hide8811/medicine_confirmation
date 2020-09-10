@@ -291,9 +291,15 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
-    # 追加・修正 予定 ------------------------------------------------------
     context 'パスワード(確認)がパスワードに入力した値と違う時' do
-      before do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
+        fill_in 'user[password]', with: 'Test1234'
+        fill_in 'user[password_confirmation]', with: 'User1234'
+        find('#user-last-name').click
+        expect(page).to have_content 'パスワードを確認してください'
+      end
+
+      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'User1234'
@@ -302,13 +308,18 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
+        expect(current_path).to eq new_user_registration_path
       end
 
-      it 'ページ遷移しないこと' do
-        expect(current_path).to eq user_registration_path
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
+        fill_in 'user[password]', with: 'Test1234'
+        fill_in 'user[password_confirmation]', with: 'User1234'
+        find('#user-last-name').click
+        fill_in 'user[password_confirmation]', with: 'Test1234'
+        find('#user-last-name').click
+        expect(page).not_to have_content 'パスワードを確認してください'
       end
     end
-    # ----------------------------------------------------------------------
 
     context '名字が空の時' do
       it 'フォーカスが外れると、エラーメッセージが出ること' do

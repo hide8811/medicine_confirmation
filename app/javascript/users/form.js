@@ -74,6 +74,10 @@ $(document).on('turbolinks:load', function(){
     };
 
     // パスワード不一致エラー
+    if ($(this).val() !== $('#user-password').val() && !$(this).prev().hasClass('error-message')) {
+      $(this).before(`<div id='presence-error' class='error-message'>パスワードを確認してください</div>`);
+      $(this).addClass('error-frame');
+    };
   });
 
   // 名字
