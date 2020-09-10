@@ -405,9 +405,14 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
-    # 追加・修正 予定 --------------------------------------------------------------
     context 'みょうじが漢字の時' do
-      before do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
+        fill_in 'user[last_name_kana]', with: '試験'
+        find('#user-first-name-kana').click
+        expect(page).to have_content 'みょうじはひらがなで入力してください'
+      end
+
+      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
@@ -416,17 +421,26 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[last_name_kana]', with: '試験'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
+        expect(current_path).to eq new_user_registration_path
       end
 
-      it 'ページ遷移しないこと' do
-        expect(current_path).to eq user_registration_path
+      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[last_name_kana]', with: '試験'
+        find('#user-first-name-kana').click
+        fill_in 'user[last_name_kana]', with: 'てすと'
+        find('#user-first-name-kana').click
+        expect(page).not_to have_content 'みょうじはひらがなで入力してください'
       end
     end
 
-    # -----------------------
-
     context 'みょうじがカタカナの時' do
-      before do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
+        fill_in 'user[last_name_kana]', with: 'テスト'
+        find('#user-first-name-kana').click
+        expect(page).to have_content 'みょうじはひらがなで入力してください'
+      end
+
+      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
@@ -435,17 +449,26 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[last_name_kana]', with: 'テスト'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
+        expect(current_path).to eq new_user_registration_path
       end
 
-      it 'ページ遷移しないこと' do
-        expect(current_path).to eq user_registration_path
+      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[last_name_kana]', with: 'テスト'
+        find('#user-first-name-kana').click
+        fill_in 'user[last_name_kana]', with: 'てすと'
+        find('#user-first-name-kana').click
+        expect(page).not_to have_content 'みょうじはひらがなで入力してください'
       end
     end
 
-    # ------------------------
-
     context 'みょうじが英字の時' do
-      before do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
+        fill_in 'user[last_name_kana]', with: 'test'
+        find('#user-first-name-kana').click
+        expect(page).to have_content 'みょうじはひらがなで入力してください'
+      end
+
+      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
@@ -454,13 +477,17 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[last_name_kana]', with: 'test'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
+        expect(current_path).to eq new_user_registration_path
       end
 
-      it 'ページ遷移しないこと' do
-        expect(current_path).to eq user_registration_path
+      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[last_name_kana]', with: 'test'
+        find('#user-first-name-kana').click
+        fill_in 'user[last_name_kana]', with: 'てすと'
+        find('#user-first-name-kana').click
+        expect(page).not_to have_content 'みょうじはひらがなで入力してください'
       end
     end
-    # ----------------------------------------------------------------------------------
 
     context 'なまえが空の時' do
       it 'フォーカスが外れると、エラーメッセージが出ること' do
@@ -490,9 +517,14 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
-    # 追加・修正 予定 ----------------------------------------------------------------------
     context 'なまえが漢字の時' do
-      before do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
+        fill_in 'user[first_name_kana]', with: '利用者'
+        find('#user-last-name-kana').click
+        expect(page).to have_content 'なまえはひらがなで入力してください'
+      end
+
+      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
@@ -501,17 +533,26 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: '利用者'
         click_on '新規登録'
+        expect(current_path).to eq new_user_registration_path
       end
 
-      it 'ページ遷移しないこと' do
-        expect(current_path).to eq user_registration_path
+      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[first_name_kana]', with: '利用者'
+        find('#user-first-name-kana').click
+        fill_in 'user[first_name_kana]', with: 'ゆーざー'
+        find('#user-first-name-kana').click
+        expect(page).not_to have_content 'なまえはひらがなで入力してください'
       end
     end
 
-    # ------------------
-
     context 'みょうじがカタカナの時' do
-      before do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
+        fill_in 'user[first_name_kana]', with: 'ユーザー'
+        find('#user-last-name-kana').click
+        expect(page).to have_content 'なまえはひらがなで入力してください'
+      end
+
+      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
@@ -520,17 +561,26 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ユーザー'
         click_on '新規登録'
+        expect(current_path).to eq new_user_registration_path
       end
 
-      it 'ページ遷移しないこと' do
-        expect(current_path).to eq user_registration_path
+      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[first_name_kana]', with: 'ユーザー'
+        find('#user-first-name-kana').click
+        fill_in 'user[first_name_kana]', with: 'ゆーざー'
+        find('#user-first-name-kana').click
+        expect(page).not_to have_content 'なまえはひらがなで入力してください'
       end
     end
 
-    # ------------------
-
     context 'なまえが英字の時' do
-      before do
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
+        fill_in 'user[first_name_kana]', with: 'user'
+        find('#user-last-name-kana').click
+        expect(page).to have_content 'なまえはひらがなで入力してください'
+      end
+
+      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
@@ -539,10 +589,15 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'user'
         click_on '新規登録'
+        expect(current_path).to eq new_user_registration_path
       end
 
-      it 'ページ遷移しないこと' do
-        expect(current_path).to eq user_registration_path
+      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[first_name_kana]', with: 'user'
+        find('#user-first-name-kana').click
+        fill_in 'user[first_name_kana]', with: 'ゆーざー'
+        find('#user-first-name-kana').click
+        expect(page).not_to have_content 'なまえはひらがなで入力してください'
       end
     end
   end

@@ -116,6 +116,10 @@ $(document).on('turbolinks:load', function(){
     };
 
     // 使用文字エラー 平仮名のみ
+    if (!$(this).val().match(/^[ぁ-んー－]+$/) && !$(this).prev().hasClass('error-message')) {
+      $(this).before(`<div id='hiragana-last-name-error' class='error-message'>みょうじはひらがなで入力してください</div>`);
+      $(this).addClass('error-frame');
+    };
   });
 
   // なまえ
@@ -130,6 +134,10 @@ $(document).on('turbolinks:load', function(){
     };
 
     // 使用文字エラー 平仮名のみ
+    if (!$(this).val().match(/^[ぁ-んー－]+$/) && !$(this).prev().hasClass('error-message')) {
+      $(this).before(`<div id='hiragana-first-name-error' class='error-message'>なまえはひらがなで入力してください</div>`);
+      $(this).addClass('error-frame');
+    };
   });
 
   // 新規登録ボタン
