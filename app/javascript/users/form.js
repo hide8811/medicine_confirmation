@@ -2,9 +2,9 @@ $(document).on('turbolinks:load', function(){
 
   // 社員ID
   $('#user-employee').blur(function(){
+    let textField = $(this)
     $(this).prev().remove('.error-message');
     $(this).removeClass('error-frame');
-
     // 未入力エラー
     if ($(this).val() == '') {
       $(this).before(`<div id='presence-error' class='error-message'>社員IDを入力してください</div>`);
@@ -12,6 +12,17 @@ $(document).on('turbolinks:load', function(){
     };
 
     // 重複エラー
+    $.ajax({
+      type: 'GET',
+      url: 'employee_uniquness',
+      data: { employee: $(this).val() },
+      dataType: 'json'
+    }).done(function(data){
+      if (data) {
+        textField.before(`<div id='uniquness-error' class='error-message'>その社員IDはすでに使用されています</div>`);
+        textField.addClass('error-frame');
+      };
+    });
   });
 
   // パスワード

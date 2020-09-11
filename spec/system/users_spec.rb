@@ -51,6 +51,15 @@ RSpec.describe 'Users', type: :system do
     context '社員IDがすでに使われているものである時' do
       before do
         create(:user, employee_id: 'ID1234')
+      end
+
+      it 'フォーカスが外れると、エラーメッセージが出ること' do
+        fill_in 'user[employee_id]', with: 'ID1234'
+        find('#user-password').click
+        expect(page).to have_content 'その社員IDはすでに使用されています'
+      end
+
+      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
@@ -59,10 +68,15 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
         click_on '新規登録'
+        expect(current_path).to eq new_user_registration_path
       end
 
-      it 'ページ遷移しないこと' do
-        expect(current_path).to eq user_registration_path
+      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
+        fill_in 'user[employee_id]', with: 'ID1234'
+        find('#user-password').click
+        fill_in 'user[employee_id]', with: 'User5678'
+        find('#user-password').click
+        expect(page).not_to have_content 'その社員IDはすでに使用されています'
       end
     end
     # ------------------------------------------------------------------------
