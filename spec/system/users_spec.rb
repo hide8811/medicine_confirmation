@@ -625,6 +625,11 @@ RSpec.describe 'Users', type: :system do
         expect(page).not_to have_content 'なまえはひらがなで入力してください'
       end
     end
+
+    it '未入力項目があるとsubmitできないこと' do
+      click_on '新規登録'
+      expect(current_path).to eq new_user_registration_path
+    end
   end
 
   # =======================================================================

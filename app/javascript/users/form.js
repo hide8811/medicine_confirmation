@@ -164,5 +164,17 @@ $(document).on('turbolinks:load', function(){
     if ($('div').hasClass('error-message')) {
       return false;
     };
+
+    if (
+        $('#user-employee').val() == '' ||
+        $('#user-password').val() == '' ||
+        $('#user-confirmation-password').val() == '' ||
+        $('#user-last-name').val() == '' ||
+        $('#user-first-name').val() == '' ||
+        $('#user-last-name-kana').val() == '' ||
+        $('#user-first-name-kana').val() == ''
+      ) {
+      return false;
+    }
   });
 });
