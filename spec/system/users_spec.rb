@@ -5,6 +5,19 @@ RSpec.describe 'Users', type: :system do
     before do
       visit new_user_registration_path
     end
+
+    it 'フォーム内でEnterキーを押した時、submitされないこと' do
+      fill_in 'user[employee_id]', with: 'ID1234'
+      fill_in 'user[password]', with: 'Test1234'
+      fill_in 'user[password_confirmation]', with: 'Test1234'
+      fill_in 'user[last_name]', with: 'テスト'
+      fill_in 'user[first_name]', with: 'ユーザー'
+      fill_in 'user[last_name_kana]', with: 'てすと'
+      fill_in 'user[first_name_kana]', with: 'ゆーざー'
+      find('#user-last-name-kana').send_keys(:enter)
+      expect(current_path).not_to eq root_path
+    end
+
     context '全ての値が正しく入力されている時' do
       it 'メインページに遷移すること' do
         fill_in 'user[employee_id]', with: 'ID1234'
@@ -47,7 +60,6 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
-    # 追加・修正 予定-----------------------------------------------------
     context '社員IDがすでに使われているものである時' do
       before do
         create(:user, employee_id: 'ID1234')
@@ -79,7 +91,6 @@ RSpec.describe 'Users', type: :system do
         expect(page).not_to have_content 'その社員IDはすでに使用されています'
       end
     end
-    # ------------------------------------------------------------------------
 
     context 'パスワードが空の時' do
       it 'フォーカスが外れると、エラーメッセージが出ること' do

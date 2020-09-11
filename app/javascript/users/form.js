@@ -1,5 +1,13 @@
 $(document).on('turbolinks:load', function(){
 
+  // EnterキーでのSubmitを禁止
+  $('form#new-user').keydown(function(e){
+    let key = e.which
+    if (key == 13) {
+      e.preventDefault();
+    }
+  });
+
   // 社員ID
   $('#user-employee').blur(function(){
     let textField = $(this)
