@@ -630,6 +630,22 @@ RSpec.describe 'Users', type: :system do
       click_on '新規登録'
       expect(current_path).to eq new_user_registration_path
     end
+
+    it '新規登録ボタンを押した時、エラー箇所まで自動スクロールされること' do
+      page.driver.browser.manage.window.resize_to(1000, 300)
+      fill_in 'user[employee_id]', with: ''
+      fill_in 'user[password]', with: 'Test1234'
+      fill_in 'user[password_confirmation]', with: 'Test1234'
+      fill_in 'user[last_name]', with: 'テスト'
+      fill_in 'user[first_name]', with: 'ユーザー'
+      fill_in 'user[last_name_kana]', with: 'てすと'
+      fill_in 'user[first_name_kana]', with: 'ゆーざー'
+      click_on '新規登録'
+      sleep 1
+      error_center_position = page.execute_script('return Math.floor($(".error-frame").offset().top - ($(window).height() / 2))')
+      scroll_y = page.execute_script('return window.pageYOffset')
+      expect(scroll_y).to eq(error_center_position)
+    end
   end
 
   # =======================================================================
