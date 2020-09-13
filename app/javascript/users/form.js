@@ -162,6 +162,9 @@ $(document).on('turbolinks:load', function(){
   // 新規登録ボタン
   $('#new-user').submit(function() {
     if ($('div').hasClass('error-message')) {
+      let errorPosition = $('.error-frame').offset().top
+      let windowHalf = $(window).height() / 2
+      $('html, body').animate({scrollTop:(errorPosition - windowHalf)})
       return false;
     };
 
