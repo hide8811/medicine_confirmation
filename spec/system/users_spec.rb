@@ -648,7 +648,6 @@ RSpec.describe 'Users', type: :system do
     end
   end
 
-  # =======================================================================
   describe 'ログイン' do
     before do
       visit new_user_session_path
@@ -663,7 +662,6 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
-    # 追加・修正 予定 -------------------------------------------------------
     context '社員IDが入力されていない時' do
       before do
         user = create(:user)
@@ -675,10 +673,12 @@ RSpec.describe 'Users', type: :system do
       it 'ログインできないこと' do
         expect(current_path).to eq new_user_session_path
       end
-    end
-    # ------------------------------------------------------------------------
 
-    # 追加・修正 予定 -------------------------------------------------------
+      it 'エラーメッセージが出ること' do
+        expect(page).to have_content '社員IDとパスワードを確認してください'
+      end
+    end
+
     context '社員IDが間違っている時' do
       before do
         user = create(:user, employee_id: 'id1234')
@@ -690,10 +690,12 @@ RSpec.describe 'Users', type: :system do
       it 'ログインできないこと' do
         expect(current_path).to eq new_user_session_path
       end
-    end
-    # ------------------------------------------------------------------------
 
-    # 追加・修正 予定 -------------------------------------------------------
+      it 'エラーメッセージが出ること' do
+        expect(page).to have_content '社員IDとパスワードを確認してください'
+      end
+    end
+
     context 'パスワードが入力されていない時' do
       before do
         user = create(:user)
@@ -705,10 +707,12 @@ RSpec.describe 'Users', type: :system do
       it 'ログインできないこと' do
         expect(current_path).to eq new_user_session_path
       end
-    end
-    # --------------------------------------------------------------------------
 
-    # 追加・修正 予定 -------------------------------------------------------
+      it 'エラーメッセージが出ること' do
+        expect(page).to have_content '社員IDとパスワードを確認してください'
+      end
+    end
+
     context 'パスワードが間違っている時' do
       before do
         user = create(:user, password: 'Test1234')
@@ -720,7 +724,10 @@ RSpec.describe 'Users', type: :system do
       it 'ログインできないこと' do
         expect(current_path).to eq new_user_session_path
       end
+
+      it 'エラーメッセージが出ること' do
+        expect(page).to have_content '社員IDとパスワードを確認してください'
+      end
     end
-    # --------------------------------------------------------------------------
   end
 end

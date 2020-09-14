@@ -4,8 +4,13 @@
   .login-user-title
     ログイン
 
+  - if alert.present?
+    .login-error-message
+      社員IDとパスワードを確認してください
+
   .login-user-form
     = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+
       .login-user-employee
         = f.label :employee_id, '社員ID', class: 'login-user-employee__title-label'
         = f.text_field :employee_id, autofocus: true, autocomplete: "username", class: 'login-user-employee__input-text'
