@@ -1,6 +1,15 @@
 $(document).on('turbolinks:load', function(){
 
-  // EnterキーでのSubmitを禁止
+  let errorMessageErase = function(t){
+    t.prev().remove('.error-message');
+    t.removeClass('error-frame');
+  };
+
+  let addErrorMessage = function(t, id, message){
+    t.before(`<div id="${id}" class="error-message">${message}</div>`);
+    t.addClass('error-frame');
+  }
+
   $('form#new-user').keydown(function(e){
     let key = e.which
     if (key == 13) {
@@ -8,158 +17,120 @@ $(document).on('turbolinks:load', function(){
     }
   });
 
-  // 社員ID
   $('#user-employee').blur(function(){
-    let textField = $(this)
-    $(this).prev().remove('.error-message');
-    $(this).removeClass('error-frame');
-    // 未入力エラー
-    if ($(this).val() == '') {
-      $(this).before(`<div id='presence-error' class='error-message'>社員IDを入力してください</div>`);
-      $(this).addClass('error-frame');
-    };
+    let employeeInputField = $(this);
+    errorMessageErase(employeeInputField);
 
-    // 重複エラー
-    $.ajax({
-      type: 'GET',
-      url: 'employee_uniquness',
-      data: { employee: $(this).val() },
-      dataType: 'json'
-    }).done(function(data){
-      if (data) {
-        textField.before(`<div id='uniquness-error' class='error-message'>その社員IDはすでに使用されています</div>`);
-        textField.addClass('error-frame');
-      };
-    });
+    if (employeeInputField.val() == '') {
+      addErrorMessage(employeeInputField, 'employee-presence-error', '社員IDを入力してください');
+
+    } else {
+
+      $.ajax({
+        type: 'GET',
+        url: 'employee_uniquness',
+        data: { employee: employeeInputField.val() },
+        dataType: 'json'
+
+      }).done(function(data){
+
+        if (data) {
+          addErrorMessage(employeeInputField, 'employee-uniquness-error', 'その社員IDはすでに使用されています');
+        };
+      });
+    };
   });
 
-  // パスワード
   $('#user-password').blur(function(){
-    $(this).prev().remove('.error-message');
-    $(this).removeClass('error-frame');
+    let passwordInputField = $(this);
+    errorMessageErase(passwordInputField);
 
-    // 未入力エラー
-    if ($(this).val() == '') {
-      $(this).before(`<div id='presence-error' class='error-message'>パスワードを入力してください</div>`);
-      $(this).addClass('error-frame');
-    };
+    if (passwordInputField.val() == '') {
+      addErrorMessage(passwordInputField, 'password-presence-error', 'パスワードを入力してください');
 
-    // 文字数制限エラー 8文字以上
-    if ($(this).val().length < 8 && !$(this).prev().hasClass('error-message')) {
-      $(this).before(`<div id='max-length-error' class='error-message'>8文字以上で入力してください</div>`);
-      $(this).addClass('error-frame');
-    };
+    } else {
 
-    // 文字数制限エラー 16文字以下
-    if ($(this).val().length > 16 && !$(this).prev().hasClass('error-message')) {
-      $(this).before(`<div id='min-length-error' class='error-message'>16文字以下で入力してください</div>`);
-      $(this).addClass('error-frame');
-    };
+      if (passwordInputField.val().length < 8) {
+        addErrorMessage(passwordInputField, 'password-max-length-error', '8文字以上で入力してください');
 
-    // 使用文字エラー 英大小数字以外
-    if ($(this).val().match(/[^A-Za-z\d]/) && !$(this).prev().hasClass('error-message')) {
-      $(this).before(`<div id='non-caracter-error' class='error-message'>半角英数字以外は使用できません</div>`);
-      $(this).addClass('error-frame');
-    };
+      } else if (passwordInputField.val().length > 16) {
+        addErrorMessage(passwordInputField, 'password-min-length-error', '16文字以下で入力してください');
 
-    // 使用文字エラー 英大文字
-    if (!$(this).val().match(/[A-Z]/) && !$(this).prev().hasClass('error-message')) {
-      $(this).before(`<div id='upper-case-error' class='error-message'>"英大文字"を含めてください</div>`);
-      $(this).addClass('error-frame');
-    };
+      } else  {
 
-    // 使用文字エラー 英小文字
-    if (!$(this).val().match(/[a-z]/) && !$(this).prev().hasClass('error-message')) {
-      $(this).before(`<div id='lower-case-error' class='error-message'>"英小文字"を含めてください</div>`);
-      $(this).addClass('error-frame');
-    };
+        if (passwordInputField.val().match(/[^A-Za-z\d]/)) {
+          addErrorMessage(passwordInputField, 'password-non-caracter-error', '半角英数字以外は使用できません');
 
-    // 使用文字エラー 数字
-    if (!$(this).val().match(/\d/) && !$(this).prev().hasClass('error-message')) {
-      $(this).before(`<div id='number-error' class='error-message'>"数字"を含めてください</div>`);
-      $(this).addClass('error-frame');
+        } else if (!passwordInputField.val().match(/[A-Z]/)) {
+          addErrorMessage(passwordInputField, 'password-upper-case-error', '"英大文字"を含めてください');
+
+        } else if (!passwordInputField.val().match(/[a-z]/)) {
+          addErrorMessage(passwordInputField, 'password-lower-case-error', '"英小文字"を含めてください');
+
+        } else if (!passwordInputField.val().match(/\d/)) {
+          addErrorMessage(passwordInputField, 'password-number-error', '"数字"を含めてください');
+        };
+      };
     };
   });
 
-  // パスワード(確認)
   $('#user-confirmation-password').blur(function(){
-    $(this).prev().remove('.error-message');
-    $(this).removeClass('error-frame');
+    let confimationPasswordInputField = $(this);
+    errorMessageErase(confimationPasswordInputField);
 
-    // 未入力エラー
-    if ($(this).val() == '') {
-      $(this).before(`<div id='presence-error' class='error-message'>パスワード(確認)を入力してください</div>`);
-      $(this).addClass('error-frame');
-    };
+    if (confimationPasswordInputField.val() == '') {
+      addErrorMessage(confimationPasswordInputField, 'confirmation-password-presence-error', 'パスワード(確認)を入力してください');
 
-    // パスワード不一致エラー
-    if ($(this).val() !== $('#user-password').val() && !$(this).prev().hasClass('error-message')) {
-      $(this).before(`<div id='presence-error' class='error-message'>パスワードを確認してください</div>`);
-      $(this).addClass('error-frame');
+    } else {
+
+      if (confimationPasswordInputField.val() !== $('#user-password').val()) {
+        addErrorMessage(confimationPasswordInputField, 'confirmation-password-mismatch-error', 'パスワードを確認してください');
+      };
     };
   });
 
-  // 名字
   $('#user-last-name').blur(function(){
-    $(this).prev().remove('.error-message');
-    $(this).removeClass('error-frame');
+    let lastNameInputField = $(this);
+    errorMessageErase(lastNameInputField);
 
-    // 未入力エラー
-    if ($(this).val() == '') {
-      $(this).before(`<div id='presence-error' class='error-message'>名字を入力してください</div>`);
-      $(this).addClass('error-frame');
+    if (lastNameInputField.val() == '') {
+      addErrorMessage(lastNameInputField, 'last-name-presence-error', '名字を入力してください');
     };
   });
 
-  // 名前
   $('#user-first-name').blur(function(){
-    $(this).prev().remove('.error-message');
-    $(this).removeClass('error-frame');
+    let firstNameInputField = $(this);
+    errorMessageErase(firstNameInputField);
 
-    // 未入力エラー
-    if ($(this).val() == '') {
-      $(this).before(`<div id='presence-error' class='error-message'>名前を入力してください</div>`);
-      $(this).addClass('error-frame');
+    if (firstNameInputField.val() == '') {
+      addErrorMessage(firstNameInputField, 'first-name-presence-error', '名前を入力してください');
     };
   });
 
-  // みょうじ
   $('#user-last-name-kana').blur(function(){
-    $(this).prev().remove('.error-message');
-    $(this).removeClass('error-frame');
+    let lastNameKanaInputField = $(this);
+    errorMessageErase(lastNameKanaInputField);
 
-    // 未入力エラー
-    if ($(this).val() == '') {
-      $(this).before(`<div id='presence-error' class='error-message'>みょうじを入力してください</div>`);
-      $(this).addClass('error-frame');
-    };
+    if (lastNameKanaInputField.val() == '') {
+      addErrorMessage(lastNameKanaInputField, 'last-name-kana-presence-error', 'みょうじを入力してください');
 
-    // 使用文字エラー 平仮名のみ
-    if (!$(this).val().match(/^[ぁ-んー－]+$/) && !$(this).prev().hasClass('error-message')) {
-      $(this).before(`<div id='hiragana-last-name-error' class='error-message'>みょうじはひらがなで入力してください</div>`);
-      $(this).addClass('error-frame');
+    } else if (!lastNameKanaInputField.val().match(/^[ぁ-んー－]+$/)) {
+      addErrorMessage(lastNameKanaInputField, 'last-name-hiragana-error', 'みょうじはひらがなで入力してください');
     };
   });
 
-  // なまえ
   $('#user-first-name-kana').blur(function(){
-    $(this).prev().remove('.error-message');
-    $(this).removeClass('error-frame');
+    let firstNameKanaInputField = $(this);
+    errorMessageErase(firstNameKanaInputField);
 
-    // 未入力エラー
-    if ($(this).val() == '') {
-      $(this).before(`<div id='presence-error' class='error-message'>なまえを入力してください</div>`);
-      $(this).addClass('error-frame');
-    };
+    if (firstNameKanaInputField.val() == '') {
+      addErrorMessage(firstNameKanaInputField, 'first-name-kana-presence-error', 'なまえを入力してください');
 
-    // 使用文字エラー 平仮名のみ
-    if (!$(this).val().match(/^[ぁ-んー－]+$/) && !$(this).prev().hasClass('error-message')) {
-      $(this).before(`<div id='hiragana-first-name-error' class='error-message'>なまえはひらがなで入力してください</div>`);
-      $(this).addClass('error-frame');
+    } else if (!firstNameKanaInputField.val().match(/^[ぁ-んー－]+$/)) {
+      addErrorMessage(firstNameKanaInputField, 'first-name-hiragana-error', 'なまえはひらがなで入力してください');
     };
   });
 
-  // 新規登録ボタン
   $('#new-user').submit(function() {
     if ($('div').hasClass('error-message')) {
       let errorPosition = $('.error-frame').offset().top
