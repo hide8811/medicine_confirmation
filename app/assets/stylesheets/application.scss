@@ -13,3 +13,13 @@
  *= require_tree .
  *= require_self
  */
+
+@import 'sanitize.css';
+@import 'color';
+@import 'user/sign_up';
+@import 'user/sign_in';
+
+body {
+  background-color: $base-background;
+  color: $main-font;
+}

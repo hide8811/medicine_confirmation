@@ -12,15 +12,23 @@ jobs:
         envronment:
           MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
           MYSQL_DATAVASE: myapp_test
+
     working_directory: ~/myapp
+
     steps:
       - checkout
       - run:
           name: データベースの起動を待機
           command: dockerize -wait tcp://0.0.0.0:3306 -timeout 1m
       - run:
+          name: yarn install
+          command: yarn install
+      - run:
           name: bundle install
           command: bundle install
+      - run:
+          name: Capybaraのドライバの設定変更
+          command: mv ./spec/support/capybara.rb.ci ./spec/support/capybara.rb
       - run:
           name: データベースの設定変更
           command: mv ./config/database.yml.ci ./config/database.yml

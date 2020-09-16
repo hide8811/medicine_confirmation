@@ -13,11 +13,10 @@ services:
       - '.:/myapp'
     environment:
       DATABASE_PASSWORD: ${MYSQL_PASSWORD}
+      SELENIUM_DRIVER_URL: http://selenium_chrome:4444/wd/hub
     tty: true
     stdin_open: true
     depends_on:
-      - db
-    links:
       - db
 
   db:
@@ -30,3 +29,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - '4306:3306'
+
+  selenium_chrome:
+    image: selenium/standalone-chrome-debug
