@@ -24,7 +24,7 @@
 ### medicines
 | Field | Type | Constraint |
 |---|---|---|
-| name | string | NOT NULL |
+| name | string | NOT NULL, UNIQUE |
 | image | string ||
 | url | string ||
 
