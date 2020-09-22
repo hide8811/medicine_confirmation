@@ -1,4 +1,6 @@
 class CareReceiver < ApplicationRecord
+  has_many :dosing_times
+
   with_options presence: true do |p|
     p.validates :last_name
     p.validates :first_name
