@@ -4,6 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable
 
+  has_many :takes
+
   validates :employee_id, presence: true, uniqueness: { case_sensitive: true }
   validates :password, presence: true, confirmation: true, length: { in: 8..16 }, format: { with: /\A(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\d)[a-zA-Z\d]{8,16}+\z/ }
   validates :last_name, :first_name, presence: true

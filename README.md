@@ -1,24 +1,52 @@
-# README
+## DB設計
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### users
+| Field | Type | Constraint |
+|---|---|---|
+| employee_id | string | NOT NULL, UNIQUE |
+| password | string | NOT NULL |
+| last_name | string | NOT NULL |
+| first_name | string | NOT NULL |
+| last_name_kana | string | NOT NULL |
+| first_name_kana | string | NOT NULL |
+| status | string ||
 
-Things you may want to cover:
+### care_receivers
+| Field | Type | Constraint |
+|---|---|---|
+| last_name | string | NOT NULL |
+| first_name_kana | string | NOT NULL |
+| last_name_kana | string | NOT NULL |
+| first_name_kana | string | NOT NULL |
+| birthday | date | NOT NULL |
+| enroll | boolean | NOT NULL |
 
-* Ruby version
+### medicines
+| Field | Type | Constraint |
+|---|---|---|
+| name | string | NOT NULL, UNIQUE |
+| image | string ||
+| url | string ||
 
-* System dependencies
+### dosing_times
+| Field | Type | Constraint |
+|---|---|---|
+| time | time | NOT NULL |
+| timeframe | string | NOT NULL |
+| care_receiver_id | references | NOT NULL, FOREIGN KEY |
 
-* Configuration
+### medicine_dosing_times
+| Field | Type | Constraint |
+|---|---|---|
+| medicine_id | references | NOT NULL, FOREIGN KEY |
+| dosing_time_id | references | NOT NULL, FOREIGN KEY |
 
-* Database creation
+### takes
+| Field | Type | Constraint |
+|---|---|---|
+| ececute | boolean | NOT NULL |
+| dosing_timeframe | string | NOT NULL |
+| dosing_time | time | NOT NULL |
+| user_id | references | NOT NULL, FOREIGN KEY |
+| care_receiver_id | references | NOT NULL, FOREIGN KEY |
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
