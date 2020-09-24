@@ -5,7 +5,7 @@ RSpec.describe CareReceiver, type: :model do
     it { expect(care_receiver).to be_valid }
   end
 
-  context '名字・名前・みょうじ・なまえ・生年月日・在籍の有無がある場合' do
+  context 'last_name, first_name, last_name_kana, first_name_kana, birthday, enrollの有無がある場合' do
     let(:care_receiver) { build(:care_receiver) }
     it_behaves_like '有効'
   end
@@ -28,18 +28,16 @@ RSpec.describe CareReceiver, type: :model do
 
     context '重複している場合' do
       before do
-        create(:care_receiver, last_name: last_name)
+        create(:care_receiver, last_name: 'テスト')
       end
 
-      let(:last_name) { Gimei.last.kanji }
-      let(:care_receiver) { build(:care_receiver, last_name: last_name) }
+      let(:care_receiver) { build(:care_receiver, last_name: 'テスト') }
       it_behaves_like '有効'
     end
 
-    context 'カラの場合' do
-      let(:care_receiver) { build(:care_receiver, last_name: '') }
-
+    context '空の場合' do
       it '無効であること' do
+        care_receiver = build(:care_receiver, last_name: '')
         care_receiver.valid?
         expect(care_receiver.errors[:last_name]).to include("can't be blank")
       end
@@ -64,18 +62,16 @@ RSpec.describe CareReceiver, type: :model do
 
     context '重複している場合' do
       before do
-        create(:care_receiver, first_name: first_name)
+        create(:care_receiver, first_name: 'テスト')
       end
 
-      let(:first_name) { Gimei.first.kanji }
-      let(:care_receiver) { build(:care_receiver, first_name: first_name) }
+      let(:care_receiver) { build(:care_receiver, first_name: 'テスト') }
       it_behaves_like '有効'
     end
 
-    context 'カラの場合' do
-      let(:care_receiver) { build(:care_receiver, first_name: '') }
-
+    context '空の場合' do
       it '無効であること' do
+        care_receiver = build(:care_receiver, first_name: '')
         care_receiver.valid?
         expect(care_receiver.errors[:first_name]).to include("can't be blank")
       end
@@ -85,45 +81,40 @@ RSpec.describe CareReceiver, type: :model do
   describe 'column: last_name_kana' do
     context '重複している場合' do
       before do
-        create(:care_receiver, last_name_kana: last_name_kana)
+        create(:care_receiver, last_name_kana: 'てすと')
       end
 
-      let(:last_name_kana) { Gimei.last.hiragana }
-      let(:care_receiver) { build(:care_receiver, last_name_kana: last_name_kana) }
+      let(:care_receiver) { build(:care_receiver, last_name_kana: 'てすと') }
       it_behaves_like '有効'
     end
 
     context '漢字の場合' do
-      let(:care_receiver) { build(:care_receiver, last_name_kana: '試験') }
-
       it '無効であること' do
+        care_receiver = build(:care_receiver, last_name_kana: '試験')
         care_receiver.valid?
         expect(care_receiver.errors[:last_name_kana]).to include('is invalid')
       end
     end
 
     context 'カタカナの場合' do
-      let(:care_receiver) { build(:care_receiver, last_name_kana: 'テスト') }
-
       it '無効であること' do
+        care_receiver = build(:care_receiver, last_name_kana: 'テスト')
         care_receiver.valid?
         expect(care_receiver.errors[:last_name_kana]).to include('is invalid')
       end
     end
 
     context 'ローマ字の場合' do
-      let(:care_receiver) { build(:care_receiver, last_name_kana: 'test') }
-
       it '無効であること' do
+        care_receiver = build(:care_receiver, last_name_kana: 'test')
         care_receiver.valid?
         expect(care_receiver.errors[:last_name_kana]).to include('is invalid')
       end
     end
 
-    context 'カラの場合' do
-      let(:care_receiver) { build(:care_receiver, last_name_kana: '') }
-
+    context '空の場合' do
       it '無効であること' do
+        care_receiver = build(:care_receiver, last_name_kana: '')
         care_receiver.valid?
         expect(care_receiver.errors[:last_name_kana]).to include("can't be blank")
       end
@@ -133,45 +124,40 @@ RSpec.describe CareReceiver, type: :model do
   describe 'column: first_name_kana' do
     context '重複している場合' do
       before do
-        create(:care_receiver, first_name_kana: first_name_kana)
+        create(:care_receiver, first_name_kana: 'てすと')
       end
 
-      let(:first_name_kana) { Gimei.first.hiragana }
-      let(:care_receiver) { build(:care_receiver, first_name_kana: first_name_kana) }
+      let(:care_receiver) { build(:care_receiver, first_name_kana: 'てすと') }
       it_behaves_like '有効'
     end
 
     context '漢字の場合' do
-      let(:care_receiver) { build(:care_receiver, first_name_kana: '試験') }
-
       it '無効であること' do
+        care_receiver = build(:care_receiver, first_name_kana: '試験')
         care_receiver.valid?
         expect(care_receiver.errors[:first_name_kana]).to include('is invalid')
       end
     end
 
     context 'カタカナの場合' do
-      let(:care_receiver) { build(:care_receiver, first_name_kana: 'テスト') }
-
       it '無効であること' do
+        care_receiver = build(:care_receiver, first_name_kana: 'テスト')
         care_receiver.valid?
         expect(care_receiver.errors[:first_name_kana]).to include('is invalid')
       end
     end
 
     context 'ローマ字の場合' do
-      let(:care_receiver) { build(:care_receiver, first_name_kana: 'test') }
-
       it '無効であること' do
+        care_receiver = build(:care_receiver, first_name_kana: 'test')
         care_receiver.valid?
         expect(care_receiver.errors[:first_name_kana]).to include('is invalid')
       end
     end
 
-    context 'カラの場合' do
-      let(:care_receiver) { build(:care_receiver, first_name_kana: '') }
-
+    context '空の場合' do
       it '無効であること' do
+        care_receiver = build(:care_receiver, first_name_kana: '')
         care_receiver.valid?
         expect(care_receiver.errors[:first_name_kana]).to include("can't be blank")
       end
@@ -181,18 +167,16 @@ RSpec.describe CareReceiver, type: :model do
   describe 'column: birthday' do
     context '重複している場合' do
       before do
-        create(:care_receiver, birthday: birthday)
+        create(:care_receiver, birthday: '2000-01-01')
       end
 
-      let(:birthday) { Faker::Date.birthday(min_age: 65, max_age: 120) }
-      let(:care_receiver) { build(:care_receiver, birthday: birthday) }
+      let(:care_receiver) { build(:care_receiver, birthday: '2000-01-01') }
       it_behaves_like '有効'
     end
 
-    context 'カラの場合' do
-      let(:care_receiver) { build(:care_receiver, birthday: '') }
-
+    context '空の場合' do
       it '無効であること' do
+        care_receiver = build(:care_receiver, birthday: '')
         care_receiver.valid?
         expect(care_receiver.errors[:birthday]).to include("can't be blank")
       end
@@ -211,9 +195,8 @@ RSpec.describe CareReceiver, type: :model do
     end
 
     context 'nilの場合' do
-      let(:care_receiver) { build(:care_receiver, enroll: nil) }
-
       it '無効であること' do
+        care_receiver = build(:care_receiver, enroll: nil)
         care_receiver.valid?
         expect(care_receiver.errors[:enroll]).to include('is not included in the list')
       end

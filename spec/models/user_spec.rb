@@ -1,185 +1,258 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  context '有効であること' do
-    it '社員ID・パスワード・姓・名・姓(かな)・名(かな) がある場合、有効であること' do
-      user = build(:user)
-      expect(user).to be_valid
+  shared_examples '有効' do
+    it { expect(user).to be_valid }
+  end
+
+  context 'employee_id, password, last_name_first_name, last_name_kana, first_name_kana に値がある場合' do
+    let(:user) { build(:user) }
+    it_behaves_like '有効'
+  end
+
+  describe 'column: employee_id' do
+    context '空の場合' do
+      it '無効であること' do
+        user = build(:user, employee_id: '')
+        user.valid?
+        expect(user.errors[:employee_id]).to include("can't be blank")
+      end
     end
 
-    it 'パスワード に 英大文字・英小文字・数字 がそれぞれ1文字以上あり、文字数 が 8文字以上16文字以下 の場合、有効であること' do
-      user = build(:user, password: 'TEst1234')
-      expect(user).to be_valid
-    end
+    context '重複した場合' do
+      before do
+        create(:user, employee_id: 'id12345')
+      end
 
-    it 'パスワード の 英大文字・英小文字・数字 が順不同でも、有効であること' do
-      user = build(:user, password: '1te23St4')
-      expect(user).to be_valid
-    end
-
-    it '姓 が重複した場合、有効であること' do
-      create(:user, last_name: '山田')
-      user = build(:user, last_name: '山田')
-      expect(user).to be_valid
-    end
-
-    it '名 が重複した場合、有効であること' do
-      create(:user, first_name: '太郎')
-      user = build(:user, first_name: '太郎')
-      expect(user).to be_valid
-    end
-
-    it '姓(かな) が重複した場合、有効であること' do
-      create(:user, last_name_kana: 'やまだ')
-      user = build(:user, last_name_kana: 'やまだ')
-      expect(user).to be_valid
-    end
-
-    it '名(かな) が重複した場合、有効であること' do
-      create(:user, first_name_kana: 'たろう')
-      user = build(:user, first_name_kana: 'たろう')
-      expect(user).to be_valid
+      it '無効であること' do
+        user = build(:user, employee_id: 'id12345')
+        user.valid?
+        expect(user.errors[:employee_id]).to include('has already been taken')
+      end
     end
   end
 
-  context '無効であること' do
-    it '社員ID がない場合、無効であること' do
-      user = build(:user, employee_id: '')
-      user.valid?
-      expect(user.errors[:employee_id]).to include("can't be blank")
+  describe 'column: password' do
+    context '半角の英大文字・英小文字・数字がそれぞれ1文字以上あり、文字数が8文字以上16文字以下である場合' do
+      let(:user) { build(:user, password: 'TEst1234') }
+      it_behaves_like '有効'
     end
 
-    it '社員ID が重複した場合、無効であること' do
-      create(:user, employee_id: 'id12345')
-      user = build(:user, employee_id: 'id12345')
-      user.valid?
-      expect(user.errors[:employee_id]).to include('has already been taken')
+    context '英大文字・英小文字・数字のが順不同である場合' do
+      let(:user) { build(:user, password: '1te23ST4') }
+      it_behaves_like '有効'
     end
 
-    it 'パスワード がない場合、無効であること' do
-      user = build(:user, password: '')
-      user.valid?
-      expect(user.errors[:password]).to include("can't be blank")
+    context '空の場合' do
+      it '無効であること' do
+        user = build(:user, password: '')
+        user.valid?
+        expect(user.errors[:password]).to include("can't be blank")
+      end
     end
 
-    it 'パスワード に 半角英大文字 がない場合、無効であること' do
-      user = build(:user, password: 'test1234')
-      user.valid?
-      expect(user.errors[:password]).to include('is invalid')
+    context '英大文字がない場合' do
+      it '無効であること' do
+        user = build(:user, password: 'test1234')
+        user.valid?
+        expect(user.errors[:password]).to include('is invalid')
+      end
     end
 
-    it 'パスワード に 半角英小文字 がない場合、無効であること' do
-      user = build(:user, password: 'TEST1234')
-      user.valid?
-      expect(user.errors[:password]).to include('is invalid')
+    context '英小文字がない場合' do
+      it '無効であること' do
+        user = build(:user, password: 'TEST1234')
+        user.valid?
+        expect(user.errors[:password]).to include('is invalid')
+      end
     end
 
-    it 'パスワード に 半角数字 がない場合、無効であること' do
-      user = build(:user, password: 'TestTest')
-      user.valid?
-      expect(user.errors[:password]).to include('is invalid')
+    context '数字がない場合' do
+      it '無効であること' do
+        user = build(:user, password: 'TestTest')
+        user.valid?
+        expect(user.errors[:password]).to include('is invalid')
+      end
     end
 
-    it 'パスワード に 全角英大文字 がある場合、無効であること' do
-      user = build(:user, password: 'Ｔest1234')
-      user.valid?
-      expect(user.errors[:password]).to include('is invalid')
+    context '英大文字が全角の場合' do
+      it '無効であること' do
+        user = build(:user, password: 'Ｔest1234')
+        user.valid?
+        expect(user.errors[:password]).to include('is invalid')
+      end
     end
 
-    it 'パスワード に 全角英小文字 がある場合、無効であること' do
-      user = build(:user, password: 'Tｅｓｔ1234')
-      user.valid?
-      expect(user.errors[:password]).to include('is invalid')
+    context '英小文字が全角の場合' do
+      it '無効であること' do
+        user = build(:user, password: 'Tｅｓｔ1234')
+        user.valid?
+        expect(user.errors[:password]).to include('is invalid')
+      end
     end
 
-    it 'パスワード に 全角数字 がある場合、無効であること' do
-      user = build(:user, password: 'Test１２３４')
-      user.valid?
-      expect(user.errors[:password]).to include('is invalid')
+    context '数字が全角の場合' do
+      it '無効であること' do
+        user = build(:user, password: 'Test１２３４')
+        user.valid?
+        expect(user.errors[:password]).to include('is invalid')
+      end
     end
 
-    it 'パスワード が 7文字以下 の場合、無効であること' do
-      user = build(:user, password: 'Test123')
-      user.valid?
-      expect(user.errors[:password]).to include('is too short (minimum is 8 characters)')
+    context '7文字以下の場合' do
+      it '無効であること' do
+        user = build(:user, password: 'Test123')
+        user.valid?
+        expect(user.errors[:password]).to include('is too short (minimum is 8 characters)')
+      end
     end
 
-    it 'パスワード が 17文字以上 の場合、無効であること' do
-      user = build(:user, password: 'test1234567890abc')
-      user.valid?
-      expect(user.errors[:password]).to include('is too long (maximum is 16 characters)')
+    context '17文字以上の場合' do
+      it '無効であること' do
+        user = build(:user, password: 'test1234567890abc')
+        user.valid?
+        expect(user.errors[:password]).to include('is too long (maximum is 16 characters)')
+      end
+    end
+  end
+
+  describe 'column: last_name' do
+    context '重複した場合' do
+      before do
+        create(:user, last_name: '山田')
+      end
+
+      let(:user) { build(:user, last_name: '山田') }
+      it_behaves_like '有効'
     end
 
-    it '姓 がない場合、無効であること' do
-      user = build(:user, last_name: '')
-      user.valid?
-      expect(user.errors[:last_name]).to include("can't be blank")
+    context '空の場合' do
+      it '無効であること' do
+        user = build(:user, last_name: '')
+        user.valid?
+        expect(user.errors[:last_name]).to include("can't be blank")
+      end
+    end
+  end
+
+  describe 'column: first_name' do
+    context '重複した場合' do
+      before do
+        create(:user, first_name: '太郎')
+      end
+
+      let(:user) { build(:user, first_name: '太郎') }
+      it_behaves_like '有効'
     end
 
-    it '名 がない場合、無効であること' do
-      user = build(:user, first_name: '')
-      user.valid?
-      expect(user.errors[:first_name]).to include("can't be blank")
+    context '空の場合' do
+      it '無効であること' do
+        user = build(:user, first_name: '')
+        user.valid?
+        expect(user.errors[:first_name]).to include("can't be blank")
+      end
+    end
+  end
+
+  describe 'column: last_name_kana' do
+    context '重複した場合' do
+      before do
+        create(:user, last_name_kana: 'やまだ')
+      end
+
+      let(:user) { build(:user, last_name_kana: 'やまだ') }
+      it_behaves_like '有効'
     end
 
-    it '姓(かな) がない場合、無効であること' do
-      user = build(:user, last_name_kana: '')
-      user.valid?
-      expect(user.errors[:last_name_kana]).to include("can't be blank")
+    context '空の場合' do
+      it '無効であること' do
+        user = build(:user, last_name_kana: '')
+        user.valid?
+        expect(user.errors[:last_name_kana]).to include("can't be blank")
+      end
     end
 
-    it '姓(かな) が 漢字 の場合、無効であること' do
-      user = build(:user, last_name_kana: '山田')
-      user.valid?
-      expect(user.errors[:last_name_kana]).to include('is invalid')
+    context '漢字の場合' do
+      it '無効であること' do
+        user = build(:user, last_name_kana: '山田')
+        user.valid?
+        expect(user.errors[:last_name_kana]).to include('is invalid')
+      end
     end
 
-    it '姓(かな) が カタカナ の場合、無効であること' do
-      user = build(:user, last_name_kana: 'ヤマダ')
-      user.valid?
-      expect(user.errors[:last_name_kana]).to include('is invalid')
+    context 'カタカナの場合' do
+      it '無効であること' do
+        user = build(:user, last_name_kana: 'ヤマダ')
+        user.valid?
+        expect(user.errors[:last_name_kana]).to include('is invalid')
+      end
     end
 
-    it '姓(かな) が ローマ字 の場合、無効であること' do
-      user = build(:user, last_name_kana: 'yamada')
-      user.valid?
-      expect(user.errors[:last_name_kana]).to include('is invalid')
+    context 'ローマ字の場合' do
+      it '無効であること' do
+        user = build(:user, last_name_kana: 'yamada')
+        user.valid?
+        expect(user.errors[:last_name_kana]).to include('is invalid')
+      end
     end
 
-    it '姓(かな) が全て平仮名でない場合、無効であること' do
-      user = build(:user, last_name_kana: 'やま田')
-      user.valid?
-      expect(user.errors[:last_name_kana]).to include('is invalid')
+    context '全てひらがなでない場合' do
+      it '無効であること' do
+        user = build(:user, last_name_kana: 'やま田')
+        user.valid?
+        expect(user.errors[:last_name_kana]).to include('is invalid')
+      end
+    end
+  end
+
+  describe 'colunm: last_name_kana' do
+    context '重複した場合' do
+      before do
+        create(:user, first_name_kana: 'たろう')
+      end
+
+      let(:user) { build(:user, first_name_kana: 'たろう') }
+      it_behaves_like '有効'
     end
 
-    it '名(かな) がない場合、無効であること' do
-      user = build(:user, first_name_kana: '')
-      user.valid?
-      expect(user.errors[:first_name_kana]).to include("can't be blank")
+    context '空の場合' do
+      it '無効であること' do
+        user = build(:user, first_name_kana: '')
+        user.valid?
+        expect(user.errors[:first_name_kana]).to include("can't be blank")
+      end
     end
 
-    it '名(かな) が 漢字 の場合、無効であること' do
-      user = build(:user, first_name_kana: '太郎')
-      user.valid?
-      expect(user.errors[:first_name_kana]).to include('is invalid')
+    context '漢字の場合' do
+      it '無効であること' do
+        user = build(:user, first_name_kana: '太郎')
+        user.valid?
+        expect(user.errors[:first_name_kana]).to include('is invalid')
+      end
     end
 
-    it '名(かな) が カタカナ の場合、無効であること' do
-      user = build(:user, first_name_kana: 'タロウ')
-      user.valid?
-      expect(user.errors[:first_name_kana]).to include('is invalid')
+    context 'カタカナの場合' do
+      it '無効であること' do
+        user = build(:user, first_name_kana: 'タロウ')
+        user.valid?
+        expect(user.errors[:first_name_kana]).to include('is invalid')
+      end
     end
 
-    it '名(かな) が ローマ字 の場合、無効であること' do
-      user = build(:user, first_name_kana: 'taro')
-      user.valid?
-      expect(user.errors[:first_name_kana]).to include('is invalid')
+    context 'ローマ字の場合' do
+      it '無効であること' do
+        user = build(:user, first_name_kana: 'taro')
+        user.valid?
+        expect(user.errors[:first_name_kana]).to include('is invalid')
+      end
     end
 
-    it '名(かな) が全て平仮名でない場合、無効であること' do
-      user = build(:user, first_name_kana: 'た郎')
-      user.valid?
-      expect(user.errors[:first_name_kana]).to include('is invalid')
+    context '全てひらがなでない場合' do
+      it '無効であること' do
+        user = build(:user, first_name_kana: 'た郎')
+        user.valid?
+        expect(user.errors[:first_name_kana]).to include('is invalid')
+      end
     end
   end
 end

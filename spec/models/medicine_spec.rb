@@ -12,9 +12,8 @@ RSpec.describe Medicine, type: :model do
 
   describe 'column: name' do
     context '空の場合' do
-      let(:medicine) { build(:medicine, name: '') }
-
       it '無効なこと' do
+        medicine = build(:medicine, name: '')
         medicine.valid?
         expect(medicine.errors[:name]).to include("can't be blank")
       end
@@ -25,16 +24,20 @@ RSpec.describe Medicine, type: :model do
         create(:medicine, name: 'test_medicine')
       end
 
-      let(:medicine) { build(:medicine, name: 'test_medicine') }
-      it '無効なこと' do
-        medicine.valid?
-        expect(medicine.errors[:name]).to include('has already been taken')
+      context '大文字・小文字が同じ場合' do
+        it '無効なこと' do
+          medicine = build(:medicine, name: 'test_medicine')
+          medicine.valid?
+          expect(medicine.errors[:name]).to include('has already been taken')
+        end
       end
 
-      let(:uppercase_medicine) { build(:medicine, name: 'TEST_medicine') }
-      it '大文字小文字が違っていても無効なこと' do
-        uppercase_medicine.valid?
-        expect(uppercase_medicine.errors[:name]).to include('has already been taken')
+      context '大文字・小文字が違う場合' do
+        it '無効なこと' do
+          uppercase_medicine = build(:medicine, name: 'TEST_medicine')
+          uppercase_medicine.valid?
+          expect(uppercase_medicine.errors[:name]).to include('has already been taken')
+        end
       end
     end
   end
