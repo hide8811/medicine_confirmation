@@ -2,3 +2,36 @@
   .new-care_receiver__side_content
     = link_to '戻る', :back, class: 'new-care_receiver__side_content--back-link'
     = link_to 'ホーム', root_path, class: 'new-care_receiver__side_content--home-link'
+
+  .new-care_receiver__main_content
+    .new-care_receiver-title
+      利用者　新規登録
+
+    .new-care_receiver-form
+      = form_with model: @care_receiver do |f|
+
+        .new-care_receiver-form__name
+          .new-care_receiver-form__name--last_name
+            = f.label :last_name, '名字', class: 'new-care_receiver-form__name--last_name--label'
+            = f.text_field :last_name, class: 'new-care_receiver-form__name--last_name--input-field'
+
+          .new-care_receiver-form__name--first_name
+            = f.label :first_name, '名前', class: 'new-care_receiver-form__name--first_name--label'
+            = f.text_field :first_name, class: 'new-care_receiver-form__name--first_name--input-field'
+
+        .new-care_receiver-form__kana_name
+          .new-care_receiver-form__kana_name--last_name_kana
+            = f.label :last_name_kana, 'みょうじ', class: 'new-care_receiver-form__kana_name--last_name_kana--label'
+            = f.text_field :last_name_kana, class: 'new-care_receiver-form__kana_name--last_name_kana--input-field'
+
+          .new-care_receiver-form__kana_name--first_name_kana
+            = f.label :first_name_kana, 'なまえ', class: 'new-care_receiver-form__kana_name--first_name_kana--label'
+            = f.text_field :first_name_kana, class: 'new-care_receiver-form__kana_name--first_name_kana--input-field'
+
+        .new-care_receiver-form__birthday
+          .new-care_receiver-form__birthday--date_of_birth
+            = f.label :birthday, '生年月日', class: 'new-care_receiver-form__birthday--date_of_birth--label'
+            = raw sprintf((f.date_select :birthday, {use_month_numbers: true, include_blank: true, start_year: Time.now.year - 150, end_year: Time.now.year, date_separator: '%s'}, {class: 'new-care_receiver-form__birthday--date_of_birth--select'}), '年 ', '月 ') + '日'
+
+        .new-care_receiver-form__submit
+          = f.submit '新規登録', class: 'new-care_receiver-form__submit--button'
