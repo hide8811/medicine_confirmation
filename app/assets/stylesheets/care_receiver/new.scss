@@ -1,0 +1,37 @@
+@import 'color';
+
+@mixin side-button {
+  display: block;
+  width: 8.5rem;
+  height: 4rem;
+  margin: 0 auto 2rem;
+  border-radius: 10px;
+  border-bottom: solid 4px $button-shadow;
+  background-color: $button-color;
+  line-height: 4rem;
+  text-align: center;
+  font-size: 2rem;
+  color: $main-font;
+  text-decoration: none;
+}
+
+.new-care_receiver {
+  margin: 5%;
+}
+
+.new-care_receiver__side_content {
+  &--back-link {
+    @include side-button;
+
+    &:hover {
+      background-color: $hover-button;
+    }
+  }
+  &--home-link {
+    @include side-button;
+
+    &:hover {
+      background-color: $hover-button;
+    }
+  }
+}
