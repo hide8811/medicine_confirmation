@@ -2,7 +2,7 @@
 
 @mixin error-text {
   color: $error-color;
-  font-size: 2rem;
+  font-size: 1rem;
   text-align: center;
 }
 
@@ -12,4 +12,8 @@
 
 .error-frame {
   border: solid 3px $error-color;
+}
+
+.error-label {
+  color: $error-color;
 }
