@@ -57,8 +57,7 @@ RSpec.describe 'CareReceivers', type: :system do
           select '1', from: 'care_receiver[birthday(2i)]'
           select '1', from: 'care_receiver[birthday(3i)]'
           click_on '新規登録'
-          sleep 2 # -------------------------------------------変更予定
-          expect(current_path).to eq root_path
+          expect(page).to have_content '登録しました'
         end
       end
 
