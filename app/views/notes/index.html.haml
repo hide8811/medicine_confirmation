@@ -1,2 +1,6 @@
+- if flash.keys[0] == 'success'
+  %p.flash-success
+    = flash[:success]
+
 = link_to 'ログアウト', destroy_user_session_path, method: :delete
 = link_to 'care_receiver 新規作成', new_care_receiver_path, method: :get
