@@ -1,0 +1,166 @@
+@import 'color';
+
+@mixin side-button {
+  display: block;
+  width: 8.5rem;
+  height: 4rem;
+  margin: 0 auto 2rem;
+  border-radius: 10px;
+  border-bottom: solid 4px $button-shadow;
+  background-color: $button-color;
+  line-height: 4rem;
+  text-align: center;
+  font-size: 2rem;
+  color: $main-font;
+  text-decoration: none;
+}
+
+@mixin form-chunk {
+  margin: 5% 10%;
+  display: flex;
+  justify-content: center;
+}
+
+@mixin form-label {
+  display: block;
+  margin: 0.5rem 0;
+  font-size: 1.5rem;
+}
+
+@mixin form-style {
+  display: block;
+  width: 100%;
+  height: 3rem;
+  margin: 0.5rem 0;
+  padding: 0 1rem;
+  font-size: 2rem;
+}
+
+.new-care_receiver {
+  margin: 5%;
+  display: flex;
+  justify-content: center;
+}
+
+.new-care_receiver__side_content {
+  width: 30%;
+  margin-right: 2%;
+
+  &--back-link {
+    @include side-button;
+
+    &:hover {
+      background-color: $hover-button;
+    }
+  }
+  &--home-link {
+    @include side-button;
+
+    &:hover {
+      background-color: $hover-button;
+    }
+  }
+}
+
+.new-care_receiver__main_content {
+  width: 70%;
+  margin-left: 2%;
+  background-color: $sub-background;
+}
+
+.new-care_receiver-title {
+  margin: 1rem;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.new-care_receiver-form {
+  &__name {
+    @include form-chunk;
+
+    &--last_name {
+      width: 50%;
+      margin-right: 2.5%;
+
+      &--label {
+        @include form-label;
+      }
+      &--input-field {
+        @include form-style;
+      }
+    }
+
+    &--first_name {
+      width: 50%;
+      margin-left: 2.5%;
+
+      &--label {
+        @include form-label;
+      }
+      &--input-field {
+        @include form-style;
+      }
+    }
+  }
+
+  &__kana_name {
+    @include form-chunk;
+
+    &--last_name_kana {
+      width: 50%;
+      margin-right: 2.5%;
+
+      &--label {
+        @include form-label;
+      }
+      &--input-field {
+        @include form-style;
+      }
+    }
+
+    &--first_name_kana {
+      width: 50%;
+      margin-left: 2.5%;
+
+      &--label {
+        @include form-label;
+      }
+      &--input-field {
+        @include form-style;
+      }
+    }
+  }
+
+  &__birthday {
+    margin: 10% 0;
+    text-align: center;
+
+    &--date_of_birth {
+      display: inline-block;
+      text-align: initial;
+
+      &--label {
+        @include form-label;
+      }
+      &--select {
+        padding: 0 1rem;
+        font-size: 2rem;
+      }
+    }
+  }
+
+  &__submit {
+    text-align: center;
+
+    &--button {
+      margin-bottom: 10%;
+      padding: .5rem 1rem;
+      border-radius: 10px;
+      border-bottom: solid 4px $button-shadow;
+      background-color: $button-color;
+      font-size: 2rem;
+    }
+  }
+}
+
