@@ -1,3 +1,15 @@
-// Place all the styles related to the notes controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: https://sass-lang.com/
+@import 'color.scss';
+
+.flash-success {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  width: 30rem;
+  height: 6rem;
+  margin: 0;
+  margin-left: -15rem;
+  background-color: $flash-color;
+  font-size: 2rem;
+  text-align: center;
+  line-height: 6rem;
+}
