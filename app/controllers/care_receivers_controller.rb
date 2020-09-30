@@ -10,7 +10,7 @@ class CareReceiversController < ApplicationController
     @care_receiver = CareReceiver.new(care_receiver_params)
 
     if @care_receiver.save
-      redirect_to root_path
+      redirect_to root_path, flash: { success: '登録しました' }
     else
       render :new
     end
