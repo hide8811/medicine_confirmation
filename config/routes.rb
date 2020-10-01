@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'medicines/index'
   devise_for :users, controllers: { registrations: 'users/registrations' }
   devise_scope :user do
     get 'users/employee_uniquness', to: 'users/registrations#employee_uniquness'
