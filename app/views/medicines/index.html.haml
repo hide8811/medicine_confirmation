@@ -1,0 +1,28 @@
+.medicine-index
+  .medicine-index__side_content
+    = link_to '戻る', :back, class: 'medicine-index__side_content--back-link'
+    = link_to 'ホーム', root_path, class: 'medicine-index__side_content--home-link'
+
+  .medicine-index__main_content
+    .medicine-index__main_content--title
+      薬　一覧
+
+    %ul.medicines_list
+      - @medicines.each do |medicine|
+        %li.medicines_list__item
+          %p.medicines_list__item--name<>
+            = medicine.name
+
+          - if medicine.image != nil
+            %p.medicines_list__item--image<>
+              = medicine.image
+          - else
+            %p.medicines_list__item--no_image<>
+              ×
+
+          - if medicine.url != 'NULL'
+            = link_to "参考サイト", "#{medicine.url}", class: 'medicines_list__item--url', target: '_blank', rel: 'noreferrer noopener'
+          - else
+            %p.medicines_list__item--no_url<>
+
+          -# 編集ボタン追加予定
