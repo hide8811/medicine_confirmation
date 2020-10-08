@@ -1,28 +1,51 @@
 .medicine-index
   .medicine-index__side_content
-    = link_to '戻る', :back, class: 'medicine-index__side_content--back-link'
-    = link_to 'ホーム', root_path, class: 'medicine-index__side_content--home-link'
+    .medicin-index__side_content--link
+      = link_to '戻る', :back, class: 'medicine-index__side_content--link--back-link'
+      = link_to 'ホーム', root_path, class: 'medicine-index__side_content--link--home-link'
+
+    .new-medicine
+      .new-medicine-title
+        新規登録
+
+      .new-medicine-form
+        = form_with model: @new_medicine do |f|
+
+          .new-medicine-form__name
+            = f.label :name, '名前', class: 'new-medicine-form__name--label'
+            = f.text_field :name, class: 'new-medicine-form__name--input-text'
+
+          .new-medicine-form__image
+            = f.label :image, '画像', class: 'new-medicine-form__image--label'
+            = f.file_field :image, class: 'new-medicine-form__image--input-file'
+
+          .new-medicine-form__url
+            = f.label :url, '参考サイト', class: 'new-medicine-form__url--label'
+            = f.text_field :url, class: 'new-medicine-form__url--input-text'
+
+          .new-medicine-form__submit
+            = f.submit '新規登録', class: 'new-medicine-form__submit--button'
 
   .medicine-index__main_content
     .medicine-index__main_content--title
       薬　一覧
 
-    %ul.medicines_list
-      - @medicines.each do |medicine|
-        %li.medicines_list__item
-          %p.medicines_list__item--name<>
-            = medicine.name
+    - if @medicines.present?
+      %ul.medicines_list
+        - @medicines.each do |medicine|
+          %li.medicines_list__item
+            %p.medicines_list__item--name<>
+              = medicine.name
 
-          - if medicine.image != nil
-            %p.medicines_list__item--image<>
-              = medicine.image
-          - else
-            %p.medicines_list__item--no_image<>
-              ×
+            - if medicine.image.present?
+              = image_tag "#{medicine.image}", class: 'medicines_list__item--image'
+            - else
+              %p.medicines_list__item--no_image<>
+                ×
 
-          - if medicine.url != 'NULL'
-            = link_to "参考サイト", "#{medicine.url}", class: 'medicines_list__item--url', target: '_blank', rel: 'noreferrer noopener'
-          - else
-            %p.medicines_list__item--no_url<>
+            - if medicine.url.present?
+              = link_to "参考サイト", "#{medicine.url}", class: 'medicines_list__item--url', target: '_blank', rel: 'noreferrer noopener'
+            - else
+              %p.medicines_list__item--no_url<>
 
-          -# 編集ボタン追加予定
+            -# 編集ボタン追加予定

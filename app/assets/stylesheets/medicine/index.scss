@@ -15,6 +15,19 @@
   text-decoration: none;
 }
 
+@mixin form-label {
+  display: block;
+  font-size: 1.9vw;
+}
+
+@mixin form-style {
+  display: block;
+  width: 100%;
+  height: 3vw;
+  padding: .5vw;
+  font-size: 1.9vw;
+}
+
 .medicine-index {
   margin: 5vw;
   display: flex;
@@ -23,24 +36,81 @@
 
 .medicine-index__side_content {
   width: 23.5vw;
-  background-color: silver; // <<<<<<<<<<<<<<<<<<<< delete <<<<<<<<<<<<<<<<<<<<
+  margin-right: .5vw;
 
-  &--back-link {
-    @include side-button;
+  &--link {
+    &--back-link {
+      @include side-button;
 
-    &:hover {
-      background-color: $hover-button;
+      &:hover {
+        background-color: $hover-button;
+      }
     }
-  }
-  &--home-link {
-    @include side-button;
+    &--home-link {
+      @include side-button;
 
-    &:hover {
-      background-color: $hover-button;
+      &:hover {
+        background-color: $hover-button;
+      }
     }
   }
 }
+// =====================================================================
+.new-medicine {
+  padding-bottom: 1vw;
+  margin-top: 1vw;
+  background-color: $sub-background;
+}
 
+.new-medicine-title {
+  height: 7.2vw;
+  text-align: center;
+  line-height: 7.2vw;
+  font-size: 3.2vw;
+  font-weight: bold;
+}
+
+.new-medicine-form {
+
+  &__name {
+    margin: 1vw 1vw;
+
+    &--label {
+      @include form-label;
+    }
+    &--input-text {
+      @include form-style;
+    }
+  }
+  &__image {
+    margin: 1vw 1vw;
+
+    &--label {
+      @include form-label;
+    }
+    &--input-file {
+      display: block;
+    }
+  }
+  &__url {
+    margin: 1vw 1vw;
+
+    &--label {
+      @include form-label;
+    }
+    &--input-text {
+      @include form-style;
+    }
+  }
+  &__submit {
+    margin-top: 3vw;
+
+    &--button {
+      @include side-button;
+    }
+  }
+}
+// =====================================================================
 .medicine-index__main_content {
   width: 61.8vw;
   background-color: $sub-background;
@@ -79,8 +149,9 @@
     }
     &--image {
       display: inline-block;
-      width: 5.2vw;
-      height: 8.4vw;
+      width: 8.4vw;
+      height: 5.2vw;
+      object-fit: contain;
     }
     &--no_image {
       display: inline-block;
