@@ -677,4 +677,34 @@ RSpec.describe 'CareReceivers', type: :system do
       end
     end
   end
+
+  describe '詳細' do
+    let!(:care_receiver) { create(:care_receiver) }
+    before do
+      visit root_path
+      click_on "#{care_receiver.last_name} #{care_receiver.first_name}"
+    end
+
+    describe 'サイドボタン' do
+      context '戻るボタンを押した時' do
+        it '元の画面に戻ること' do
+          click_on '戻る'
+          expect(current_path).to eq root_path
+        end
+      end
+    end
+
+    describe '個人情報' do
+      let(:name) { "#{care_receiver.last_name} #{care_receiver.first_name} 様" }
+      let(:birthday) { care_receiver.birthday.strftime('%Y年 %-m月 %-d日') }
+      let(:age) { (Date.today.strftime('%Y%m%d').to_i - care_receiver.birthday.strftime('%Y%m%d').to_i) / 10_000 }
+      subject { page }
+
+      it { is_expected.to have_content name }
+
+      it { is_expected.to have_content birthday }
+
+      it { is_expected.to have_content age }
+    end
+  end
 end
