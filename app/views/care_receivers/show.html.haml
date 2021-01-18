@@ -1,2 +1,14 @@
-%h1 CareReceivers#show
-%p Find me in app/views/care_receivers/show.html.haml
+.show-care_receiver
+  .show-care_receiver__side_content
+    = link_to '戻る', :back, class: 'show-care_receiver__side_content--back-link'
+
+  .show-care_receiver__main
+    .show-care_receiver__main--name
+      = "#{@care_receiver.last_name} #{@care_receiver.first_name} 様"
+
+    .show-care_receiver__main--birthday
+      .show-care_receiver__main--birthday--date
+        = @care_receiver.birthday.strftime('%Y年 %-m月 %-d日')
+
+      .show-care_receiver__main--birthday--age
+        = "#{@care_receiver_age} 歳"

@@ -1,0 +1,66 @@
+@import 'color';
+
+@mixin side-button {
+  display: block;
+  width: 8.5rem;
+  height: 4rem;
+  margin: 0 auto 2rem;
+  border-radius: 10px;
+  border-bottom: solid 4px $button-shadow;
+  background-color: $button-color;
+  line-height: 4rem;
+  text-align: center;
+  font-size: 2rem;
+  color: $main-font;
+  text-decoration: none;
+}
+
+.show-care_receiver {
+  margin: 5%;
+  display: flex;
+  justify-content: center;
+}
+
+.show-care_receiver__side_content {
+  width: 30%;
+  margin-right: 2%;
+
+  &--back-link {
+    @include side-button;
+
+    &:hover {
+      background-color: $hover-button;
+    }
+  }
+}
+
+.show-care_receiver__main {
+  width: 70%;
+  margin-left: 2%;
+  background-color: $sub-background;
+
+  &--name {
+    margin: 1rem;
+    padding: 2rem;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+    background-color: $list-color;
+  }
+
+  &--birthday {
+    margin: 2rem 1rem;
+    display: flex;
+    font-size: 2rem;
+
+    &--date {
+      width: 70%;
+      text-align: center;
+    }
+
+    &--age {
+      width: 30%;
+      text-align: center;
+    }
+  }
+}
