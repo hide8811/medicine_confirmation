@@ -13,16 +13,17 @@ RSpec.describe 'CareReceivers', type: :request do
     end
   end
 
-  describe 'GET /create' do
+  describe 'POST /create' do
     it 'returns http success' do
-      get '/care_receivers/create'
-      expect(response).to have_http_status(:success)
+      post '/care_receivers', params: { care_receiver: attributes_for(:care_receiver) }
+      expect(response).to have_http_status(302)
     end
   end
 
   describe 'GET /show' do
     it 'returns http success' do
-      get '/care_receivers/show'
+      care_receiver = create(:care_receiver)
+      get "/care_receivers/#{care_receiver.id}", params: { care_receiver: attributes_for(:care_receiver) }
       expect(response).to have_http_status(:success)
     end
   end
