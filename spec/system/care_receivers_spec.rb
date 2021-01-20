@@ -680,14 +680,17 @@ RSpec.describe 'CareReceivers', type: :system do
 
   describe '詳細' do
     let!(:care_receiver) { create(:care_receiver) }
-    before do
-      visit root_path
-      click_on "#{care_receiver.last_name} #{care_receiver.first_name}"
-    end
 
-    describe 'サイドボタン' do
+    subject { page }
+
+    describe 'サイドメニュー' do
+      before do
+        visit root_path
+        click_on "#{care_receiver.last_name} #{care_receiver.first_name}"
+      end
+
       context '戻るボタンを押した時' do
-        it '元の画面に戻ること' do
+        it 'ホーム画面に戻る' do
           click_on '戻る'
           expect(current_path).to eq root_path
         end
@@ -698,13 +701,58 @@ RSpec.describe 'CareReceivers', type: :system do
       let(:name) { "#{care_receiver.last_name} #{care_receiver.first_name} 様" }
       let(:birthday) { care_receiver.birthday.strftime('%Y年 %-m月 %-d日') }
       let(:age) { (Date.today.strftime('%Y%m%d').to_i - care_receiver.birthday.strftime('%Y%m%d').to_i) / 10_000 }
-      subject { page }
+
+      before do
+        visit root_path
+        click_on "#{care_receiver.last_name} #{care_receiver.first_name}"
+      end
 
       it { is_expected.to have_content name }
 
       it { is_expected.to have_content birthday }
 
       it { is_expected.to have_content age }
+    end
+
+    describe '服薬 一覧' do
+      context '服薬がある時' do
+        let!(:other_care_receiver) { create(:care_receiver) }
+
+        let!(:dosing_time_am) { create(:dosing_time, timeframe: '朝食後', care_receiver_id: care_receiver.id) }
+        let!(:dosing_time_pm) { create(:dosing_time, timeframe: '夕食後', care_receiver_id: care_receiver.id) }
+        let!(:dosing_time_other) { create(:dosing_time, timeframe: 'その他', care_receiver_id: other_care_receiver.id) }
+
+        let!(:medicine_dosing_times_am) { create_list(:medicine_dosing_time, 5, dosing_time_id: dosing_time_am.id) }
+        let!(:medicine_dosing_times_pm) { create_list(:medicine_dosing_time, 5, dosing_time_id: dosing_time_pm.id) }
+
+        before do
+          visit root_path
+          click_on "#{care_receiver.last_name} #{care_receiver.first_name}"
+        end
+
+        it { is_expected.to have_content dosing_time_am.timeframe }
+
+        it { is_expected.to have_css '.show-care_receiver__dosing_time--list--item', count: 2 }
+
+        it { is_expected.to have_content dosing_time_am.medicines[0].name }
+
+        it { is_expected.to have_css '.show-care_receiver__dosing_time--medicines_list--item', count: 10 }
+
+        it { is_expected.not_to have_content dosing_time_other.timeframe }
+
+        it { is_expected.not_to have_content '服薬はありません' }
+      end
+
+      context '服薬がない時' do
+        before do
+          visit root_path
+          click_on "#{care_receiver.last_name} #{care_receiver.first_name}"
+        end
+
+        it { is_expected.to have_content '服薬はありません' }
+
+        it { is_expected.to have_css '.show-care_receiver__dosing_time--list--item', count: 1 }
+      end
     end
   end
 end
