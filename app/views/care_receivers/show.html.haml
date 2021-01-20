@@ -1,14 +1,34 @@
 .show-care_receiver
-  .show-care_receiver__side_content
-    = link_to '戻る', :back, class: 'show-care_receiver__side_content--back-link'
+  .show-care_receiver__upper_half_content
+    .show-care_receiver__side_button
+      = link_to '戻る', :back, class: 'show-care_receiver__side_button--back-link'
 
-  .show-care_receiver__main
-    .show-care_receiver__main--name
-      = "#{@care_receiver.last_name} #{@care_receiver.first_name} 様"
+    .show-care_receiver__main
+      .show-care_receiver__main--name
+        = "#{@care_receiver.last_name} #{@care_receiver.first_name} 様"
 
-    .show-care_receiver__main--birthday
-      .show-care_receiver__main--birthday--date
-        = @care_receiver.birthday.strftime('%Y年 %-m月 %-d日')
+      .show-care_receiver__main--birthday
+        .show-care_receiver__main--birthday--date
+          = @care_receiver.birthday.strftime('%Y年 %-m月 %-d日')
 
-      .show-care_receiver__main--birthday--age
-        = "#{@care_receiver_age} 歳"
+        .show-care_receiver__main--birthday--age
+          = "#{@care_receiver_age} 歳"
+
+  .show-care_receiver__lower_half_content
+    .show-care_receiver__dosing_time
+      .show-care_receiver__dosing_time--title
+        服薬　一覧
+
+      %lu.show-care_receiver__dosing_time--list
+        - if @dosing_times.blank?
+          %li.show-care_receiver__dosing_time--list--item
+            服薬はありません。
+
+        - else
+          - @dosing_times.each do |dosing_time|
+            %li.show-care_receiver__dosing_time--list--item
+              = dosing_time.timeframe
+              %ul.show-care_receiver__dosing_time--medicines_list
+                - dosing_time.medicines.each do |medicine|
+                  %li.show-care_receiver__dosing_time--medicines_list--item
+                    = medicine.name

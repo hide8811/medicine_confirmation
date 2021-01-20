@@ -15,13 +15,22 @@
   text-decoration: none;
 }
 
-.show-care_receiver {
+@mixin headline-style {
+  margin: 1rem;
+  padding: 2rem;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  background-color: $list-color
+}
+/*---------- 上半分 ----------------------------------------*/
+.show-care_receiver__upper_half_content {
   margin: 5%;
   display: flex;
   justify-content: center;
 }
 
-.show-care_receiver__side_content {
+.show-care_receiver__side_button {
   width: 30%;
   margin-right: 2%;
 
@@ -61,6 +70,40 @@
     &--age {
       width: 30%;
       text-align: center;
+    }
+  }
+}
+
+/*--------------- 下半分 ----------------------*/
+.show-care_receiver__lower_half_content {
+  margin: 5%;
+  display: flex;
+  justify-content: center;
+}
+
+.show-care_receiver__dosing_time {
+  width: 50%;
+  background-color: $sub-background;
+
+  &--title {
+    margin: 1rem;
+    padding: 2rem;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+  }
+
+  &--list {
+    padding: 0 5%;
+    display: block;
+    list-style: none;
+
+    &--item {
+      text-align: center;
+      font-size: 2rem;
+      background-color: $list-color;
+      border-bottom: .2vw solid $main-font;
+      border-right: .2vw solid $main-font;
     }
   }
 }
