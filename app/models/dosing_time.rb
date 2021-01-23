@@ -1,5 +1,8 @@
 class DosingTime < ApplicationRecord
+  include Discard::Model
+
   belongs_to :care_receiver
+
   has_many :medicine_dosing_times
   has_many :medicines, through: :medicine_dosing_times
 

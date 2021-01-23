@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_23_120247) do
+ActiveRecord::Schema.define(version: 2021_01_23_092309) do
 
   create_table "care_receivers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "last_name", null: false
@@ -29,7 +29,9 @@ ActiveRecord::Schema.define(version: 2020_09_23_120247) do
     t.bigint "care_receiver_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "discarded_at"
     t.index ["care_receiver_id"], name: "index_dosing_times_on_care_receiver_id"
+    t.index ["discarded_at"], name: "index_dosing_times_on_discarded_at"
   end
 
   create_table "medicine_dosing_times", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -37,6 +39,8 @@ ActiveRecord::Schema.define(version: 2020_09_23_120247) do
     t.bigint "dosing_time_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "discarded_at"
+    t.index ["discarded_at"], name: "index_medicine_dosing_times_on_discarded_at"
     t.index ["dosing_time_id"], name: "index_medicine_dosing_times_on_dosing_time_id"
     t.index ["medicine_id"], name: "index_medicine_dosing_times_on_medicine_id"
   end
@@ -47,6 +51,8 @@ ActiveRecord::Schema.define(version: 2020_09_23_120247) do
     t.string "url"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "discarded_at"
+    t.index ["discarded_at"], name: "index_medicines_on_discarded_at"
   end
 
   create_table "takes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
