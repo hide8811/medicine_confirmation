@@ -1,7 +1,4 @@
 Rails.application.routes.draw do
-  get 'dosing_times/index'
-  get 'dosing_times/create'
-  get 'dosing_times/destroy'
   devise_for :users, controllers: { registrations: 'users/registrations' }
   devise_scope :user do
     get 'users/employee_uniquness', to: 'users/registrations#employee_uniquness'
@@ -10,4 +7,6 @@ Rails.application.routes.draw do
   root 'notes#index'
   resources :care_receivers, only: %i[new create show]
   resources :medicines, only: %i[index create]
+  resources :dosing_times, only: %i[index create destroy]
+  resources :medicine_dosing_times, only: :create
 end

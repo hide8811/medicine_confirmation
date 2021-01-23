@@ -32,3 +32,5 @@
                 - dosing_time.medicines.each do |medicine|
                   %li.show-care_receiver__dosing_time--medicines_list--item
                     = medicine.name
+      .show-care_receiver__dosing_time--edit
+        = link_to '編集', dosing_times_path(id: @care_receiver.id), class: 'show-care_receiver__dosing_time--edit--button'

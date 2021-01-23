@@ -4,7 +4,7 @@
   display: block;
   width: 8.5rem;
   height: 4rem;
-  margin: 0 auto 2rem;
+  margin: 0 auto;
   border-radius: 10px;
   border-bottom: solid 4px $button-shadow;
   background-color: $button-color;
@@ -104,6 +104,18 @@
       background-color: $list-color;
       border-bottom: .2vw solid $main-font;
       border-right: .2vw solid $main-font;
+    }
+  }
+
+  &--edit {
+    margin: 2rem 0;
+
+    &--button {
+      @include side-button;
+
+      &:hover {
+        background-color: $hover-button;
+      }
     }
   }
 }

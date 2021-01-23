@@ -1,2 +1,78 @@
-%h1 DosingTimes#index
-%p Find me in app/views/dosing_times/index.html.haml
+.dosing_time
+  .dosing_time__side
+    .side-dosing_time__back
+      = link_to '戻る', :back, class: 'side-dosing_time__back--button'
+
+    .side-dosing_time__medicine-new
+      = link_to '薬 新規登録', medicines_path, class: 'side-dosing_time__medicine-new--button'
+
+    .side-dosing_time__home
+      = link_to 'ホーム画面', root_path, class: 'side-dosing_time__home--button'
+
+  .dosing_time__main
+    .main-dosing_time__title
+      服薬 編集
+
+    %ul.main-dosing_time__list
+      - if @dosing_times.blank?
+        %li.main-dosing_time__list
+          服薬はありません
+
+      - else
+        - @dosing_times.each do |dosing_time|
+          %li.main-dosing_time__list--item
+            .timeframe-dosing_time
+              .timeframe-dosing_time__name
+                = dosing_time.timeframe
+
+              .timeframe-dosing_time__time
+                = dosing_time.time.strftime('%-H:%-M')
+
+              -# discard で論理削除
+              .timeframe-dosing_time__delete
+
+            .medicine-dosing_time
+              %ul.medicine-dosing_time__list
+                - dosing_time.medicines.each do |medicine|
+                  %li.list-medicine-dosing_time__item{ id: "medicine-#{medicine.id}-#{dosing_time.id}" }
+                    .list-medicine-dosing_time__item--name{ id: "medicine-#{medicine.id}-#{dosing_time.id}__name" }
+                      = medicine.name
+
+                    - if medicine.image.present?
+                      .list-medicine-dosing_time__item--image
+                        = image_tag "#{medicine.image}"
+
+                    - else
+                      .list-medicine-dosing_time__item--no-image
+                        ×
+
+                    -# discard で論理削除
+                    .list-medicine-dosing_time__item--delete-btn
+
+            .medicine_dosing_time__new
+              = form_with model: @medicine_dosing_time do |f|
+                .new-medicine_dosing_time__medicine
+                  = f.label :medicine_id, '薬', class: 'new-medicine_dosing_time--medicine--select'
+                  = f.collection_select :medicine_id, Medicine.where.not(id: dosing_time.medicines.map(&:id)), :id, :name, { prompt: '--' }, { class: 'new-medicine_dosing_time__medicine--select', id: "new-medicine-#{dosing_time.id}" }
+
+                  = f.hidden_field :dosing_time_id, value: dosing_time.id
+                  = f.hidden_field :care_receiver_id, value: @care_receiver_id
+
+                .new-medicine_dosing_time__submit
+                  = f.submit '追加', class: 'new-medicine_dosing_time__submit--btn', id: "new-medicine-#{dosing_time.id}-submit"
+
+    .mein-dosing_time__new
+      = form_with model: @dosing_time do |f|
+
+        .new-timeframe-dosing_time__timeframe
+          = f.label :timeframe, '時間帯', class: 'new-timeframe-dosing_time__timeframe--label'
+          = f.collection_select :timeframe, @timeframes , :name, :name, { prompt: '--' }, { class: 'new-timeframe-dosing_time__timeframe--select' }
+
+        .new-timeframe-dosing_time__time
+          = f.label :time, '時間', class: 'new-timeframe-dosing_time__time--label'
+          = f.time_select :time, { prompt: '--' }, { class: 'new-timeframe-dosing_time__time--select' }
+
+          = f.hidden_field :care_receiver_id, value: @care_receiver_id
+
+        .new-timeframe-dosing_time__submit
+          = f.submit '追加', class: 'new-timeframe-dosing_time__submit--btn'
