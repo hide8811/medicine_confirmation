@@ -77,12 +77,12 @@ RSpec.describe 'DosingTimes', type: :system do
         end
 
         # js で実装
-        context '服薬時間帯を選択した時' do
-          it 'デフォルトの時間が表示されること' do
-            # select '昼食後', from: 'dosing_time[timeframe]'
-            # is_expected.to have_selector '', text: ''
-          end
-        end
+        # context '服薬時間帯を選択した時' do
+        #   it 'デフォルトの時間が表示されること' do
+        #     select '昼食後', from: 'dosing_time[timeframe]'
+        #     is_expected.to have_selector '', text: ''
+        #   end
+        # end
 
         context 'すでに登録した時間帯がある時' do
           it { is_expected.not_to have_select 'dosing_time[timeframe]', options: [dosing_time.timeframe] }
@@ -111,52 +111,74 @@ RSpec.describe 'DosingTimes', type: :system do
         end
 
         # js で実装
-        context '登録が失敗する時' do
-          context '時間帯が未選択の時' do
-            it 'エラー分が出ること' do
-            end
+        # context '登録が失敗する時' do
+        #   context '時間帯が未選択の時' do
+        #     it 'エラー分が出ること' do
+        #     end
 
-            it 'submitできないこと' do
-            end
-          end
+        #     it 'submitできないこと' do
+        #     end
+        #   end
 
-          context '時間が未選択の時' do
-            it 'エラー分が出ること' do
-            end
+        #   context '時間が未選択の時' do
+        #     it 'エラー分が出ること' do
+        #     end
 
-            it 'submitできないこと' do
-            end
-          end
+        #     it 'submitできないこと' do
+        #     end
+        #   end
 
-          context '時間帯がすでに存在している時' do
-            it 'エラー分が出ること' do
-            end
+        #   context '時間帯がすでに存在している時' do
+        #     it 'エラー分が出ること' do
+        #     end
 
-            it 'submitできないこと' do
-            end
-          end
-        end
+        #     it 'submitできないこと' do
+        #     end
+        #   end
+        # end
       end
     end
 
-    # discard で実装
-    # describe '削除' do
-    #   let!(:dosing_time) { create(:dosing_time) }
-    #   let!(:medicine) { create(:medicine) }
+    describe '削除', js: true do
+      let!(:dosing_time) { create(:dosing_time, care_receiver_id: care_receiver.id) }
+      let!(:medicine) { create(:medicine) }
 
-    #   before do
-    #     create(:medicine_dosing_time, dosing_time_id: dosing_time.id, medicine_id: medicine.id)
-    #     visit care_receiver_path(care_receiver.id)
-    #     click_on '編集', class: '.show-care_receiver__dosing_time--edit--button'
-    #   end
+      before do
+        create(:medicine_dosing_time, dosing_time_id: dosing_time.id, medicine_id: medicine.id)
+        visit care_receiver_path(care_receiver.id)
+        click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+      end
 
-    #   context '削除ボタンを押した時' do
-    #     it '表示されていた内容が消えること' do
-    #       click_on '削除', class: ''
-    #       is_expected.not_to have_selector '', text: '朝食後'
-    #     end
-    #   end
-    # end
+      context '削除ボタンを押した時' do
+        before { click_on '削除', id: "delete-dosing_time-#{dosing_time.id}" }
+
+        it { expect(page.accept_confirm).to eq "服薬時間帯【 #{dosing_time.timeframe} 】を本当に削除しますか？" }
+      end
+
+      context '削除した時' do
+        before { accept_confirm { click_on '削除', id: "delete-dosing_time-#{dosing_time.id}" } }
+
+        it { is_expected.not_to have_css "dosing_time-#{dosing_time.id}" }
+
+        it { is_expected.to have_select 'dosing_time[timeframe]', with_options: [dosing_time.timeframe] }
+
+        it '削除した時間帯と同じ名前の時間帯が再び登録できること' do
+          select '朝食後', from: 'dosing_time[timeframe]'
+          select '07', from: 'dosing_time[time(4i)]'
+          select '30', from: 'dosing_time[time(5i)]'
+          click_on '追加', class: 'new-timeframe-dosing_time__submit--btn'
+          is_expected.to have_selector '.timeframe-dosing_time__name', text: '朝食後'
+        end
+      end
+
+      context '削除をキャンセルした時' do
+        before { dismiss_confirm { click_on '削除', id: "delete-dosing_time-#{dosing_time.id}" } }
+
+        it { is_expected.to have_selector '.timeframe-dosing_time__name', text: '朝食後' }
+
+        it { is_expected.not_to have_select 'dosing_time[timeframe]', with_options: ['朝食後'] }
+      end
+    end
   end
 
   describe '薬' do
@@ -179,11 +201,11 @@ RSpec.describe 'DosingTimes', type: :system do
           click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
         end
 
-        it { is_expected.to have_selector '.list-medicine-dosing_time__item--name', text: medicine_A.name }
+        it { is_expected.to have_selector '.medicine-dosing_time__name', text: medicine_A.name }
 
-        it { is_expected.to have_css '.list-medicine-dosing_time__item--image' }
+        it { is_expected.to have_css '.medicine-dosing_time__image' }
 
-        it { is_expected.to have_css '.list-medicine-dosing_time__item', count: 3 }
+        it { is_expected.to have_css '.medicine-dosing_time', count: 3 }
       end
 
       context 'medicinesテーブルのimageカラムに値が入っていない時' do
@@ -199,11 +221,11 @@ RSpec.describe 'DosingTimes', type: :system do
           click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
         end
 
-        it { is_expected.to have_selector '.list-medicine-dosing_time__item--name', text: medicine_A.name }
+        it { is_expected.to have_selector '.medicine-dosing_time__name', text: medicine_A.name }
 
-        it { is_expected.to have_css '.list-medicine-dosing_time__item--no-image' }
+        it { is_expected.to have_css '.medicine-dosing_time__no-image' }
 
-        it { is_expected.to have_css '.list-medicine-dosing_time__item', count: 3 }
+        it { is_expected.to have_css '.medicine-dosing_time', count: 3 }
       end
     end
 
@@ -233,21 +255,43 @@ RSpec.describe 'DosingTimes', type: :system do
       end
     end
 
-    # discard で実装
-    # describe '削除' do
-    #   let!(:dosing_time) { create(:dosing_time) }
-    #   let!(:medicine) { create(:medicine) }
+    describe '削除', js: true do
+      let!(:dosing_time) { create(:dosing_time, care_receiver_id: care_receiver.id) }
+      let!(:medicine) { create(:medicine) }
+      let!(:medicine_dosing_time) { create(:medicine_dosing_time, dosing_time_id: dosing_time.id, medicine_id: medicine.id) }
 
-    #   before do
-    #     create(:medicine_dosing_time, dosing_time_id: dosing_time.id, medicine_id: medicine.id)
-    #     visit care_receiver_path(care_receiver.id)
-    #     click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
-    #   end
+      before do
+        visit care_receiver_path(care_receiver.id)
+        click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+      end
 
-    #   it '表示されていた内容が消えること' do
-    #     click_on '削除', class: ''
-    #     is_expected.not_to have_selector '', text: dosing_time.timeframe
-    #   end
-    # end
+      context '削除ボタンを押した時' do
+        before { click_on '削除', id: "delete-medicine_dosing_time-#{medicine_dosing_time.id}" }
+
+        it { expect(page.accept_confirm).to eq "【 #{dosing_time.timeframe} 】の薬【 #{medicine.name} 】を本当に削除しますか？" }
+      end
+
+      context '削除した時' do
+        before { accept_confirm { click_on '削除', id: "delete-medicine_dosing_time-#{medicine_dosing_time.id}" } }
+
+        it { is_expected.not_to have_css "#medicine-#{medicine.id}-#{dosing_time.id}" }
+
+        it { is_expected.to have_select "new-medicine-#{dosing_time.id}", with_options: [medicine.name] }
+
+        it '削除した薬と同じ名前の薬が再び登録できること' do
+          select medicine.name, from: "new-medicine-#{dosing_time.id}"
+          click_on '追加', id: "new-medicine-#{dosing_time.id}-submit"
+          is_expected.to have_selector "#medicine-#{medicine.id}-#{dosing_time.id}__name", text: medicine.name
+        end
+      end
+
+      context '削除をキャンセルした時' do
+        before { dismiss_confirm { click_on '削除', id: "delete-medicine_dosing_time-#{medicine_dosing_time.id}" } }
+
+        it { is_expected.to have_selector "#medicine-#{medicine.id}-#{dosing_time.id}__name", text: medicine.name }
+
+        it { is_expected.not_to have_select "new-medicine-#{dosing_time.id}", with_options: [medicine.name] }
+      end
+    end
   end
 end
