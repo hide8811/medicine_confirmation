@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_23_092309) do
+ActiveRecord::Schema.define(version: 2021_01_23_141838) do
 
   create_table "care_receivers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "last_name", null: false
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 2021_01_23_092309) do
     t.datetime "discarded_at"
     t.index ["care_receiver_id"], name: "index_dosing_times_on_care_receiver_id"
     t.index ["discarded_at"], name: "index_dosing_times_on_discarded_at"
+    t.index ["timeframe", "care_receiver_id", "discarded_at"], name: "index_dosing_time_timeframe_care_receiver_discard", unique: true
   end
 
   create_table "medicine_dosing_times", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|

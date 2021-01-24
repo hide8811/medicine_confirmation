@@ -6,6 +6,12 @@ class MedicineDosingTimesController < ApplicationController
     redirect_to controller: :dosing_times, action: :index, id: care_receiver_params[:care_receiver_id]
   end
 
+  def destroy
+    MedicineDosingTime.find(params[:id]).discard
+
+    redirect_to controller: :dosing_times, action: :index, id: params[:care_receiver_id]
+  end
+
   private
 
   def medicine_dosing_time_params

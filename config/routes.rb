@@ -8,5 +8,5 @@ Rails.application.routes.draw do
   resources :care_receivers, only: %i[new create show]
   resources :medicines, only: %i[index create]
   resources :dosing_times, only: %i[index create destroy]
-  resources :medicine_dosing_times, only: :create
+  resources :medicine_dosing_times, only: %i[create destroy]
 end
