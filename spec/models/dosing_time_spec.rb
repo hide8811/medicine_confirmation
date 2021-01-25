@@ -8,7 +8,7 @@ RSpec.describe DosingTime, type: :model do
     it { expect(dosing_time).to be_valid }
   end
 
-  context 'time, timeframe, care_receiver_id がある場合' do
+  context 'time, timeframe_id, care_receiver_id がある場合' do
     let(:dosing_time) { build_stubbed(:dosing_time) }
     it_behaves_like '有効'
   end
@@ -42,30 +42,30 @@ RSpec.describe DosingTime, type: :model do
     end
   end
 
-  describe 'column: timeframe' do
+  describe 'column: timeframe_id' do
     context '空の場合' do
       it '無効であること' do
-        dosing_time = build_stubbed(:dosing_time, timeframe: '')
+        dosing_time = build_stubbed(:dosing_time, timeframe_id: '')
         dosing_time.valid?
-        expect(dosing_time.errors[:timeframe]).to include("can't be blank")
+        expect(dosing_time.errors[:timeframe_id]).to include("can't be blank")
       end
     end
 
     context '重複する場合' do
       before do
-        create(:dosing_time, timeframe: '朝食後', care_receiver_id: care_receiver_a.id)
+        create(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver_a.id)
       end
 
       context 'care_recever_id が同じ場合' do
         it '無効であること' do
-          dosing_time = build(:dosing_time, timeframe: '朝食後', care_receiver_id: care_receiver_a.id)
+          dosing_time = build(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver_a.id)
           dosing_time.valid?
-          expect(dosing_time.errors[:timeframe]).to include('has already been taken')
+          expect(dosing_time.errors[:timeframe_id]).to include('has already been taken')
         end
       end
 
       context 'care_recever_id が違う場合' do
-        let(:dosing_time) { build(:dosing_time, timeframe: '朝食後', care_receiver_id: care_receiver_b.id) }
+        let(:dosing_time) { build(:dosing_time, timeframe_id: '朝食後', care_receiver_id: care_receiver_b.id) }
         it_behaves_like '有効'
       end
     end

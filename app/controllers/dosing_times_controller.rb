@@ -5,7 +5,7 @@ class DosingTimesController < ApplicationController
     @medicine_dosing_time = MedicineDosingTime.new
     @medicines = Medicine.kept
     @dosing_time = DosingTime.new
-    @timeframes = Timeframe.where.not(name: @dosing_times.map(&:timeframe))
+    @timeframes = Timeframe.where.not(id: @dosing_times.map(&:timeframe_id))
   end
 
   def create
@@ -24,6 +24,6 @@ class DosingTimesController < ApplicationController
   private
 
   def dosing_time_params
-    params.require(:dosing_time).permit(:timeframe, :time, :care_receiver_id)
+    params.require(:dosing_time).permit(:timeframe_id, :time, :care_receiver_id)
   end
 end

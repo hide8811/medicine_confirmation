@@ -718,9 +718,9 @@ RSpec.describe 'CareReceivers', type: :system do
       context '服薬がある時' do
         let!(:other_care_receiver) { create(:care_receiver) }
 
-        let!(:dosing_time_am) { create(:dosing_time, timeframe: '朝食後', care_receiver_id: care_receiver.id) }
-        let!(:dosing_time_pm) { create(:dosing_time, timeframe: '夕食後', care_receiver_id: care_receiver.id) }
-        let!(:dosing_time_other) { create(:dosing_time, timeframe: 'その他', care_receiver_id: other_care_receiver.id) }
+        let!(:dosing_time_am) { create(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver.id) }
+        let!(:dosing_time_pm) { create(:dosing_time, timeframe_id: 2, care_receiver_id: care_receiver.id) }
+        let!(:dosing_time_other) { create(:dosing_time, timeframe_id: 3, care_receiver_id: other_care_receiver.id) }
 
         let!(:medicine_dosing_times_am) { create_list(:medicine_dosing_time, 5, dosing_time_id: dosing_time_am.id) }
         let!(:medicine_dosing_times_pm) { create_list(:medicine_dosing_time, 5, dosing_time_id: dosing_time_pm.id) }
@@ -730,7 +730,7 @@ RSpec.describe 'CareReceivers', type: :system do
           click_on "#{care_receiver.last_name} #{care_receiver.first_name}"
         end
 
-        it { is_expected.to have_content dosing_time_am.timeframe }
+        it { is_expected.to have_content dosing_time_am.timeframe.name }
 
         it { is_expected.to have_css '.show-care_receiver__dosing_time--list--item', count: 2 }
 
@@ -738,7 +738,7 @@ RSpec.describe 'CareReceivers', type: :system do
 
         it { is_expected.to have_css '.show-care_receiver__dosing_time--medicines_list--item', count: 10 }
 
-        it { is_expected.not_to have_content dosing_time_other.timeframe }
+        it { is_expected.not_to have_content dosing_time_other.timeframe.name }
 
         it { is_expected.not_to have_content '服薬はありません' }
       end

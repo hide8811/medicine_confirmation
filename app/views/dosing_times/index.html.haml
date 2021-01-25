@@ -23,7 +23,7 @@
           %li.main-dosing_time__list--item{ id: "dosing_time-#{dosing_time.id}" }
             .timeframe-dosing_time
               .timeframe-dosing_time__name
-                = dosing_time.timeframe
+                = dosing_time.timeframe.name
 
               .timeframe-dosing_time__time
                 = dosing_time.time.strftime('%-H:%-M')
@@ -33,7 +33,7 @@
                                   method: :delete,
                                   id: "delete-dosing_time-#{dosing_time.id}",
                                   class: 'timeframe-dosing_time__delete--btn',
-                                  data: { confirm: "服薬時間帯【 #{dosing_time.timeframe} 】を本当に削除しますか？" }
+                                  data: { confirm: "服薬時間帯【 #{dosing_time.timeframe.name} 】を本当に削除しますか？" }
 
             .medicines-dosing_time
 
@@ -61,7 +61,7 @@
                                         method: :delete,
                                         id: "delete-medicine_dosing_time-#{medicine_dosing_time_id}",
                                         class: 'medicine-dosing_time__delete--btn',
-                                        data: { confirm: "【 #{dosing_time.timeframe} 】の薬【 #{medicine.name} 】を本当に削除しますか？" }
+                                        data: { confirm: "【 #{dosing_time.timeframe.name} 】の薬【 #{medicine.name} 】を本当に削除しますか？" }
 
               .new-medicine_dosing_time
                 = form_with model: @medicine_dosing_time do |f|
@@ -84,10 +84,10 @@
       = form_with model: @dosing_time do |f|
 
         .new-timeframe-dosing_time__timeframe
-          = f.label :timeframe, '時間帯', class: 'new-timeframe-dosing_time__timeframe--label'
-          = f.collection_select :timeframe,
+          = f.label :timeframe_id, '時間帯', class: 'new-timeframe-dosing_time__timeframe--label'
+          = f.collection_select :timeframe_id,
                                 @timeframes ,
-                                :name, :name,
+                                :id, :name,
                                 { prompt: '--' },
                                 { class: 'new-timeframe-dosing_time__timeframe--select' }
 

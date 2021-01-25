@@ -27,7 +27,7 @@
         - else
           - @dosing_times.each do |dosing_time|
             %li.show-care_receiver__dosing_time--list--item
-              = dosing_time.timeframe
+              = dosing_time.timeframe.name
               %ul.show-care_receiver__dosing_time--medicines_list
                 - dosing_time.medicines.each do |medicine|
                   %li.show-care_receiver__dosing_time--medicines_list--item

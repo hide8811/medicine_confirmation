@@ -51,15 +51,15 @@ RSpec.describe 'DosingTimes', type: :system do
       end
 
       context '服薬時間が登録されている時' do
-        let!(:dosing_time_am) { create(:dosing_time, timeframe: '朝食後', care_receiver_id: care_receiver.id) }
-        let!(:dosing_tiem_pm) { create(:dosing_time, timeframe: '夕食後', care_receiver_id: care_receiver.id) }
+        let!(:dosing_time_am) { create(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver.id) }
+        let!(:dosing_tiem_pm) { create(:dosing_time, timeframe_id: 2, care_receiver_id: care_receiver.id) }
 
         before do
           visit care_receiver_path(care_receiver.id)
           click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
         end
 
-        it { is_expected.to have_selector '.timeframe-dosing_time__name', text: dosing_time_am.timeframe }
+        it { is_expected.to have_selector '.timeframe-dosing_time__name', text: dosing_time_am.timeframe.name }
 
         it { is_expected.to have_selector '.timeframe-dosing_time__time', text: dosing_time_am.time.strftime('%-H:%-M') }
 
@@ -69,7 +69,7 @@ RSpec.describe 'DosingTimes', type: :system do
 
     describe '追加' do
       context '登録内容を選択する時' do
-        let!(:dosing_time) { create(:dosing_time, timeframe: '朝食後', care_receiver_id: care_receiver.id) }
+        let!(:dosing_time) { create(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver.id) }
 
         before do
           visit care_receiver_path(care_receiver.id)
@@ -79,13 +79,13 @@ RSpec.describe 'DosingTimes', type: :system do
         # js で実装
         # context '服薬時間帯を選択した時' do
         #   it 'デフォルトの時間が表示されること' do
-        #     select '昼食後', from: 'dosing_time[timeframe]'
+        #     select '昼食後', from: 'dosing_time[timeframe_id]'
         #     is_expected.to have_selector '', text: ''
         #   end
         # end
 
         context 'すでに登録した時間帯がある時' do
-          it { is_expected.not_to have_select 'dosing_time[timeframe]', options: [dosing_time.timeframe] }
+          it { is_expected.not_to have_select 'dosing_time[timeframe_id]', options: [dosing_time.timeframe.name] }
         end
       end
 
@@ -97,7 +97,7 @@ RSpec.describe 'DosingTimes', type: :system do
 
         context '登録が成功する時' do
           before do
-            select '朝食後', from: 'dosing_time[timeframe]'
+            select '朝食後', from: 'dosing_time[timeframe_id]'
             select '07', from: 'dosing_time[time(4i)]'
             select '30', from: 'dosing_time[time(5i)]'
             click_on '追加', class: 'new-timeframe-dosing_time__submit--btn'
@@ -107,7 +107,7 @@ RSpec.describe 'DosingTimes', type: :system do
 
           it { is_expected.to have_selector '.timeframe-dosing_time__time', text: '7:30' }
 
-          it { is_expected.not_to have_select 'dosing_time[timeframe]', with_options: ['朝食後'] }
+          it { is_expected.not_to have_select 'dosing_time[timeframe_id]', with_options: ['朝食後'] }
         end
 
         # js で実装
@@ -152,7 +152,7 @@ RSpec.describe 'DosingTimes', type: :system do
       context '削除ボタンを押した時' do
         before { click_on '削除', id: "delete-dosing_time-#{dosing_time.id}" }
 
-        it { expect(page.accept_confirm).to eq "服薬時間帯【 #{dosing_time.timeframe} 】を本当に削除しますか？" }
+        it { expect(page.accept_confirm).to eq "服薬時間帯【 #{dosing_time.timeframe.name} 】を本当に削除しますか？" }
       end
 
       context '削除した時' do
@@ -160,10 +160,10 @@ RSpec.describe 'DosingTimes', type: :system do
 
         it { is_expected.not_to have_css "dosing_time-#{dosing_time.id}" }
 
-        it { is_expected.to have_select 'dosing_time[timeframe]', with_options: [dosing_time.timeframe] }
+        it { is_expected.to have_select 'dosing_time[timeframe_id]', with_options: [dosing_time.timeframe.name] }
 
         it '削除した時間帯と同じ名前の時間帯が再び登録できること' do
-          select '朝食後', from: 'dosing_time[timeframe]'
+          select '朝食後', from: 'dosing_time[timeframe_id]'
           select '07', from: 'dosing_time[time(4i)]'
           select '30', from: 'dosing_time[time(5i)]'
           click_on '追加', class: 'new-timeframe-dosing_time__submit--btn'
@@ -174,9 +174,9 @@ RSpec.describe 'DosingTimes', type: :system do
       context '削除をキャンセルした時' do
         before { dismiss_confirm { click_on '削除', id: "delete-dosing_time-#{dosing_time.id}" } }
 
-        it { is_expected.to have_selector '.timeframe-dosing_time__name', text: '朝食後' }
+        it { is_expected.to have_selector '.timeframe-dosing_time__name', text: dosing_time.timeframe.name }
 
-        it { is_expected.not_to have_select 'dosing_time[timeframe]', with_options: ['朝食後'] }
+        it { is_expected.not_to have_select 'dosing_time[timeframe_id]', with_options: [dosing_time.timeframe.name] }
       end
     end
   end
@@ -185,8 +185,8 @@ RSpec.describe 'DosingTimes', type: :system do
     subject { page }
 
     describe '表示' do
-      let!(:dosing_time_am) { create(:dosing_time, timeframe: '朝食後', care_receiver_id: care_receiver.id) }
-      let!(:dosing_time_pm) { create(:dosing_time, timeframe: '夕食後', care_receiver_id: care_receiver.id) }
+      let!(:dosing_time_am) { create(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver.id) }
+      let!(:dosing_time_pm) { create(:dosing_time, timeframe_id: 2, care_receiver_id: care_receiver.id) }
 
       context 'medicinesテーブルの全てのカラムに値が入っている時' do
         let!(:medicine_A) { create(:medicine, name: '薬A') }
@@ -230,8 +230,8 @@ RSpec.describe 'DosingTimes', type: :system do
     end
 
     describe '追加' do
-      let!(:dosing_time) { create(:dosing_time, timeframe: '朝食後', care_receiver_id: care_receiver.id) }
-      let!(:other_dosing_time) { create(:dosing_time, timeframe: '夕食後', care_receiver_id: care_receiver.id) }
+      let!(:dosing_time) { create(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver.id) }
+      let!(:other_dosing_time) { create(:dosing_time, timeframe_id: 2, care_receiver_id: care_receiver.id) }
       let!(:medicine) { create(:medicine) }
 
       before do
@@ -268,7 +268,7 @@ RSpec.describe 'DosingTimes', type: :system do
       context '削除ボタンを押した時' do
         before { click_on '削除', id: "delete-medicine_dosing_time-#{medicine_dosing_time.id}" }
 
-        it { expect(page.accept_confirm).to eq "【 #{dosing_time.timeframe} 】の薬【 #{medicine.name} 】を本当に削除しますか？" }
+        it { expect(page.accept_confirm).to eq "【 #{dosing_time.timeframe.name} 】の薬【 #{medicine.name} 】を本当に削除しますか？" }
       end
 
       context '削除した時' do
