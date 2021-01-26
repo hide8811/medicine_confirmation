@@ -69,22 +69,29 @@ RSpec.describe 'DosingTimes', type: :system do
 
     describe '追加' do
       context '登録内容を選択する時' do
-        let!(:dosing_time) { create(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver.id) }
+        context '服薬時間帯を選択した時' do
+          let(:timeframe) { Timeframe.all.sample }
 
-        before do
-          visit care_receiver_path(care_receiver.id)
-          click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+          before do
+            visit care_receiver_path(care_receiver.id)
+            click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+
+            select timeframe.name, from: 'dosing_time[timeframe_id]'
+          end
+
+          it { is_expected.to have_select 'dosing_time[time(4i)]', selected: print(timeframe.time.split(':').first) }
+
+          it { is_expected.to have_select 'dosing_time[time(5i)]', selected: print(timeframe.time.split(':').last) }
         end
 
-        # js で実装
-        # context '服薬時間帯を選択した時' do
-        #   it 'デフォルトの時間が表示されること' do
-        #     select '昼食後', from: 'dosing_time[timeframe_id]'
-        #     is_expected.to have_selector '', text: ''
-        #   end
-        # end
-
         context 'すでに登録した時間帯がある時' do
+          let!(:dosing_time) { create(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver.id) }
+
+          before do
+            visit care_receiver_path(care_receiver.id)
+            click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+          end
+
           it { is_expected.not_to have_select 'dosing_time[timeframe_id]', options: [dosing_time.timeframe.name] }
         end
       end
