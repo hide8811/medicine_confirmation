@@ -85,11 +85,11 @@
 
         .new-timeframe-dosing_time__timeframe
           = f.label :timeframe_id, '時間帯', class: 'new-timeframe-dosing_time__timeframe--label'
-          = f.collection_select :timeframe_id,
-                                @timeframes ,
-                                :id, :name,
+          = f.select :timeframe_id,
+                                @timeframes.map{ |timeframe| [timeframe.name, timeframe.id, { 'data-time': timeframe.time }] },
                                 { prompt: '--' },
-                                { class: 'new-timeframe-dosing_time__timeframe--select' }
+                                { id: 'new-dosing_time-timeframe-select',
+                                  class: 'new-timeframe-dosing_time__timeframe--select' }
 
         .new-timeframe-dosing_time__time
           = f.label :time, '時間', class: 'new-timeframe-dosing_time__time--label'
