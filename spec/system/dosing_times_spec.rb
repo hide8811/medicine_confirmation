@@ -117,32 +117,94 @@ RSpec.describe 'DosingTimes', type: :system do
           it { is_expected.not_to have_select 'dosing_time[timeframe_id]', with_options: ['朝食後'] }
         end
 
-        # js で実装
-        # context '登録が失敗する時' do
-        #   context '時間帯が未選択の時' do
-        #     it 'エラー分が出ること' do
-        #     end
+        context '登録が失敗する時', js: true do
+          context '時間帯が未選択の時' do
+            before do
+              select '--', from: 'dosing_time[timeframe_id]'
+              select '07', from: 'dosing_time[time(4i)]'
+              select '30', from: 'dosing_time[time(5i)]'
+              click_on '追加', class: 'new-timeframe-dosing_time__submit--btn'
+            end
 
-        #     it 'submitできないこと' do
-        #     end
-        #   end
+            it { is_expected.to have_content '時間帯を選択してください' }
 
-        #   context '時間が未選択の時' do
-        #     it 'エラー分が出ること' do
-        #     end
+            it { is_expected.to have_selector '#new-dosing_time-timeframe-select', class: 'error-frame' }
 
-        #     it 'submitできないこと' do
-        #     end
-        #   end
+            it { is_expected.not_to have_selector '.timeframe-dosing_time__name', text: '朝食後' }
 
-        #   context '時間帯がすでに存在している時' do
-        #     it 'エラー分が出ること' do
-        #     end
+            context '時間帯を選択し直した時' do
+              before { select '朝食後', from: 'dosing_time[timeframe_id]' }
 
-        #     it 'submitできないこと' do
-        #     end
-        #   end
-        # end
+              it { is_expected.not_to have_content '時間帯を選択してください' }
+
+              it { is_expected.not_to have_selector '#new-dosing_time-timeframe-select', class: 'error-frame' }
+
+              context '選択後、再び追加ボタンを押した時' do
+                before { click_on '追加', class: 'new-timeframe-dosing_time__submit--btn' }
+
+                it { is_expected.to have_selector '.timeframe-dosing_time__name', text: '朝食後' }
+              end
+            end
+          end
+
+          context '時間(時)が未選択の時' do
+            before do
+              select '朝食後', from: 'dosing_time[timeframe_id]'
+              select '--', from: 'dosing_time[time(4i)]'
+              select '30', from: 'dosing_time[time(5i)]'
+              click_on '追加', class: 'new-timeframe-dosing_time__submit--btn'
+            end
+
+            it { is_expected.to have_content '時間(時)を選択してください' }
+
+            it { is_expected.to have_selector '#dosing_time_time_4i', class: 'error-frame' }
+
+            it { is_expected.not_to have_selector '.timeframe-dosing_time__name', text: '朝食後' }
+
+            context '時間(時)を選択した時' do
+              before { select '07', from: 'dosing_time[time(4i)]' }
+
+              it { is_expected.not_to have_content '時間(時)を選択してください' }
+
+              it { is_expected.not_to have_selector '#dosing_time_time_4i', class: 'error-frame' }
+
+              context '選択後、再び追加ボタンを押した時' do
+                before { click_on '追加', class: 'new-timeframe-dosing_time__submit--btn' }
+
+                it { is_expected.to have_selector '.timeframe-dosing_time__name', text: '朝食後' }
+              end
+            end
+          end
+
+          context '時間(分)が未選択の時' do
+            before do
+              select '朝食後', from: 'dosing_time[timeframe_id]'
+              select '07', from: 'dosing_time[time(4i)]'
+              select '--', from: 'dosing_time[time(5i)]'
+              click_on '追加', class: 'new-timeframe-dosing_time__submit--btn'
+            end
+
+            it { is_expected.to have_content '時間(分)を選択してください' }
+
+            it { is_expected.to have_selector '#dosing_time_time_5i', class: 'error-frame' }
+
+            it { is_expected.not_to have_selector '.timeframe-dosing_time__name', text: '朝食後' }
+
+            context '時間(分)を選択した時' do
+              before { select '30', from: 'dosing_time[time(5i)]' }
+
+              it { is_expected.not_to have_content '時間(分)を選択してください' }
+
+              it { is_expected.not_to have_selector '#dosing_time_time_5i', class: 'error-frame' }
+
+              context '選択後、再び追加ボタンを押した時' do
+                before { click_on '追加', class: 'new-timeframe-dosing_time__submit--btn' }
+
+                it { is_expected.to have_selector '.timeframe-dosing_time__name', text: '朝食後' }
+              end
+            end
+          end
+        end
       end
     end
 
@@ -208,11 +270,11 @@ RSpec.describe 'DosingTimes', type: :system do
           click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
         end
 
-        it { is_expected.to have_selector '.medicine-dosing_time__name', text: medicine_A.name }
+        it { is_expected.to have_selector "#medicine-#{medicine_A.id}-#{dosing_time_am.id}__name", text: medicine_A.name }
 
-        it { is_expected.to have_css '.medicine-dosing_time__image' }
+        it { is_expected.to have_css "#medicine-#{medicine_A.id}-#{dosing_time_am.id}__image" }
 
-        it { is_expected.to have_css '.medicine-dosing_time', count: 3 }
+        it { is_expected.to have_css '.medicine-dosing_time-item', count: 3 }
       end
 
       context 'medicinesテーブルのimageカラムに値が入っていない時' do
@@ -228,11 +290,11 @@ RSpec.describe 'DosingTimes', type: :system do
           click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
         end
 
-        it { is_expected.to have_selector '.medicine-dosing_time__name', text: medicine_A.name }
+        it { is_expected.to have_selector "#medicine-#{medicine_A.id}-#{dosing_time_am.id}__name", text: medicine_A.name }
 
         it { is_expected.to have_css '.medicine-dosing_time__no-image' }
 
-        it { is_expected.to have_css '.medicine-dosing_time', count: 3 }
+        it { is_expected.to have_css '.medicine-dosing_time-item', count: 3 }
       end
     end
 
@@ -244,21 +306,49 @@ RSpec.describe 'DosingTimes', type: :system do
       before do
         visit care_receiver_path(care_receiver.id)
         click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
-
-        select medicine.name, from: "new-medicine-#{dosing_time.id}"
-        click_on '追加', id: "new-medicine-#{dosing_time.id}-submit"
       end
 
-      context '薬を追加する時間帯' do
-        it { is_expected.to have_selector "#medicine-#{medicine.id}-#{dosing_time.id}__name", text: medicine.name }
+      context '薬を選択し、追加が成功した場合' do
+        before do
+          select medicine.name, from: "new-medicine-#{dosing_time.id}"
+          click_on '追加', id: "new-medicine-#{dosing_time.id}-submit"
+        end
 
-        it { is_expected.not_to have_select "new-medicine-#{dosing_time.id}", with_options: [medicine.name] }
+        context '薬を追加する時間帯' do
+          it { is_expected.to have_selector "#medicine-#{medicine.id}-#{dosing_time.id}__name", text: medicine.name }
+
+          it { is_expected.not_to have_select "new-medicine-#{dosing_time.id}", with_options: [medicine.name] }
+        end
+
+        context '薬を追加していない時間帯の場合' do
+          it { is_expected.not_to have_css "#medicine-#{medicine.id}-#{other_dosing_time.id}" }
+
+          it { is_expected.to have_select "new-medicine-#{other_dosing_time.id}", with_options: [medicine.name] }
+        end
       end
 
-      context '薬を追加していない時間帯の場合' do
-        it { is_expected.not_to have_css "#medicine-#{medicine.id}-#{other_dosing_time.id}" }
+      context '薬を選択せず、追加が失敗した場合', js: true do
+        before { click_on '追加', id: "new-medicine-#{dosing_time.id}-submit" }
 
-        it { is_expected.to have_select "new-medicine-#{other_dosing_time.id}", with_options: [medicine.name] }
+        it { is_expected.to have_selector "#new-medicine_dosing_time-#{dosing_time.id}-error-message", text: '薬を選択してください' }
+
+        it { is_expected.to have_selector "#new-medicine-#{dosing_time.id}", class: 'error-frame' }
+
+        it { is_expected.not_to have_selector "#medicine-#{medicine.id}-#{dosing_time.id}__name", text: medicine.name }
+
+        context '薬を選択し直した場合' do
+          before { select medicine.name, from: "new-medicine-#{dosing_time.id}" }
+
+          it { is_expected.not_to have_selector '#new-medicine_dosing_time-error-message', text: '薬を選択してください' }
+
+          it { is_expected.not_to have_selector "#new-medicine-#{dosing_time.id}", class: 'error-frame' }
+
+          context '薬を選択後、再び追加ボタンを押した場合' do
+            before { click_on '追加', id: "new-medicine-#{dosing_time.id}-submit" }
+
+            it { is_expected.not_to have_selector "#medicine-#{medicine.id}-#{dosing_time.id}__name", text: medicine.name }
+          end
+        end
       end
     end
 
@@ -273,13 +363,13 @@ RSpec.describe 'DosingTimes', type: :system do
       end
 
       context '削除ボタンを押した時' do
-        before { click_on '削除', id: "delete-medicine_dosing_time-#{medicine_dosing_time.id}" }
+        before { click_on '削除', id: "delete-medicine_dosing_time-#{medicine.id}-#{dosing_time.id}" }
 
         it { expect(page.accept_confirm).to eq "【 #{dosing_time.timeframe.name} 】の薬【 #{medicine.name} 】を本当に削除しますか？" }
       end
 
       context '削除した時' do
-        before { accept_confirm { click_on '削除', id: "delete-medicine_dosing_time-#{medicine_dosing_time.id}" } }
+        before { accept_confirm { click_on '削除', id: "delete-medicine_dosing_time-#{medicine.id}-#{dosing_time.id}" } }
 
         it { is_expected.not_to have_css "#medicine-#{medicine.id}-#{dosing_time.id}" }
 
@@ -293,7 +383,7 @@ RSpec.describe 'DosingTimes', type: :system do
       end
 
       context '削除をキャンセルした時' do
-        before { dismiss_confirm { click_on '削除', id: "delete-medicine_dosing_time-#{medicine_dosing_time.id}" } }
+        before { dismiss_confirm { click_on '削除', id: "delete-medicine_dosing_time-#{medicine.id}-#{dosing_time.id}" } }
 
         it { is_expected.to have_selector "#medicine-#{medicine.id}-#{dosing_time.id}__name", text: medicine.name }
 
