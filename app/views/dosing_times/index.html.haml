@@ -36,17 +36,18 @@
                                   data: { confirm: "服薬時間帯【 #{dosing_time.timeframe.name} 】を本当に削除しますか？" }
 
             .medicines-dosing_time
+              %ul.medicines-dosing_time__list
+                -# dosing_time.medicinesとしたかったが、論理削除したデータの除外がうまくいかず以下のようになりました。要修正。
+                - dosing_time.medicine_dosing_times.select(&:undiscarded?).each do |medicine_dosing_time|
 
-              - dosing_time_medicines = dosing_time.medicine_dosing_times.select{ |m| m.discarded_at.nil? }.map(&:medicine)
+                  - medicine = medicine_dosing_time.medicine
 
-              %ul.medicines-dosint_time__list
-                - dosing_time_medicines.each do |medicine|
-                  %li.medicine-dosing_time{ id: "medicine-#{medicine.id}-#{dosing_time.id}" }
-                    .medicine-dosing_time__name{ id: "medicine-#{medicine.id}-#{dosing_time.id}__name" }
+                  %li{ id: "medicine-#{medicine.id}-#{dosing_time.id}", class: 'medicine-dosing_time-item' }
+                    %div{ id: "medicine-#{medicine.id}-#{dosing_time.id}__name", class: 'medicine-dosing_time-item__name' }
                       = medicine.name
 
                     - if medicine.image.present?
-                      .medicine-dosing_time__image
+                      %div{ id: "medicine-#{medicine.id}-#{dosing_time.id}__image", class: 'medicine-dosing_time__image' }
                         = image_tag "#{medicine.image}"
 
                     - else
@@ -54,25 +55,22 @@
                         ×
 
                     .medicine-dosing_time__delete
-
-                      - medicine_dosing_time_id = medicine.medicine_dosing_times.detect{ |m| m.dosing_time_id == dosing_time.id }.id
-
-                      = link_to '削除', medicine_dosing_time_path(id: medicine_dosing_time_id, care_receiver_id: @care_receiver_id),
+                      = link_to '削除', medicine_dosing_time_path(id: medicine_dosing_time.id, care_receiver_id: @care_receiver_id),
                                         method: :delete,
-                                        id: "delete-medicine_dosing_time-#{medicine_dosing_time_id}",
+                                        id: "delete-medicine_dosing_time-#{medicine.id}-#{dosing_time.id}",
                                         class: 'medicine-dosing_time__delete--btn',
                                         data: { confirm: "【 #{dosing_time.timeframe.name} 】の薬【 #{medicine.name} 】を本当に削除しますか？" }
 
               .new-medicine_dosing_time
-                = form_with model: @medicine_dosing_time do |f|
+                = form_with model: @medicine_dosing_time, class: 'new-medicine_dosing_time-form' do |f|
                   .new-medicine_dosing_time__medicine
                     = f.label :medicine_id, '薬', class: 'new-medicine_dosing_time__medicine--label'
                     = f.collection_select :medicine_id,
-                                          @medicines.reject{ |m| dosing_time_medicines.map(&:id).include?(m.id) },
+                                          @medicines - dosing_time.medicine_dosing_times.select(&:undiscarded?).map(&:medicine),
                                           :id, :name,
                                           { prompt: '--' },
-                                          { class: 'new-medicine_dosing_time__medicine--select',
-                                            id: "new-medicine-#{dosing_time.id}" }
+                                          {id: "new-medicine-#{dosing_time.id}",
+                                           class: 'new-medicine_dosing_time__medicine--select' }
 
                   = f.hidden_field :dosing_time_id, value: dosing_time.id
                   = f.hidden_field :care_receiver_id, value: @care_receiver_id
@@ -80,8 +78,11 @@
                   .new-medicine_dosing_time__submit
                     = f.submit '追加', class: 'new-medicine_dosing_time__submit--btn', id: "new-medicine-#{dosing_time.id}-submit"
 
+                  %div{ id: "new-medicine_dosing_time-#{dosing_time.id}-error-message", class: 'new-medicine_dosing_time__error-area' }
+                    -# jsで、エラーメッセージを表示
+
     .mein-dosing_time__new
-      = form_with model: @dosing_time do |f|
+      = form_with model: @dosing_time, id: 'new-dosing_time-form' do |f|
 
         .new-timeframe-dosing_time__timeframe
           = f.label :timeframe_id, '時間帯', class: 'new-timeframe-dosing_time__timeframe--label'
@@ -99,3 +100,6 @@
 
         .new-timeframe-dosing_time__submit
           = f.submit '追加', class: 'new-timeframe-dosing_time__submit--btn'
+
+        #new-dosing_time-error-message.new-timeframe-dosing_time__error-area
+          -# jsで、エラーメッセージを表示
