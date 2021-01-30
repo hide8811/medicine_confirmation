@@ -30,9 +30,9 @@ RSpec.describe 'DosingTimes', type: :system do
       end
     end
 
-    context 'ホーム画面ボタンを押した時' do
+    context 'ホームボタンを押した時' do
       it 'ホーム画面に遷移すること' do
-        click_on 'ホーム画面'
+        click_on 'ホーム'
         is_expected.to eq root_path
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe 'DosingTimes', type: :system do
 
         it { is_expected.to have_selector '.timeframe-dosing_time__name', text: dosing_time_am.timeframe.name }
 
-        it { is_expected.to have_selector '.timeframe-dosing_time__time', text: dosing_time_am.time.strftime('%-H:%-M') }
+        it { is_expected.to have_selector '.timeframe-dosing_time__time', text: dosing_time_am.time.strftime('%-H:%0M') }
 
         it { is_expected.to have_css '.timeframe-dosing_time__name', count: 2 }
       end
@@ -292,7 +292,7 @@ RSpec.describe 'DosingTimes', type: :system do
 
         it { is_expected.to have_selector "#medicine-#{medicine_A.id}-#{dosing_time_am.id}__name", text: medicine_A.name }
 
-        it { is_expected.to have_css '.medicine-dosing_time__no-image' }
+        it { is_expected.to have_css '.medicine-dosing_time-item__no-image' }
 
         it { is_expected.to have_css '.medicine-dosing_time-item', count: 3 }
       end

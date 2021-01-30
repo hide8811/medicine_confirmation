@@ -1,24 +1,24 @@
 .dosing_time
-  .dosing_time__side
+  .side-dosing_time
     .side-dosing_time__back
-      = link_to '戻る', :back, class: 'side-dosing_time__back--button'
-
-    .side-dosing_time__medicine-new
-      = link_to '薬 新規登録', medicines_path, class: 'side-dosing_time__medicine-new--button'
+      = link_to '戻る', :back, class: 'side-dosing_time__back--btn'
 
     .side-dosing_time__home
-      = link_to 'ホーム画面', root_path, class: 'side-dosing_time__home--button'
+      = link_to 'ホーム', root_path, class: 'side-dosing_time__home--btn'
 
-  .dosing_time__main
+    .side-dosing_time__medicine-new
+      = link_to '薬 新規登録', medicines_path, class: 'side-dosing_time__medicine-new--btn'
+
+  .main-dosing_time
     .main-dosing_time__title
       服薬 編集
 
-    %ul.main-dosing_time__list
-      - if @dosing_times.blank?
-        %li.main-dosing_time__list
-          服薬はありません
+    - if @dosing_times.blank?
+      .main-dosing_time__not-exist
+        服薬はありません
 
-      - else
+    - else
+      %ul.main-dosing_time__list
         - @dosing_times.each do |dosing_time|
           %li.main-dosing_time__list--item{ id: "dosing_time-#{dosing_time.id}" }
             .timeframe-dosing_time
@@ -26,7 +26,7 @@
                 = dosing_time.timeframe.name
 
               .timeframe-dosing_time__time
-                = dosing_time.time.strftime('%-H:%-M')
+                = dosing_time.time.strftime('%_H:%0M')
 
               .timeframe-dosing_time__delete
                 = link_to '削除', dosing_time_path(id: dosing_time.id, care_receiver_id: @care_receiver_id),
@@ -47,45 +47,43 @@
                       = medicine.name
 
                     - if medicine.image.present?
-                      %div{ id: "medicine-#{medicine.id}-#{dosing_time.id}__image", class: 'medicine-dosing_time__image' }
-                        = image_tag "#{medicine.image}"
+                      %div{ id: "medicine-#{medicine.id}-#{dosing_time.id}__image", class: 'medicine-dosing_time-item__image' }
+                        = image_tag "#{medicine.image}", class: 'medicine-dosing_time-item__image--img'
 
                     - else
-                      .medicine-dosing_time__no-image
+                      .medicine-dosing_time-item__no-image
                         ×
 
-                    .medicine-dosing_time__delete
+                    .medicine-dosing_time-item__delete
                       = link_to '削除', medicine_dosing_time_path(id: medicine_dosing_time.id, care_receiver_id: @care_receiver_id),
                                         method: :delete,
                                         id: "delete-medicine_dosing_time-#{medicine.id}-#{dosing_time.id}",
-                                        class: 'medicine-dosing_time__delete--btn',
+                                        class: 'medicine-dosing_time-item__delete--btn',
                                         data: { confirm: "【 #{dosing_time.timeframe.name} 】の薬【 #{medicine.name} 】を本当に削除しますか？" }
 
               .new-medicine_dosing_time
                 = form_with model: @medicine_dosing_time, class: 'new-medicine_dosing_time-form' do |f|
-                  .new-medicine_dosing_time__medicine
-                    = f.label :medicine_id, '薬', class: 'new-medicine_dosing_time__medicine--label'
+                  .new-medicine_dosing_time-form__medicine
                     = f.collection_select :medicine_id,
                                           @medicines - dosing_time.medicine_dosing_times.select(&:undiscarded?).map(&:medicine),
                                           :id, :name,
                                           { prompt: '--' },
                                           {id: "new-medicine-#{dosing_time.id}",
-                                           class: 'new-medicine_dosing_time__medicine--select' }
+                                           class: 'new-medicine_dosing_time-form__medicine--select' }
 
                   = f.hidden_field :dosing_time_id, value: dosing_time.id
                   = f.hidden_field :care_receiver_id, value: @care_receiver_id
 
-                  .new-medicine_dosing_time__submit
-                    = f.submit '追加', class: 'new-medicine_dosing_time__submit--btn', id: "new-medicine-#{dosing_time.id}-submit"
+                  .new-medicine_dosing_time-form__submit
+                    = f.submit '追加', class: 'new-medicine_dosing_time-form__submit--btn', id: "new-medicine-#{dosing_time.id}-submit"
 
-                  %div{ id: "new-medicine_dosing_time-#{dosing_time.id}-error-message", class: 'new-medicine_dosing_time__error-area' }
-                    -# jsで、エラーメッセージを表示
+                %div{ id: "new-medicine_dosing_time-#{dosing_time.id}-error-message", class: 'new-medicine_dosing_time__error-area' }
+                  -# jsで、エラーメッセージを表示
 
     .mein-dosing_time__new
-      = form_with model: @dosing_time, id: 'new-dosing_time-form' do |f|
+      = form_with model: @dosing_time, id: 'new-dosing_time-form', class: 'new-timeframe-dosing_time' do |f|
 
         .new-timeframe-dosing_time__timeframe
-          = f.label :timeframe_id, '時間帯', class: 'new-timeframe-dosing_time__timeframe--label'
           = f.select :timeframe_id,
                                 @timeframes.map{ |timeframe| [timeframe.name, timeframe.id, { 'data-time': timeframe.time }] },
                                 { prompt: '--' },
@@ -93,7 +91,6 @@
                                   class: 'new-timeframe-dosing_time__timeframe--select' }
 
         .new-timeframe-dosing_time__time
-          = f.label :time, '時間', class: 'new-timeframe-dosing_time__time--label'
           = f.time_select :time, { prompt: '--' }, { class: 'new-timeframe-dosing_time__time--select' }
 
           = f.hidden_field :care_receiver_id, value: @care_receiver_id
@@ -101,5 +98,5 @@
         .new-timeframe-dosing_time__submit
           = f.submit '追加', class: 'new-timeframe-dosing_time__submit--btn'
 
-        #new-dosing_time-error-message.new-timeframe-dosing_time__error-area
-          -# jsで、エラーメッセージを表示
+      #new-dosing_time-error-message.new-timeframe-dosing_time-error-area
+        -# jsで、エラーメッセージを表示

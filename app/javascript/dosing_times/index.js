@@ -34,6 +34,8 @@ $(document).on('turbolinks:load', function(){
     };
 
     if ($(this).find('*').hasClass('error-frame')) {
+      $('html, body').animate({ scrollTop: $(document).height() });
+
       return false;
     };
   });
@@ -80,7 +82,7 @@ $(document).on('turbolinks:load', function(){
 
   $('.new-medicine_dosing_time-form').submit(function() {
     if ($(this).find('select[name="medicine_dosing_time[medicine_id]"]').val() == '') {
-      $(this).children('.new-medicine_dosing_time__error-area').text('薬を選択してください');
+      $(this).next('.new-medicine_dosing_time__error-area').text('薬を選択してください');
       $(this).find('select[name="medicine_dosing_time[medicine_id]"]').addClass('error-frame');
 
       return false;

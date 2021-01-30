@@ -1,0 +1,299 @@
+@import 'color';
+
+@mixin side-button($width:8.5rem) {
+  display: block;
+  width: $width;
+  height: 4rem;
+  margin: 0 auto;
+  border-radius: 10px;
+  border-bottom: solid 4px $button-shadow;
+  background-color: $button-color;
+  line-height: 4rem;
+  text-align: center;
+  font-size: 2rem;
+  color: $main-font;
+  text-decoration: none;
+}
+
+@mixin main-button($shadow: $button-shadow, $color: $button-color) {
+  display: block;
+  width: 4.5rem;
+  height: 2.2rem;
+  margin: 0 auto;
+  border-radius: 10px;
+  border-bottom: solid 2px $shadow;
+  background-color: $color;
+  line-height: 2.2rem;
+  text-align: center;
+  font-size: 1.2rem;
+  color: $main-font;
+  text-decoration: none;
+}
+
+.dosing_time {
+  display: flex;
+}
+
+.side-dosing_time {
+  width: 30vw;
+  margin: 5vw 0;
+
+  &__back {
+    margin: 3vw 0;
+
+    &--btn {
+      @include side-button;
+
+      &:hover {
+        background-color: $hover-button;
+      }
+    }
+  }
+
+  &__home {
+    margin: 3vw 0;
+
+    &--btn {
+      @include side-button;
+
+      &:hover {
+        background-color: $hover-button;
+      }
+    }
+  }
+
+  &__medicine-new {
+    margin: 3vw 0;
+
+    &--btn {
+      @include side-button(15.5rem);
+
+      &:hover {
+        background-color: $hover-button;
+      }
+    }
+  }
+}
+
+.main-dosing_time {
+  width: 70vw;
+  margin: 5vw;
+  background-color: $sub-background;
+
+  &__title {
+  margin: 1rem;
+  padding: 2rem;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  background-color: $list-color
+ }
+}
+
+.main-dosing_time__not-exist {
+  margin: 1rem;
+  padding: 2rem;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.main-dosing_time__list {
+  margin: 5vw;
+  padding: 0;
+  list-style: none;
+
+  &--item {
+    margin: .5rem;
+    border-bottom: .2vw solid $main-font;
+    border-right: .2vw solid $main-font;
+
+    .timeframe-dosing_time {
+      padding: 0 5vw;
+      display: flex;
+      flex-wrap: wrap;
+      border-bottom: .2vw dotted $main-font;
+      background-color: $list-color;
+
+      &__name {
+        width: 9rem;
+        height: 4rem;
+        text-align: left;
+        line-height: 4rem;
+        font-size: 2rem;
+      }
+
+      &__time {
+        width: 5.5rem;
+        height: 4rem;
+        text-align: right;
+        line-height: 4rem;
+        font-size: 1.5rem;
+      }
+
+      &__delete {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+
+
+        &--btn {
+          @include main-button($red-button-shadow, $red-button-color);
+
+          &:hover {
+            background-color: $red-hover-button;
+          }
+        }
+      }
+    }
+
+    .medicines-dosing_time {
+      padding-left: 5vw;
+      background-color: $sub-list-color;
+      overflow: hidden;
+
+      &__list {
+        padding: 0;
+
+        .medicine-dosing_time-item {
+          margin-top: .3vw;
+          padding-left: 3vw;
+          border-bottom: .1vw solid $main-font;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+
+          &__name {
+            width: 12rem;
+            font-size: 1.5rem;
+          }
+
+          &__image {
+            &--img {
+              width: 6.5rem;
+              height: 4rem;
+              margin: 0 .5vw;
+              object-fit: contain;
+            }
+          }
+
+          &__no-image {
+            width: 6.5rem;
+            height: 4rem;
+            margin: 0 .5vw;
+            background-color: $no-image;
+            line-height: 4rem;
+            text-align: center;
+            font-size: 1rem;
+          }
+
+          &__delete {
+            display: flex;
+            align-items: center;
+
+            &--btn {
+              @include main-button($red-button-shadow, $red-button-color);
+
+              &:hover {
+                background-color: $red-hover-button;
+              }
+            }
+          }
+        }
+      }
+
+      .new-medicine_dosing_time {
+        overflow: hidden;
+
+        .new-medicine_dosing_time-form {
+          margin: .5vw .5vw 0;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+
+          &__medicine {
+
+            &--select {
+              width: 20vw;
+              height: 3rem;
+              padding: 0 1rem;
+              font-size: 1.5rem;
+              background-color: $sub-background;
+            }
+          }
+
+          &__submit {
+            margin-left: .5vw;
+            &--btn {
+              @include main-button;
+
+              &:hover {
+                background-color: $hover-button;
+              }
+            }
+          }
+        }
+      }
+
+      .new-medicine_dosing_time__error-area {
+        width: 100%;
+        height: 3rem;
+        line-height: 3rem;
+        padding-right: 2vw;
+        font-size: 1.5rem;
+        color: $error-color;
+        text-align: right;
+      }
+    }
+  }
+}
+
+.mein-dosing_time__new {
+
+  .new-timeframe-dosing_time {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+    &__timeframe {
+
+      &--select {
+        width: 20vw;
+        height: 3rem;
+        padding: 0 1rem;
+        font-size: 1.5rem;
+        background-color: $base-background;
+      }
+    }
+
+    &__time {
+      margin: 0 2vw;
+
+      &--select {
+        width: 5rem;
+        height: 2.5rem;
+        padding: 0 1rem;
+        font-size: 1rem;
+        background-color: $base-background;
+      }
+    }
+
+    &__submit {
+      &--btn {
+        @include main-button;
+
+        &:hover {
+          background-color: $hover-button;
+        }
+      }
+    }
+  }
+
+  .new-timeframe-dosing_time-error-area {
+    height: 7rem;
+    font-size: 1.5rem;
+    color: $error-color;
+    text-align: center;
+  }
+}
