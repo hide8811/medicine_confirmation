@@ -19,6 +19,8 @@ class CareReceiversController < ApplicationController
   def show
     @care_receiver = CareReceiver.find(params[:id])
     @care_receiver_age = (Date.today.strftime('%Y%m%d').to_i - @care_receiver.birthday.strftime('%Y%m%d').to_i) / 10_000
+
+    @dosing_times = DosingTime.where(care_receiver_id: @care_receiver.id)
   end
 
   private
