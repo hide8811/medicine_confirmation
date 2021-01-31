@@ -33,4 +33,4 @@
                   %li.show-care_receiver__dosing_time--medicines_list--item
                     = medicine.name
       .show-care_receiver__dosing_time--edit
-        = link_to '編集', dosing_times_path(id: @care_receiver.id), class: 'show-care_receiver__dosing_time--edit--button'
+        = link_to '編集', care_receiver_dosing_times_path(@care_receiver), class: 'show-care_receiver__dosing_time--edit--button'

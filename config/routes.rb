@@ -5,8 +5,11 @@ Rails.application.routes.draw do
   end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   root 'notes#index'
-  resources :care_receivers, only: %i[new create show]
+
+  resources :care_receivers, only: %i[new create show] do
+    resources :dosing_times, only: %i[index create destroy]
+  end
+
   resources :medicines, only: %i[index create]
-  resources :dosing_times, only: %i[index create destroy]
   resources :medicine_dosing_times, only: %i[create destroy]
 end

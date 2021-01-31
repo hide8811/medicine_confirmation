@@ -3,13 +3,13 @@ class MedicineDosingTimesController < ApplicationController
     @medicine_dosing_time = MedicineDosingTime.new(medicine_dosing_time_params)
     @medicine_dosing_time.save
 
-    redirect_to controller: :dosing_times, action: :index, id: care_receiver_params[:care_receiver_id]
+    redirect_to controller: :dosing_times, action: :index, care_receiver_id: care_receiver_params[:care_receiver_id]
   end
 
   def destroy
     MedicineDosingTime.find(params[:id]).discard
 
-    redirect_to controller: :dosing_times, action: :index, id: params[:care_receiver_id]
+    redirect_to controller: :dosing_times, action: :index, care_receiver_id: params[:care_receiver_id]
   end
 
   private
