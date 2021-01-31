@@ -1,6 +1,6 @@
 @import 'color';
 
-@mixin side-button {
+@mixin button {
   display: block;
   width: 8.5rem;
   height: 4rem;
@@ -35,7 +35,7 @@
   margin-right: 2%;
 
   &--back-link {
-    @include side-button;
+    @include button;
 
     &:hover {
       background-color: $hover-button;
@@ -81,11 +81,11 @@
   justify-content: center;
 }
 
-.show-care_receiver__dosing_time {
+.dosing_time-show_care_receiver {
   width: 50%;
   background-color: $sub-background;
 
-  &--title {
+  &__title {
     margin: 1rem;
     padding: 2rem;
     text-align: center;
@@ -93,29 +93,124 @@
     font-weight: bold;
   }
 
-  &--list {
+  &__not-exist {
+    text-align: center;
+    font-size: 2rem;
+    background-color: $list-color;
+    border-bottom: .2vw solid $main-font;
+    border-right: .2vw solid $main-font;
+  }
+
+  &__list {
     padding: 0 5%;
     display: block;
     list-style: none;
 
     &--item {
-      text-align: center;
-      font-size: 2rem;
-      background-color: $list-color;
+      margin: 1vw 0;
       border-bottom: .2vw solid $main-font;
       border-right: .2vw solid $main-font;
     }
   }
+}
 
-  &--edit {
-    margin: 2rem 0;
+/* list-item 服薬時間帯 */
+.timeframe-dosing_time-show_care_receiver {
+  padding-left: 3vw;
+  background-color: $list-color;
+  border-bottom: .2vw dotted $main-font;
+  display: flex;
 
-    &--button {
-      @include side-button;
+  &__name {
+    width: 9rem;
+    height: 4rem;
+    text-align: left;
+    line-height: 4rem;
+    font-size: 2rem;
+  }
 
-      &:hover {
-        background-color: $hover-button;
+  &__time {
+    width: 5.5rem;
+    height: 4rem;
+    text-align: right;
+    line-height: 4rem;
+    font-size: 1.5rem;
+  }
+}
+
+/* list-item 薬 */
+.medicine-dosing_time-show_care_receiver-list {
+  margin-left: 5vw;
+  background-color: $sub-list-color;
+  list-style: none;
+  overflow: hidden;
+
+  .medicine-dosing_time-show_care_receiver {
+    margin-top: .3vw;
+    border-bottom: .1vw solid $main-font;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    &__name {
+      width: 12rem;
+      font-size: 1.5rem;
+    }
+
+    &__no-image {
+      width: 6.5rem;
+      height: 4rem;
+      margin: 0 .5vw;
+      background-color: $no-image;
+      line-height: 4rem;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    &__image {
+      &--item {
+      width: 6.5rem;
+      height: 4rem;
+      margin: 0 .5vw;
+      object-fit: contain;
       }
+    }
+
+    &__no-url {
+      width: 8rem;
+      height: 2.4rem;
+    }
+
+    &__url {
+
+      &--btn {
+        display: inline-block;
+        width: 8rem;
+        height: 2.4rem;
+        border-radius: 10px;
+        background-color: $button-color;
+        line-height: 2.4rem;
+        text-align: center;
+        font-size: 1.2rem;
+        color: $main-font;
+        text-decoration: none;
+
+        &:hover {
+          background-color: $hover-button;
+        }
+      }
+    }
+  }
+}
+
+.dosing_time-show_care_receiver__edit {
+  margin: 2rem 0;
+
+  &--btn {
+    @include button;
+
+    &:hover {
+      background-color: $hover-button;
     }
   }
 }
