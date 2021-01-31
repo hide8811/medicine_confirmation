@@ -32,6 +32,7 @@
               .timeframe-dosing_time__delete
                 = link_to '削除', care_receiver_dosing_time_path(@care_receiver, dosing_time),
                                   method: :delete,
+                                  remote: true,
                                   id: "delete-dosing_time-#{dosing_time.id}",
                                   class: 'timeframe-dosing_time__delete--btn',
                                   data: { confirm: "服薬時間帯【 #{dosing_time.timeframe.name} 】を本当に削除しますか？" }
@@ -58,6 +59,7 @@
                     .medicine-dosing_time-item__delete
                       = link_to '削除', medicine_dosing_time_path(id: medicine_dosing_time.id, care_receiver_id: @care_receiver.id),
                                         method: :delete,
+                                        remote: true,
                                         id: "delete-medicine_dosing_time-#{medicine.id}-#{dosing_time.id}",
                                         class: 'medicine-dosing_time-item__delete--btn',
                                         data: { confirm: "【 #{dosing_time.timeframe.name} 】の薬【 #{medicine.name} 】を本当に削除しますか？" }
