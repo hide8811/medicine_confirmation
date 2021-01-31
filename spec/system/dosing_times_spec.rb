@@ -69,8 +69,10 @@ RSpec.describe 'DosingTimes', type: :system do
 
     describe '追加' do
       context '登録内容を選択する時' do
-        context '服薬時間帯を選択した時' do
+        context '服薬時間帯を選択した時', js: true do
           let(:timeframe) { Timeframe.all.sample }
+          let(:timeframe_hour) { Time.parse(timeframe.time).strftime('%H') }
+          let(:timeframe_minute) { Time.parse(timeframe.time).strftime('%M') }
 
           before do
             visit care_receiver_path(care_receiver.id)
@@ -79,9 +81,9 @@ RSpec.describe 'DosingTimes', type: :system do
             select timeframe.name, from: 'dosing_time[timeframe_id]'
           end
 
-          it { is_expected.to have_select 'dosing_time[time(4i)]', selected: print(timeframe.time.split(':').first) }
+          it { is_expected.to have_select 'dosing_time[time(4i)]', selected: timeframe_hour }
 
-          it { is_expected.to have_select 'dosing_time[time(5i)]', selected: print(timeframe.time.split(':').last) }
+          it { is_expected.to have_select 'dosing_time[time(5i)]', selected: timeframe_minute }
         end
 
         context 'すでに登録した時間帯がある時' do
