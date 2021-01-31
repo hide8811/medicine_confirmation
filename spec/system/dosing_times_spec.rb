@@ -19,7 +19,7 @@ RSpec.describe 'DosingTimes', type: :system do
     context '戻るボタンを押した時' do
       it 'ご利用者様詳細画面に戻ること' do
         click_on '戻る'
-        is_expected.to eq care_receiver_path(care_receiver.id)
+        is_expected.to eq care_receiver_path(care_receiver)
       end
     end
 

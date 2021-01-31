@@ -1,8 +1,7 @@
 .dosing_time
   .side-dosing_time
     .side-dosing_time__back
-      -# cara_receiver/show に変更
-      = link_to '戻る', :back, class: 'side-dosing_time__back--btn'
+      = link_to '戻る', care_receiver_path(@care_receiver), class: 'side-dosing_time__back--btn'
 
     .side-dosing_time__home
       = link_to 'ホーム', root_path, class: 'side-dosing_time__home--btn'
