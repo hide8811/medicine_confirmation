@@ -1,0 +1,124 @@
+@import 'color';
+
+@mixin side-button($height: 4rem) {
+  display: block;
+  width: 12rem;
+  height: $height;
+  margin: 0 auto;
+  border-radius: 10px;
+  border-bottom: solid 4px $button-shadow;
+  background-color: $button-color;
+  line-height: $height;
+  text-align: center;
+  font-size: 2rem;
+  color: $main-font;
+  text-decoration: none;
+}
+
+@mixin main-button {
+  display: block;
+  width: 6.5rem;
+  height: 3rem;
+  margin: 0 auto;
+  border-radius: 10px;
+  border-bottom: solid 4px $button-shadow;
+  background-color: $button-color;
+  line-height: 3rem;
+  text-align: center;
+  font-size: 1.5rem;
+  color: $main-font;
+  text-decoration: none;
+}
+
+.care_receivers {
+  margin: 5vw 0;
+  display: flex;
+}
+
+.side-care_receivers {
+  width: 30vw;
+
+  &__create-new {
+    margin: 2rem auto;
+
+    &--btn {
+      @include side-button(8rem);
+      line-height: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+
+      &:hover {
+        background-color: $hover-button;
+      }
+    }
+  }
+
+  &__medicines {
+    margin: 2rem auto;
+
+    &--btn {
+      @include side-button;
+
+      &:hover {
+        background-color: $hover-button;
+      }
+    }
+  }
+
+  &__log-out {
+    margin: 6rem auto 0;
+
+    &--btn {
+      @include side-button;
+
+      &:hover {
+        background-color: $hover-button;
+      }
+    }
+  }
+}
+
+.main-care_receivers {
+  width: 60vw;
+}
+
+.no-care_receiver {
+  background-color: $list-color;
+}
+
+.care_receivers-list {
+  width: 60vw;
+  height: calc(100vh - 5vw - 5vw);
+  margin: 0 auto;
+  padding: 0;
+  background-color: $sub-background;
+  overflow: hidden;
+}
+
+.care_receivers-list-item {
+  margin: 1rem 5vw;
+  display: flex;
+  border-bottom: .2vw solid $main-font;
+  border-right: .2vw solid $main-font;
+  background-color: $list-color;
+  justify-content: space-around;
+  align-items: center;
+
+  &__name {
+    font-size: 1.5rem;
+
+    &--span {
+      font-size: 2.5rem;
+    }
+  }
+
+  &__show-link {
+
+    &--btn {
+      @include main-button;
+    }
+  }
+}

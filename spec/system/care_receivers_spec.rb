@@ -1,17 +1,21 @@
 require 'rails_helper'
 
 RSpec.describe 'CareReceivers', type: :system do
+  shared_context 'Page transition to root_path' do
+    before { visit root_path }
+  end
+
   shared_context 'Page transition to new_care_receiver' do
     before do
       visit root_path
-      click_on 'care_receiver 新規作成'
+      click_on '新規登録'
     end
   end
 
   shared_context 'Page transition to show_care_receiver' do
     before do
       visit root_path
-      click_on "#{care_receiver.last_name} #{care_receiver.first_name}"
+      click_on '詳細', id: "care_receiver_#{care_receiver.id}-show"
     end
   end
 
@@ -20,7 +24,57 @@ RSpec.describe 'CareReceivers', type: :system do
     login_as(user, scope: :user)
   end
 
-  describe '新規登録' do
+  describe '一覧表示 index' do
+    describe 'サイドメニュー' do
+      include_context 'Page transition to root_path'
+
+      subject { current_path }
+
+      context '新規登録ボタンを押した時' do
+        before { click_on '新規登録' }
+        it { is_expected.to eq new_care_receiver_path }
+      end
+
+      context '薬ボタンを押した時' do
+        before { click_on '薬' }
+        it { is_expected.to eq medicines_path }
+      end
+
+      context 'ログアウトボタンを押した時' do
+        before { click_on 'ログアウト' }
+        it { is_expected.to eq new_user_session_path }
+      end
+    end
+
+    describe '利用者一覧' do
+      subject { page }
+
+      context '利用者が存在する場合' do
+        let!(:care_receiver) { create(:care_receiver) }
+
+        include_context 'Page transition to root_path'
+
+        it { is_expected.to have_content "#{care_receiver.last_name} #{care_receiver.first_name}" }
+
+        it { is_expected.to have_css '.care_receivers-list-item__show-link--btn' }
+      end
+
+      context '利用者が複数存在する場合' do
+        before { create_list(:care_receiver, 10) }
+
+        include_context 'Page transition to root_path'
+
+        it { is_expected.to have_css '.care_receivers-list-item', count: 10 }
+      end
+
+      context '利用者が存在しない場合' do
+        include_context 'Page transition to root_path'
+        it { is_expected.to have_content '利用者は存在しません' }
+      end
+    end
+  end
+
+  describe '新規登録 new' do
     describe 'サイドメニュー' do
       include_context 'Page transition to new_care_receiver'
 

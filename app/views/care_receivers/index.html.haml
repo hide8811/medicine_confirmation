@@ -1,0 +1,37 @@
+- if flash.keys[0] == 'success'
+  %p.flash-success
+    = flash[:success]
+
+.care_receivers
+
+  .side-care_receivers
+    .side-care_receivers__create-new
+      = link_to  new_care_receiver_path, method: :get, class: 'side-care_receivers__create-new--btn' do
+        %span
+          ご利用者様
+        %span
+          新規登録
+
+    .side-care_receivers__medicines
+      = link_to '薬', medicines_path, method: :get, class: 'side-care_receivers__medicines--btn'
+
+    .side-care_receivers__log-out
+      = link_to 'ログアウト', destroy_user_session_path, method: :delete, class: 'side-care_receivers__log-out--btn'
+
+  .main-care_receivers
+    - if @care_receivers.blank?
+      .no-care_receiver
+        利用者は存在しません。
+
+    - else
+      %ul.care_receivers-list
+        - @care_receivers.each do |care_receiver|
+
+          %li.care_receivers-list-item
+            .care_receivers-list-item__name
+              %span.care_receivers-list-item__name--span<>
+                = "#{care_receiver.last_name} #{care_receiver.first_name}"
+              &nbsp;様
+
+            .care_receivers-list-item__show-link
+              = link_to '詳細', care_receiver_path(care_receiver.id), id: "care_receiver_#{care_receiver.id}-show", class: 'care_receivers-list-item__show-link--btn'

@@ -2,6 +2,10 @@ class CareReceiversController < ApplicationController
   before_action :authenticate_user!
   protect_from_forgery prepend: true
 
+  def index
+    @care_receivers = CareReceiver.all
+  end
+
   def new
     @care_receiver = CareReceiver.new
   end

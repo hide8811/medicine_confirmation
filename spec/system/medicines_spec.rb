@@ -9,7 +9,7 @@ RSpec.describe 'Medicines', type: :system do
   describe 'サイドボタン' do
     before do
       visit root_path
-      click_on '薬一覧'
+      click_on '薬'
     end
 
     context '戻るボタンを押した時' do
