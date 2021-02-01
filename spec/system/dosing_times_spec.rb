@@ -6,12 +6,16 @@ RSpec.describe 'DosingTimes', type: :system do
     login_as(user, scope: :user)
   end
 
+  # Faker::UniqueGenerator::RetryLimitExceededgが出るため追記
+  # もっと良い記述方法があるはず。
+  after { Faker::UniqueGenerator.clear }
+
   let!(:care_receiver) { create(:care_receiver) }
 
   describe 'サイドメニュー' do
     before do
       visit care_receiver_path(care_receiver.id)
-      click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+      click_on '編集', class: 'dosing_time-show_care_receiver__edit--btn'
     end
 
     subject { current_path }
@@ -45,7 +49,7 @@ RSpec.describe 'DosingTimes', type: :system do
       context '服薬時間が登録されていない時' do
         it 'ページ遷移後、データが表示されないこと' do
           visit care_receiver_path(care_receiver.id)
-          click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+          click_on '編集', class: 'dosing_time-show_care_receiver__edit--btn'
           is_expected.to have_content '服薬はありません'
         end
       end
@@ -56,7 +60,7 @@ RSpec.describe 'DosingTimes', type: :system do
 
         before do
           visit care_receiver_path(care_receiver.id)
-          click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+          click_on '編集', class: 'dosing_time-show_care_receiver__edit--btn'
         end
 
         it { is_expected.to have_selector '.timeframe-dosing_time__name', text: dosing_time_am.timeframe.name }
@@ -76,7 +80,7 @@ RSpec.describe 'DosingTimes', type: :system do
 
           before do
             visit care_receiver_path(care_receiver.id)
-            click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+            click_on '編集', class: 'dosing_time-show_care_receiver__edit--btn'
 
             select timeframe.name, from: 'dosing_time[timeframe_id]'
           end
@@ -91,7 +95,7 @@ RSpec.describe 'DosingTimes', type: :system do
 
           before do
             visit care_receiver_path(care_receiver.id)
-            click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+            click_on '編集', class: 'dosing_time-show_care_receiver__edit--btn'
           end
 
           it { is_expected.not_to have_select 'dosing_time[timeframe_id]', options: [dosing_time.timeframe.name] }
@@ -101,7 +105,7 @@ RSpec.describe 'DosingTimes', type: :system do
       context '選択した内容を登録する時' do
         before do
           visit care_receiver_path(care_receiver.id)
-          click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+          click_on '編集', class: 'dosing_time-show_care_receiver__edit--btn'
         end
 
         context '登録が成功する時' do
@@ -217,7 +221,7 @@ RSpec.describe 'DosingTimes', type: :system do
       before do
         create(:medicine_dosing_time, dosing_time_id: dosing_time.id, medicine_id: medicine.id)
         visit care_receiver_path(care_receiver.id)
-        click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+        click_on '編集', class: 'dosing_time-show_care_receiver__edit--btn'
       end
 
       context '削除ボタンを押した時' do
@@ -269,7 +273,7 @@ RSpec.describe 'DosingTimes', type: :system do
           create(:medicine_dosing_time, dosing_time_id: dosing_time_pm.id, medicine_id: medicine_A.id)
 
           visit care_receiver_path(care_receiver.id)
-          click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+          click_on '編集', class: 'dosing_time-show_care_receiver__edit--btn'
         end
 
         it { is_expected.to have_selector "#medicine-#{medicine_A.id}-#{dosing_time_am.id}__name", text: medicine_A.name }
@@ -289,7 +293,7 @@ RSpec.describe 'DosingTimes', type: :system do
           create(:medicine_dosing_time, dosing_time_id: dosing_time_pm.id, medicine_id: medicine_A.id)
 
           visit care_receiver_path(care_receiver.id)
-          click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+          click_on '編集', class: 'dosing_time-show_care_receiver__edit--btn'
         end
 
         it { is_expected.to have_selector "#medicine-#{medicine_A.id}-#{dosing_time_am.id}__name", text: medicine_A.name }
@@ -307,7 +311,7 @@ RSpec.describe 'DosingTimes', type: :system do
 
       before do
         visit care_receiver_path(care_receiver.id)
-        click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+        click_on '編集', class: 'dosing_time-show_care_receiver__edit--btn'
       end
 
       context '薬を選択し、追加が成功した場合' do
@@ -361,7 +365,7 @@ RSpec.describe 'DosingTimes', type: :system do
 
       before do
         visit care_receiver_path(care_receiver.id)
-        click_on '編集', class: 'show-care_receiver__dosing_time--edit--button'
+        click_on '編集', class: 'dosing_time-show_care_receiver__edit--btn'
       end
 
       context '削除ボタンを押した時' do

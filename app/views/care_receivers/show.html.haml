@@ -1,7 +1,7 @@
 .show-care_receiver
   .show-care_receiver__upper_half_content
     .show-care_receiver__side_button
-      = link_to '戻る', :back, class: 'show-care_receiver__side_button--back-link'
+      = link_to '戻る', root_path, class: 'show-care_receiver__side_button--back-link'
 
     .show-care_receiver__main
       .show-care_receiver__main--name
@@ -15,22 +15,51 @@
           = "#{@care_receiver_age} 歳"
 
   .show-care_receiver__lower_half_content
-    .show-care_receiver__dosing_time
-      .show-care_receiver__dosing_time--title
-        服薬　一覧
+    .dosing_time-show_care_receiver
+      .dosing_time-show_care_receiver__title
+        服薬 一覧
 
-      %lu.show-care_receiver__dosing_time--list
-        - if @dosing_times.blank?
-          %li.show-care_receiver__dosing_time--list--item
-            服薬はありません。
+      - if @dosing_times.blank?
+        .dosing_time-show_care_receiver__not-exist
+          服薬はありません
 
-        - else
+      - else
+        %lu.dosing_time-show_care_receiver__list
           - @dosing_times.each do |dosing_time|
-            %li.show-care_receiver__dosing_time--list--item
-              = dosing_time.timeframe.name
-              %ul.show-care_receiver__dosing_time--medicines_list
-                - dosing_time.medicines.each do |medicine|
-                  %li.show-care_receiver__dosing_time--medicines_list--item
-                    = medicine.name
-      .show-care_receiver__dosing_time--edit
-        = link_to '編集', care_receiver_dosing_times_path(@care_receiver), class: 'show-care_receiver__dosing_time--edit--button'
+
+            %li.dosing_time-show_care_receiver__list--item
+
+              .timeframe-dosing_time-show_care_receiver
+                %div{ class: "show_care_receiver-dosing_time_#{dosing_time.id}-name timeframe-dosing_time-show_care_receiver__name" }
+                  = dosing_time.timeframe.name
+
+                .timeframe-dosing_time-show_care_receiver__time
+                  = dosing_time.time.strftime('%_H:%0M')
+
+              %ul.medicine-dosing_time-show_care_receiver-list
+
+                -# dosing_time.medicinesとしたかったが、論理削除したデータの除外がうまくいかず以下のようになりました。要修正。
+                - dosing_time.medicine_dosing_times.select(&:undiscarded?).each do |medicine_dosing_time|
+                  - medicine = medicine_dosing_time.medicine
+
+                  %li.medicine-dosing_time-show_care_receiver
+                    %div{ class: "show_care_receiver-dosing_time_#{dosing_time.id}-medicine_#{medicine.id}-name medicine-dosing_time-show_care_receiver__name" }
+                      = medicine.name
+
+                    - if medicine.image.blank?
+                      .medicine-dosing_time-show_care_receiver__no-image
+                        x
+
+                    - else
+                      .medicine-dosing_time-show_care_receiver__image
+                        = image_tag "#{medicine_dosing_time.medicine.image}", class: 'medicine-dosing_time-show_care_receiver__image--item'
+
+                    - if medicine.url.blank?
+                      .medicine-dosing_time-show_care_receiver__no-url
+
+                    - else
+                      .medicine-dosing_time-show_care_receiver__url
+                        = link_to '参考サイト', "#{medicine.url}", class: 'medicine-dosing_time-show_care_receiver__url--btn'
+
+      .dosing_time-show_care_receiver__edit
+        = link_to '編集', care_receiver_dosing_times_path(@care_receiver), class: 'dosing_time-show_care_receiver__edit--btn'

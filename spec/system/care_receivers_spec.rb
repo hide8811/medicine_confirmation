@@ -1,6 +1,20 @@
 require 'rails_helper'
 
 RSpec.describe 'CareReceivers', type: :system do
+  shared_context 'Page transition to new_care_receiver' do
+    before do
+      visit root_path
+      click_on 'care_receiver 新規作成'
+    end
+  end
+
+  shared_context 'Page transition to show_care_receiver' do
+    before do
+      visit root_path
+      click_on "#{care_receiver.last_name} #{care_receiver.first_name}"
+    end
+  end
+
   before do
     user = create(:user)
     login_as(user, scope: :user)
@@ -8,30 +22,23 @@ RSpec.describe 'CareReceivers', type: :system do
 
   describe '新規登録' do
     describe 'サイドメニュー' do
-      before do
-        visit root_path
-        click_on 'care_receiver 新規作成'
-      end
+      include_context 'Page transition to new_care_receiver'
 
       context '戻るボタンを押した時' do
-        it 'ホーム画面に戻ること' do
-          click_on '戻る'
-          expect(current_path).to eq root_path
-        end
+        before { click_on '戻る' }
+
+        it { expect(current_path).to eq root_path }
       end
 
       context 'ホームボタンを押した時' do
-        it 'ホーム画面に戻ること' do
-          click_on 'ホーム'
-          expect(current_path).to eq root_path
-        end
+        before { click_on 'ホーム' }
+
+        it { expect(current_path).to eq root_path }
       end
     end
 
     describe '入力フォーム', js: true do
-      before do
-        visit new_care_receiver_path
-      end
+      include_context 'Page transition to new_care_receiver'
 
       context 'フォーム内でEnterキーを押した時' do
         it 'submitされないこと' do
@@ -678,34 +685,28 @@ RSpec.describe 'CareReceivers', type: :system do
     end
   end
 
-  describe '詳細' do
+  describe '詳細 show' do
     let!(:care_receiver) { create(:care_receiver) }
+    let(:dosing_time) { create(:dosing_time, care_receiver_id: care_receiver.id) }
+    let(:medicine) { create(:medicine) }
 
     subject { page }
 
     describe 'サイドメニュー' do
-      before do
-        visit root_path
-        click_on "#{care_receiver.last_name} #{care_receiver.first_name}"
-      end
+      include_context 'Page transition to show_care_receiver'
 
-      context '戻るボタンを押した時' do
-        it 'ホーム画面に戻る' do
-          click_on '戻る'
-          expect(current_path).to eq root_path
-        end
+      context '戻るボタンを押した場合' do
+        before { click_on '戻る' }
+        it { expect(current_path).to eq root_path }
       end
     end
 
-    describe '個人情報' do
+    describe 'ご利用者様 情報表示' do
       let(:name) { "#{care_receiver.last_name} #{care_receiver.first_name} 様" }
       let(:birthday) { care_receiver.birthday.strftime('%Y年 %-m月 %-d日') }
       let(:age) { (Date.today.strftime('%Y%m%d').to_i - care_receiver.birthday.strftime('%Y%m%d').to_i) / 10_000 }
 
-      before do
-        visit root_path
-        click_on "#{care_receiver.last_name} #{care_receiver.first_name}"
-      end
+      include_context 'Page transition to show_care_receiver'
 
       it { is_expected.to have_content name }
 
@@ -715,43 +716,95 @@ RSpec.describe 'CareReceivers', type: :system do
     end
 
     describe '服薬 一覧' do
-      context '服薬がある時' do
-        let!(:other_care_receiver) { create(:care_receiver) }
+      context '服薬がある場合' do
+        before { create(:medicine_dosing_time, medicine_id: medicine.id, dosing_time_id: dosing_time.id) }
 
-        let!(:dosing_time_am) { create(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver.id) }
-        let!(:dosing_time_pm) { create(:dosing_time, timeframe_id: 2, care_receiver_id: care_receiver.id) }
-        let!(:dosing_time_other) { create(:dosing_time, timeframe_id: 3, care_receiver_id: other_care_receiver.id) }
+        include_context 'Page transition to show_care_receiver'
 
-        let!(:medicine_dosing_times_am) { create_list(:medicine_dosing_time, 5, dosing_time_id: dosing_time_am.id) }
-        let!(:medicine_dosing_times_pm) { create_list(:medicine_dosing_time, 5, dosing_time_id: dosing_time_pm.id) }
+        it { is_expected.to have_selector ".show_care_receiver-dosing_time_#{dosing_time.id}-name", text: dosing_time.timeframe.name }
 
-        before do
-          visit root_path
-          click_on "#{care_receiver.last_name} #{care_receiver.first_name}"
-        end
-
-        it { is_expected.to have_content dosing_time_am.timeframe.name }
-
-        it { is_expected.to have_css '.show-care_receiver__dosing_time--list--item', count: 2 }
-
-        it { is_expected.to have_content dosing_time_am.medicines[0].name }
-
-        it { is_expected.to have_css '.show-care_receiver__dosing_time--medicines_list--item', count: 10 }
-
-        it { is_expected.not_to have_content dosing_time_other.timeframe.name }
+        it { is_expected.to have_selector ".show_care_receiver-dosing_time_#{dosing_time.id}-medicine_#{medicine.id}-name", text: medicine.name }
 
         it { is_expected.not_to have_content '服薬はありません' }
       end
 
-      context '服薬がない時' do
+      context '複数の服薬がある場合' do
+        let(:dosing_time_am) { create(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver.id) }
+        let(:dosing_time_pm) { create(:dosing_time, timeframe_id: 2, care_receiver_id: care_receiver.id) }
+
         before do
-          visit root_path
-          click_on "#{care_receiver.last_name} #{care_receiver.first_name}"
+          create_list(:medicine_dosing_time, 5, dosing_time_id: dosing_time_am.id)
+          create_list(:medicine_dosing_time, 5, dosing_time_id: dosing_time_pm.id)
         end
+
+        include_context 'Page transition to show_care_receiver'
+
+        it { is_expected.to have_css '.dosing_time-show_care_receiver__list--item', count: 2 }
+
+        it { is_expected.to have_css '.medicine-dosing_time-show_care_receiver', count: 10 }
+      end
+
+      context '服薬する薬に画像データがある場合' do
+        before { create(:medicine_dosing_time, medicine_id: medicine.id, dosing_time_id: dosing_time.id) }
+
+        include_context 'Page transition to show_care_receiver'
+
+        it { is_expected.to have_css '.medicine-dosing_time-show_care_receiver__image' }
+
+        it { is_expected.not_to have_css '.medicine-dosing_time-show_care_receiver__no-image' }
+      end
+
+      context '服薬する薬に画像データがない場合' do
+        let(:no_image_medicine) { create(:medicine, image: '') }
+
+        before { create(:medicine_dosing_time, medicine_id: no_image_medicine.id, dosing_time_id: dosing_time.id) }
+
+        include_context 'Page transition to show_care_receiver'
+
+        it { is_expected.to have_css '.medicine-dosing_time-show_care_receiver__no-image' }
+
+        it { is_expected.not_to have_css '.medicine-dosing_time-show_care_receiver__image' }
+      end
+
+      context '服薬する薬にURLデータがある場合' do
+        before { create(:medicine_dosing_time, medicine_id: medicine.id, dosing_time_id: dosing_time.id) }
+
+        include_context 'Page transition to show_care_receiver'
+
+        it { is_expected.to have_css '.medicine-dosing_time-show_care_receiver__url' }
+
+        it { is_expected.not_to have_css '.medicine-dosing_time-show_care_receiver__no-url' }
+      end
+
+      context '服薬する薬にURLデータがない場合' do
+        let(:no_url_medicine) { create(:medicine, url: '') }
+
+        before { create(:medicine_dosing_time, medicine_id: no_url_medicine.id, dosing_time_id: dosing_time.id) }
+
+        include_context 'Page transition to show_care_receiver'
+
+        it { is_expected.to have_css '.medicine-dosing_time-show_care_receiver__no-url' }
+
+        it { is_expected.not_to have_css '.medicine-dosing_time-show_care_receiver__url' }
+      end
+
+      context '服薬がない時' do
+        include_context 'Page transition to show_care_receiver'
 
         it { is_expected.to have_content '服薬はありません' }
 
-        it { is_expected.to have_css '.show-care_receiver__dosing_time--list--item', count: 1 }
+        it { is_expected.not_to have_css '.dosing_time-show_care_receiver__list' }
+      end
+
+      context '他の利用者にデータがある時' do
+        let(:other_care_receiver) { create(:care_receiver) }
+        let(:other_dosing_time) { create(:dosing_time, care_receiver_id: other_care_receiver.id) }
+
+        before { create(:medicine_dosing_time, dosing_time_id: other_dosing_time.id) }
+
+        include_context 'Page transition to show_care_receiver'
+
+        it { is_expected.not_to have_content other_dosing_time.timeframe.name }
       end
     end
   end
