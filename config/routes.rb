@@ -4,9 +4,9 @@ Rails.application.routes.draw do
     get 'users/employee_uniquness', to: 'users/registrations#employee_uniquness'
   end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
-  root 'notes#index'
+  root 'care_receivers#index'
 
-  resources :care_receivers, only: %i[new create show] do
+  resources :care_receivers, only: %i[index new create show] do
     resources :dosing_times, only: %i[index create destroy]
   end
 
