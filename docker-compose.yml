@@ -2,6 +2,7 @@ version: '3'
 
 volumes:
   db-data:
+  public-data:
 
 services:
   web:
@@ -11,6 +12,7 @@ services:
       - '3000:3000'
     volumes:
       - '.:/myapp'
+      - 'public-data:/myapp/public'
     environment:
       DATABASE_PASSWORD: ${MYSQL_PASSWORD}
       SELENIUM_DRIVER_URL: http://selenium_chrome:4444/wd/hub
