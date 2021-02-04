@@ -1,25 +1,19 @@
 version: '3'
 
 volumes:
-  db-data:
   public-data:
   tmp-data:
 
 services:
   web:
     build: .
-    command: bash -c 'rm -f tmp/pids/server.pid && bundle exec rails s'
-    # command: bash -c 'rm -f tmp/pids/server.pid && bundle exec rails s -e production'
+    command: bash -c 'rm -f tmp/pids/server.pid && bundle exec rails s -e production'
     volumes:
       - '.:/myapp'
       - 'public-data:/myapp/public'
       - 'tmp-data:/myapp/log'
-    environment:
-      DATABASE_PASSWORD: ${MYSQL_PASSWORD}
     tty: true
     stdin_open: true
-    depends_on:
-      - db
 
   nginx:
     build: nginx
@@ -31,14 +25,3 @@ services:
       - '80:80'
     depends_on:
       - web
-
-  db:
-    image: mysql
-    command: --default-authentication-plugin=mysql_native_password
-    volumes:
-      - 'db-data:/var/lib/mysql'
-    environment:
-      MYSQL_USER: root
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
-    ports:
-      - '4306:3306'
