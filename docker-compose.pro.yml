@@ -1,0 +1,27 @@
+version: '3'
+
+volumes:
+  public-data:
+  tmp-data:
+
+services:
+  web:
+    build: .
+    command: bash -c 'rm -f tmp/pids/server.pid && bundle exec rails s -e production'
+    volumes:
+      - '.:/myapp'
+      - 'public-data:/myapp/public'
+      - 'tmp-data:/myapp/log'
+    tty: true
+    stdin_open: true
+
+  nginx:
+    build: nginx
+    volumes:
+      - '.:/myapp'
+      - 'public-data:/myapp/public'
+      - 'tmp-data:/myapp/log'
+    ports:
+      - '80:80'
+    depends_on:
+      - web
