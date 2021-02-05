@@ -16,7 +16,11 @@ services:
     stdin_open: true
 
   nginx:
-    build: nginx
+    build:
+      context: nginx
+      args:
+        USER_NAME: $BASIC_AUTHENTICATION_USER_NAME
+        PASSWORD: $BASIC_AUTHENTICATION_PASSWORD
     volumes:
       - '.:/myapp'
       - 'public-data:/myapp/public'
