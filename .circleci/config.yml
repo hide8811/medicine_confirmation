@@ -42,8 +42,28 @@ jobs:
           name: RuboCopの実行
           command: rubocop
 
+  deploy:
+    machine:
+      enabled: true
+
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - ${FINGERPRINT_KEY}
+      - run: >
+          ssh ${USER_NAME}@${HOST_IP} 'cd medicine_confirmation &&
+                                       git pull &&
+                                       docker-compose -f docker-compose.pro.yml run --rm web rails assets:precompile RAILS_ENV=production &&
+                                       docker-compose -f docker-compose.pro.yml up --build'
+
 workflows:
   version: 2
-  workflows:
+  build-deploy:
     jobs:
       - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
