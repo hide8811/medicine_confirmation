@@ -47,6 +47,7 @@ jobs:
       enabled: true
 
     steps:
+      - checkout
       - add_ssh_keys:
           fingerprints:
             - ${FINGERPRINT_KEY}
