@@ -50,11 +50,12 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - ${FINGERPRINT_KEY}
-      - run: >
-          ssh ${USER_NAME}@${HOST_IP} 'cd medicine_confirmation &&
-                                       git pull &&
-                                       docker-compose -f docker-compose.pro.yml run --rm web rails assets:precompile RAILS_ENV=production &&
-                                       docker-compose -f docker-compose.pro.yml up --build'
+      - run:
+          name: AWS CLIのインストール
+          command: sudo pip install awscli
+      - run:
+          name: デプロイ
+          command: ./.circleci/deploy.sh
 
 workflows:
   version: 2
