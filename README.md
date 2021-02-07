@@ -48,6 +48,15 @@ https://www.medicine-confirmation.tk
 - Docker
   - docker-compose
 - CircleCI
+- AWS
+  - EC2
+  - RDS
+  - S3
+  - VPC
+  - IAM
+  - Certificate Manager
+  - CLI
+- Freenom
 
 ## DB設計
 
