@@ -104,3 +104,21 @@
     cursor: pointer;
   }
 }
+
+.test_user-login {
+  margin: 5vw;
+  text-align: center;
+
+  &__btn {
+    background-color: $button-color;
+    border-bottom: solid 4px $button-shadow;
+    border-radius: 4px;
+    font-size: 2rem;
+    padding: .5rem 1rem;
+
+    &:hover {
+      background-color: $hover-button;
+      cursor: pointer;
+    }
+  }
+}
