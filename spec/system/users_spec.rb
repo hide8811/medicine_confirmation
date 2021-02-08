@@ -435,7 +435,7 @@ RSpec.describe 'Users', type: :system do
       it { expect(page).to have_content '社員IDとパスワードを確認してください' }
     end
 
-    context 'パスワードが入力されていない時' do
+    context 'パスワードが入力されていなかった場合' do
       before do
         user = create(:user)
         fill_in 'user[employee_id]', with: user.employee_id
@@ -448,7 +448,7 @@ RSpec.describe 'Users', type: :system do
       it { expect(page).to have_content '社員IDとパスワードを確認してください' }
     end
 
-    context 'パスワードが間違っている時' do
+    context 'パスワードが間違っていた場合' do
       before do
         user = create(:user, password: 'Test1234')
         fill_in 'user[employee_id]', with: user.employee_id
@@ -459,6 +459,15 @@ RSpec.describe 'Users', type: :system do
       it { expect(current_path).to eq new_user_session_path }
 
       it { expect(page).to have_content '社員IDとパスワードを確認してください' }
+    end
+
+    context 'テストユーザーでログインする場合' do
+      before do
+        create(:user, employee_id: 'testUserID1234', password: 'testUserPass1234')
+        click_on 'テストユーザーでログイン'
+      end
+
+      it { expect(current_path).to eq root_path }
     end
   end
 end
