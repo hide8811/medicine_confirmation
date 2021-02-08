@@ -1,77 +1,42 @@
 require 'rails_helper'
 
+shared_examples 'form test' do |error_message, input_selector, input_field, valid_value|
+  context '入力欄からフォーカスが外れたとき' do
+    before { find('.new-user-title').click }  # フォーカス外し
+
+    it { expect(page).to have_content error_message }
+
+    it { expect(page).to have_selector input_selector, class: 'error-frame' }
+  end
+
+  context '新規登録ボタンを押したとき' do
+    before do
+      find('.new-user-title').click  # フォーカス外し Ajaxの一意性チェックを待つため。
+      click_on '新規登録'
+    end
+
+    it { expect(current_path).to eq new_user_registration_path }
+  end
+
+  context '有効な値を入力しなおして、フォーカスが外れたとき' do
+    before do
+      find('.new-user-title').click  # フォーカス外し
+      fill_in input_field, with: valid_value
+      find('.new-user-title').click  # フォーカス外し
+    end
+
+    it { expect(page).not_to have_content error_message }
+
+    it { expect(page).not_to have_selector input_selector, class: 'error-frame' }
+  end
+end
+
 RSpec.describe 'Users', type: :system do
   describe '新規登録', js: true do
-    before do
-      visit new_user_registration_path
-    end
+    before { visit new_user_registration_path }
 
-    it 'フォーム内でEnterキーを押した時、submitされないこと' do
-      fill_in 'user[employee_id]', with: 'ID1234'
-      fill_in 'user[password]', with: 'Test1234'
-      fill_in 'user[password_confirmation]', with: 'Test1234'
-      fill_in 'user[last_name]', with: 'テスト'
-      fill_in 'user[first_name]', with: 'ユーザー'
-      fill_in 'user[last_name_kana]', with: 'てすと'
-      fill_in 'user[first_name_kana]', with: 'ゆーざー'
-      find('#user-last-name-kana').send_keys(:enter)
-      expect(current_path).not_to eq root_path
-    end
-
-    context '全ての値が正しく入力されている時' do
-      it 'メインページに遷移すること' do
-        fill_in 'user[employee_id]', with: 'ID1234'
-        fill_in 'user[password]', with: 'Test1234'
-        fill_in 'user[password_confirmation]', with: 'Test1234'
-        fill_in 'user[last_name]', with: 'テスト'
-        fill_in 'user[first_name]', with: 'ユーザー'
-        fill_in 'user[last_name_kana]', with: 'てすと'
-        fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq root_path
-      end
-    end
-
-    context '社員IDが空の時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
-        fill_in 'user[employee_id]', with: ''
-        find('#user-password').click
-        expect(page).to have_content '社員IDを入力してください'
-      end
-
-      it 'ページ遷移しないこと' do
-        fill_in 'user[employee_id]', with: ''
-        fill_in 'user[password]', with: 'Test1234'
-        fill_in 'user[password_confirmation]', with: 'Test1234'
-        fill_in 'user[last_name]', with: 'テスト'
-        fill_in 'user[first_name]', with: 'ユーザー'
-        fill_in 'user[last_name_kana]', with: 'てすと'
-        fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
-
-      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[employee_id]', with: ''
-        find('#user-password').click
-        fill_in 'user[employee_id]', with: 'ID1234'
-        find('#user-password').click
-        expect(page).not_to have_content '社員IDを入力してください'
-      end
-    end
-
-    context '社員IDがすでに使われているものである時' do
+    context '全ての値が正しく入力されていた場合' do
       before do
-        create(:user, employee_id: 'ID1234')
-      end
-
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
-        fill_in 'user[employee_id]', with: 'ID1234'
-        find('#user-password').click
-        expect(page).to have_content 'その社員IDはすでに使用されています'
-      end
-
-      it 'ページ遷移しないこと' do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
@@ -79,556 +44,336 @@ RSpec.describe 'Users', type: :system do
         fill_in 'user[first_name]', with: 'ユーザー'
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
       end
 
-      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[employee_id]', with: 'ID1234'
-        find('#user-password').click
-        fill_in 'user[employee_id]', with: 'User5678'
-        find('#user-password').click
-        expect(page).not_to have_content 'その社員IDはすでに使用されています'
+      context 'Enterキーを押したとき' do
+        before { find('body').send_keys(:enter) }
+
+        it { expect(current_path).to eq new_user_registration_path }
+      end
+      context '新規登録ボタンを押したとき' do
+        before { click_on '新規登録' }
+
+        it { expect(current_path).to eq root_path }
       end
     end
 
-    context 'パスワードが空の時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
+    context '社員IDが入力されていなかった場合' do
+      before do
+        fill_in 'user[password]', with: 'Test1234'
+        fill_in 'user[password_confirmation]', with: 'Test1234'
+        fill_in 'user[last_name]', with: 'テスト'
+        fill_in 'user[first_name]', with: 'ユーザー'
+        fill_in 'user[last_name_kana]', with: 'てすと'
+        fill_in 'user[first_name_kana]', with: 'ゆーざー'
+
+        fill_in 'user[employee_id]', with: ''
+      end
+
+      it_behaves_like 'form test', '社員IDを入力してください', '#user-employee', 'user[employee_id]', 'ID1234'
+    end
+
+    context '社員IDがすでに使われていた場合' do
+      before do
+        user = create(:user, employee_id: 'ID1234')
+
+        fill_in 'user[password]', with: 'Test1234'
+        fill_in 'user[password_confirmation]', with: 'Test1234'
+        fill_in 'user[last_name]', with: 'テスト'
+        fill_in 'user[first_name]', with: 'ユーザー'
+        fill_in 'user[last_name_kana]', with: 'てすと'
+        fill_in 'user[first_name_kana]', with: 'ゆーざー'
+
+        fill_in 'user[employee_id]', with: user.employee_id
+      end
+
+      it_behaves_like 'form test', 'その社員IDはすでに使用されています', '#user-employee', 'user[employee_id]', 'otherID5678'
+    end
+
+    context 'パスワードが入力されていなかった場合' do
+      before do
+        fill_in 'user[employee_id]', with: 'ID1234'
+        fill_in 'user[password_confirmation]', with: 'Test1234'
+        fill_in 'user[last_name]', with: 'テスト'
+        fill_in 'user[first_name]', with: 'ユーザー'
+        fill_in 'user[last_name_kana]', with: 'てすと'
+        fill_in 'user[first_name_kana]', with: 'ゆーざー'
+
         fill_in 'user[password]', with: ''
-        find('#user-confirmation-password').click
-        expect(page).to have_content 'パスワードを入力してください'
       end
 
-      it 'ページ遷移しないこと' do
+      it_behaves_like 'form test', 'パスワードを入力してください', '#user-password', 'user[password]', 'Test1234'
+    end
+
+    context 'パスワードが8文字より少ない場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
-        fill_in 'user[password]', with: ''
         fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
 
-      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[password]', with: ''
-        find('#user-confirmation-password').click
-        fill_in 'user[password]', with: 'Test1234'
-        find('#user-confirmation-password').click
-        expect(page).not_to have_content 'パスワードを入力してください'
-      end
-    end
-
-    context 'パスワードが8文字以下の時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[password]', with: 'Test12'
-        find('#user-confirmation-password').click
-        expect(page).to have_content '8文字以上で入力してください'
       end
 
-      it 'ページ遷移しないこと' do
+      it_behaves_like 'form test', '8文字以上で入力してください', '#user-password', 'user[password]', 'Test1234'
+    end
+
+    context 'パスワードが16文字より多い場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
-        fill_in 'user[password]', with: 'Test12'
         fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
 
-      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[password]', with: 'Test12'
-        find('#user-confirmation-password').click
-        fill_in 'user[password]', with: 'Test1234'
-        find('#user-confirmation-password').click
-        expect(page).not_to have_content '8文字以上で入力してください'
-      end
-    end
-
-    context 'パスワードが16文字以上の時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[password]', with: 'Test1234567890abcd'
-        find('#user-confirmation-password').click
-        expect(page).to have_content '16文字以下で入力してください'
       end
 
-      it 'ページ遷移しないこと' do
+      it_behaves_like 'form test', '16文字以下で入力してください', '#user-password', 'user[password]', 'Test1234'
+    end
+
+    context 'パスワードに英大小・数字以外が含まれていた場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
-        fill_in 'user[password]', with: 'Test1234567890abcd'
         fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
 
-      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[password]', with: 'Test1234567890abcd'
-        find('#user-confirmation-password').click
-        fill_in 'user[password]', with: 'Test1234'
-        find('#user-confirmation-password').click
-        expect(page).not_to have_content '16文字以下で入力してください'
-      end
-    end
-
-    context 'パスワードに英大小数字以外が使われている時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[password]', with: '%test@1234&'
-        find('#user-confirmation-password').click
-        expect(page).to have_content '半角英数字以外は使用できません'
       end
 
-      it 'ページ遷移しないこと' do
+      it_behaves_like 'form test', '半角英数字以外は使用できません', '#user-password', 'user[password]', 'Test1234'
+    end
+
+    context 'パスワードに英大文字が含まれていなかった場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
-        fill_in 'user[password]', with: '%test@1234&'
         fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
+
+        fill_in 'user[password]', with: 'test1234'
       end
 
-      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[password]', with: '%test@1234&'
-        find('#user-confirmation-password').click
-        fill_in 'user[password]', with: 'test1234'
-        find('#user-confirmation-password').click
-        expect(page).not_to have_content '半角英数字以外は使用できません'
-      end
+      it_behaves_like 'form test', '"英大文字"を含めてください', '#user-password', 'user[password]', 'Test1234'
     end
 
-    context 'パスワードに英大文字が入っていない時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
-        fill_in 'user[password]', with: 'test1234'
-        find('#user-confirmation-password').click
-        expect(page).to have_content '"英大文字"を含めてください'
-      end
-
-      it 'ページ遷移しないこと' do
+    context 'パスワードに英小文字が含まれていなかった場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
-        fill_in 'user[password]', with: 'test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
 
-      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[password]', with: 'test1234'
-        find('#user-confirmation-password').click
-        fill_in 'user[password]', with: 'Test1234'
-        find('#user-confirmation-password').click
-        expect(page).not_to have_content '"英大文字"を含めてください'
-      end
-    end
-
-    context 'パスワードに英小文字が入っていない時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[password]', with: 'TEST1234'
-        find('#user-confirmation-password').click
-        expect(page).to have_content '"英小文字"を含めてください'
       end
 
-      it 'ページ遷移しないこと' do
+      it_behaves_like 'form test', '"英小文字"を含めてください', '#user-password', 'user[password]', 'Test1234'
+    end
+
+    context 'パスワードに数字が含まれていなかった場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
-        fill_in 'user[password]', with: 'TEST1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
 
-      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[password]', with: 'TEST1234'
-        find('#user-confirmation-password').click
-        fill_in 'user[password]', with: 'Test1234'
-        find('#user-confirmation-password').click
-        expect(page).not_to have_content '"英小文字"を含めてください'
-      end
-    end
-
-    context 'パスワードに数字が入っていない時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[password]', with: 'TestTest'
-        find('#user-confirmation-password').click
-        expect(page).to have_content '"数字"を含めてください'
       end
 
-      it 'ページ遷移しないこと' do
+      it_behaves_like 'form test', '"数字"を含めてください', '#user-password', 'user[password]', 'Test1234'
+    end
+
+    context 'パスワード(確認)が入力されていなかった場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
-        fill_in 'user[password]', with: 'TestTest'
-        fill_in 'user[password_confirmation]', with: 'Test1234'
+        fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
 
-      it '正しい値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[password]', with: 'TestTest'
-        find('#user-confirmation-password').click
-        fill_in 'user[password]', with: 'Test1234'
-        find('#user-confirmation-password').click
-        expect(page).not_to have_content '"英小文字"を含めてください'
-      end
-    end
-
-    context 'パスワード(確認)が空の時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[password_confirmation]', with: ''
-        find('#user-last-name').click
-        expect(page).to have_content 'パスワード(確認)を入力してください'
       end
 
-      it 'ページ遷移しないこと' do
+      it_behaves_like 'form test', 'パスワード(確認)を入力してください', '#user-confirmation-password', 'user[password_confirmation]', 'Test1234'
+    end
+
+    context 'パスワード(確認)がパスワードに入力した値と違った場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
-        fill_in 'user[password]', with: 'Test1234'
-        fill_in 'user[password_confirmation]', with: ''
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
+
+        fill_in 'user[password]', with: 'Test1234'
+
+        fill_in 'user[password_confirmation]', with: 'User5678'
       end
 
-      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[password_confirmation]', with: ''
-        find('#user-last-name').click
-        fill_in 'user[password_confirmation]', with: 'Test1234'
-        find('#user-last-name').click
-        expect(page).not_to have_content 'パスワード(確認)を入力してください'
-      end
+      it_behaves_like 'form test', 'パスワードを確認してください', '#user-confirmation-password', 'user[password_confirmation]', 'Test1234'
     end
 
-    context 'パスワード(確認)がパスワードに入力した値と違う時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
-        fill_in 'user[password]', with: 'Test1234'
-        fill_in 'user[password_confirmation]', with: 'User1234'
-        find('#user-last-name').click
-        expect(page).to have_content 'パスワードを確認してください'
-      end
-
-      it 'ページ遷移しないこと' do
+    context '名字が入力されていなかった場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
-        fill_in 'user[password_confirmation]', with: 'User1234'
-        fill_in 'user[last_name]', with: 'テスト'
+        fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[first_name]', with: 'ユーザー'
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
 
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
-        fill_in 'user[password]', with: 'Test1234'
-        fill_in 'user[password_confirmation]', with: 'User1234'
-        find('#user-last-name').click
-        fill_in 'user[password_confirmation]', with: 'Test1234'
-        find('#user-last-name').click
-        expect(page).not_to have_content 'パスワードを確認してください'
-      end
-    end
-
-    context '名字が空の時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[last_name]', with: ''
-        find('#user-first-name').click
-        expect(page).to have_content '名字を入力してください'
       end
 
-      it 'ページ遷移しないこと' do
+      it_behaves_like 'form test', '名字を入力してください', '#user-last-name', 'user[last_name]', 'テスト'
+    end
+
+    context '名前が入力されていなかった場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
-        fill_in 'user[last_name]', with: ''
-        fill_in 'user[first_name]', with: 'ユーザー'
+        fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[last_name_kana]', with: 'てすと'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
 
-      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[last_name]', with: ''
-        find('#user-first-name').click
-        fill_in 'user[last_name]', with: 'テスト'
-        find('#user-first-name').click
-        expect(page).not_to have_content '名字を入力してください'
-      end
-    end
-
-    context '名前が空の時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[first_name]', with: ''
-        find('#user-last-name-kana').click
-        expect(page).to have_content '名前を入力してください'
       end
 
-      it 'ページ遷移しないこと' do
-        fill_in 'user[employee_id]', with: 'ID1234'
-        fill_in 'user[password]', with: 'Test1234'
-        fill_in 'user[password_confirmation]', with: 'Test1234'
-        fill_in 'user[last_name]', with: 'テスト'
-        fill_in 'user[first_name]', with: ''
-        fill_in 'user[last_name_kana]', with: 'てすと'
-        fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
-
-      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[first_name]', with: ''
-        find('#user-last-name-kana').click
-        fill_in 'user[first_name]', with: 'ユーザー'
-        find('#user-last-name-kana').click
-        expect(page).not_to have_content '名前を入力してください'
-      end
+      it_behaves_like 'form test', '名前を入力してください', '#user-first-name', 'user[first_name]', 'ユーザー'
     end
 
-    context 'みょうじが空の時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
-        fill_in 'user[last_name_kana]', with: ''
-        find('#user-first-name-kana').click
-        expect(page).to have_content 'みょうじを入力してください'
-      end
-
-      it 'ページ遷移しないこと' do
+    context 'みょうじが入力されていなかった場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
-        fill_in 'user[last_name_kana]', with: ''
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
+
+        fill_in 'user[last_name_kana]', with: ''
       end
 
-      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[last_name_kana]', with: ''
-        find('#user-first-name-kana').click
-        fill_in 'user[last_name_kana]', with: 'てすと'
-        find('#user-first-name-kana').click
-        expect(page).not_to have_content 'みょうじを入力してください'
-      end
+      it_behaves_like 'form test', 'みょうじを入力してください', '#user-last-name-kana', 'user[last_name_kana]', 'てすと'
     end
 
-    context 'みょうじが漢字の時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
-        fill_in 'user[last_name_kana]', with: '試験'
-        find('#user-first-name-kana').click
-        expect(page).to have_content 'みょうじはひらがなで入力してください'
-      end
-
-      it 'ページ遷移しないこと' do
+    context 'みょうじが漢字で入力されていた場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
-        fill_in 'user[last_name_kana]', with: '試験'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
+
+        fill_in 'user[last_name_kana]', with: '試験'
       end
 
-      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[last_name_kana]', with: '試験'
-        find('#user-first-name-kana').click
-        fill_in 'user[last_name_kana]', with: 'てすと'
-        find('#user-first-name-kana').click
-        expect(page).not_to have_content 'みょうじはひらがなで入力してください'
-      end
+      it_behaves_like 'form test', 'みょうじはひらがなで入力してください', '#user-last-name-kana', 'user[last_name_kana]', 'てすと'
     end
 
-    context 'みょうじがカタカナの時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
-        fill_in 'user[last_name_kana]', with: 'テスト'
-        find('#user-first-name-kana').click
-        expect(page).to have_content 'みょうじはひらがなで入力してください'
-      end
-
-      it 'ページ遷移しないこと' do
+    context 'みょうじがカタカナで入力されていた場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
-        fill_in 'user[last_name_kana]', with: 'テスト'
         fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
+
+        fill_in 'user[last_name_kana]', with: 'テスト'
       end
 
-      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[last_name_kana]', with: 'テスト'
-        find('#user-first-name-kana').click
-        fill_in 'user[last_name_kana]', with: 'てすと'
-        find('#user-first-name-kana').click
-        expect(page).not_to have_content 'みょうじはひらがなで入力してください'
-      end
+      it_behaves_like 'form test', 'みょうじはひらがなで入力してください', '#user-last-name-kana', 'user[last_name_kana]', 'てすと'
     end
 
     context 'みょうじが英字の時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
+      before do
+        fill_in 'user[employee_id]', with: 'ID1234'
+        fill_in 'user[password]', with: 'Test1234'
+        fill_in 'user[password_confirmation]', with: 'Test1234'
+        fill_in 'user[last_name]', with: 'テスト'
+        fill_in 'user[first_name]', with: 'ユーザー'
+        fill_in 'user[first_name_kana]', with: 'ゆーざー'
+
         fill_in 'user[last_name_kana]', with: 'test'
-        find('#user-first-name-kana').click
-        expect(page).to have_content 'みょうじはひらがなで入力してください'
       end
 
-      it 'ページ遷移しないこと' do
+      it_behaves_like 'form test', 'みょうじはひらがなで入力してください', '#user-last-name-kana', 'user[last_name_kana]', 'てすと'
+    end
+
+    context 'なまえが入力されていなかった場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
-        fill_in 'user[last_name_kana]', with: 'test'
-        fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
-
-      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[last_name_kana]', with: 'test'
-        find('#user-first-name-kana').click
         fill_in 'user[last_name_kana]', with: 'てすと'
-        find('#user-first-name-kana').click
-        expect(page).not_to have_content 'みょうじはひらがなで入力してください'
-      end
-    end
 
-    context 'なまえが空の時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[first_name_kana]', with: ''
-        find('#user-last-name-kana').click
-        expect(page).to have_content 'なまえを入力してください'
       end
 
-      it 'ページ遷移しないこと' do
+      it_behaves_like 'form test', 'なまえを入力してください', '#user-first-name-kana', 'user[first_name_kana]', 'ゆーざー'
+    end
+
+    context 'なまえが漢字で入力されていた場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
         fill_in 'user[last_name_kana]', with: 'てすと'
-        fill_in 'user[first_name_kana]', with: ''
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
 
-      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[first_name_kana]', with: ''
-        find('#user-first-name-kana').click
-        fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        find('#user-first-name-kana').click
-        expect(page).not_to have_content 'なまえを入力してください'
-      end
-    end
-
-    context 'なまえが漢字の時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[first_name_kana]', with: '利用者'
-        find('#user-last-name-kana').click
-        expect(page).to have_content 'なまえはひらがなで入力してください'
       end
 
-      it 'ページ遷移しないこと' do
+      it_behaves_like 'form test', 'なまえはひらがなで入力してください', '#user-first-name-kana', 'user[first_name_kana]', 'ゆーざー'
+    end
+
+    context 'みょうじがカタカナで入力されていた場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
         fill_in 'user[last_name_kana]', with: 'てすと'
-        fill_in 'user[first_name_kana]', with: '利用者'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
+
+        fill_in 'user[first_name_kana]', with: 'ユーザー'
       end
 
-      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[first_name_kana]', with: '利用者'
-        find('#user-first-name-kana').click
-        fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        find('#user-first-name-kana').click
-        expect(page).not_to have_content 'なまえはひらがなで入力してください'
-      end
+      it_behaves_like 'form test', 'なまえはひらがなで入力してください', '#user-first-name-kana', 'user[first_name_kana]', 'ゆーざー'
     end
 
-    context 'みょうじがカタカナの時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
-        fill_in 'user[first_name_kana]', with: 'ユーザー'
-        find('#user-last-name-kana').click
-        expect(page).to have_content 'なまえはひらがなで入力してください'
-      end
-
-      it 'ページ遷移しないこと' do
+    context 'なまえが英字で入力されていた場合' do
+      before do
         fill_in 'user[employee_id]', with: 'ID1234'
         fill_in 'user[password]', with: 'Test1234'
         fill_in 'user[password_confirmation]', with: 'Test1234'
         fill_in 'user[last_name]', with: 'テスト'
         fill_in 'user[first_name]', with: 'ユーザー'
         fill_in 'user[last_name_kana]', with: 'てすと'
-        fill_in 'user[first_name_kana]', with: 'ユーザー'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
 
-      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[first_name_kana]', with: 'ユーザー'
-        find('#user-first-name-kana').click
-        fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        find('#user-first-name-kana').click
-        expect(page).not_to have_content 'なまえはひらがなで入力してください'
-      end
-    end
-
-    context 'なまえが英字の時' do
-      it 'フォーカスが外れると、エラーメッセージが出ること' do
         fill_in 'user[first_name_kana]', with: 'user'
-        find('#user-last-name-kana').click
-        expect(page).to have_content 'なまえはひらがなで入力してください'
       end
 
-      it 'ページ遷移しないこと' do
-        fill_in 'user[employee_id]', with: 'ID1234'
-        fill_in 'user[password]', with: 'Test1234'
-        fill_in 'user[password_confirmation]', with: 'Test1234'
-        fill_in 'user[last_name]', with: 'テスト'
-        fill_in 'user[first_name]', with: 'ユーザー'
-        fill_in 'user[last_name_kana]', with: 'てすと'
-        fill_in 'user[first_name_kana]', with: 'user'
-        click_on '新規登録'
-        expect(current_path).to eq new_user_registration_path
-      end
-
-      it '値を入力し、フォーカスが外れると、エラーメッセージが消えること' do
-        fill_in 'user[first_name_kana]', with: 'user'
-        find('#user-first-name-kana').click
-        fill_in 'user[first_name_kana]', with: 'ゆーざー'
-        find('#user-first-name-kana').click
-        expect(page).not_to have_content 'なまえはひらがなで入力してください'
-      end
-    end
-
-    it '未入力項目があるとsubmitできないこと' do
-      click_on '新規登録'
-      expect(current_path).to eq new_user_registration_path
+      it_behaves_like 'form test', 'なまえはひらがなで入力してください', '#user-first-name-kana', 'user[first_name_kana]', 'ゆーざー'
     end
 
     it '新規登録ボタンを押した時、エラー箇所まで自動スクロールされること' do
@@ -652,17 +397,19 @@ RSpec.describe 'Users', type: :system do
     before do
       visit new_user_session_path
     end
-    context '全ての値が正しく入力されている時' do
-      it 'ログイン後、メインページに遷移すること' do
+
+    context '全ての値が正しく入力されていた場合' do
+      before do
         user = create(:user)
         fill_in 'user[employee_id]', with: user.employee_id
         fill_in 'user[password]', with: user.password
         click_on 'ログイン'
-        expect(current_path).to eq root_path
       end
+
+      it { expect(current_path).to eq root_path }
     end
 
-    context '社員IDが入力されていない時' do
+    context '社員IDが入力されていなかった場合' do
       before do
         user = create(:user)
         fill_in 'user[employee_id]', with: ''
@@ -670,16 +417,12 @@ RSpec.describe 'Users', type: :system do
         click_on 'ログイン'
       end
 
-      it 'ログインできないこと' do
-        expect(current_path).to eq new_user_session_path
-      end
+      it { expect(current_path).to eq new_user_session_path }
 
-      it 'エラーメッセージが出ること' do
-        expect(page).to have_content '社員IDとパスワードを確認してください'
-      end
+      it { expect(page).to have_content '社員IDとパスワードを確認してください' }
     end
 
-    context '社員IDが間違っている時' do
+    context '社員IDが間違っていた場合' do
       before do
         user = create(:user, employee_id: 'id1234')
         fill_in 'user[employee_id]', with: 'test5678'
@@ -687,16 +430,12 @@ RSpec.describe 'Users', type: :system do
         click_on 'ログイン'
       end
 
-      it 'ログインできないこと' do
-        expect(current_path).to eq new_user_session_path
-      end
+      it { expect(current_path).to eq new_user_session_path }
 
-      it 'エラーメッセージが出ること' do
-        expect(page).to have_content '社員IDとパスワードを確認してください'
-      end
+      it { expect(page).to have_content '社員IDとパスワードを確認してください' }
     end
 
-    context 'パスワードが入力されていない時' do
+    context 'パスワードが入力されていなかった場合' do
       before do
         user = create(:user)
         fill_in 'user[employee_id]', with: user.employee_id
@@ -704,16 +443,12 @@ RSpec.describe 'Users', type: :system do
         click_on 'ログイン'
       end
 
-      it 'ログインできないこと' do
-        expect(current_path).to eq new_user_session_path
-      end
+      it { expect(current_path).to eq new_user_session_path }
 
-      it 'エラーメッセージが出ること' do
-        expect(page).to have_content '社員IDとパスワードを確認してください'
-      end
+      it { expect(page).to have_content '社員IDとパスワードを確認してください' }
     end
 
-    context 'パスワードが間違っている時' do
+    context 'パスワードが間違っていた場合' do
       before do
         user = create(:user, password: 'Test1234')
         fill_in 'user[employee_id]', with: user.employee_id
@@ -721,13 +456,18 @@ RSpec.describe 'Users', type: :system do
         click_on 'ログイン'
       end
 
-      it 'ログインできないこと' do
-        expect(current_path).to eq new_user_session_path
+      it { expect(current_path).to eq new_user_session_path }
+
+      it { expect(page).to have_content '社員IDとパスワードを確認してください' }
+    end
+
+    context 'テストユーザーでログインする場合' do
+      before do
+        create(:user, employee_id: 'testUserID1234', password: 'testUserPass1234')
+        click_on 'テストユーザーでログイン'
       end
 
-      it 'エラーメッセージが出ること' do
-        expect(page).to have_content '社員IDとパスワードを確認してください'
-      end
+      it { expect(current_path).to eq root_path }
     end
   end
 end
