@@ -1,0 +1,165 @@
+@import 'color';
+
+@mixin label-style {
+  font-size: 1.5rem;
+  display: block;
+}
+
+@mixin input-style {
+  width: 15rem;
+  padding: .5rem;
+  text-align: center;
+  display: block;
+  font-size: 2rem;
+}
+
+@mixin select-style($width) {
+  width: $width;
+  padding: .5rem;
+  font-size: 2rem;
+}
+
+@mixin error-style {
+  height: 3rem;
+  line-height: 3rem;
+  font-size: 1rem;
+  color: $error-color;
+  text-align: center;
+}
+
+.care_receiver-form {
+  width: 85%;
+  margin: 4vw auto;
+}
+
+// 氏名===
+.care_receiver-form__name {
+  margin-bottom: 2vw;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+// 名字
+.last_name-care_receiver-form {
+
+  &__label {
+    @include label-style;
+  }
+
+  &__input {
+    @include input-style;
+  }
+
+  &__error-message-area {
+    @include error-style;
+  }
+}
+
+// 名前
+.first_name-care_receiver-form {
+
+  &__label {
+    @include label-style;
+  }
+
+  &__input {
+    @include input-style;
+  }
+
+  &__error-message-area {
+    @include error-style;
+  }
+}
+
+// しめい
+.care_receiver-form__kana {
+  margin-bottom: 2vw;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+// みょうじ
+.last_name_kana-care_receiver-form {
+
+  &__label {
+    @include label-style;
+  }
+
+  &__input {
+    @include input-style;
+  }
+
+  &__error-message-area {
+    @include error-style;
+  }
+}
+
+// なまえ
+.first_name_kana-care_receiver-form {
+
+  &__label {
+    @include label-style;
+  }
+
+  &__input {
+    @include input-style;
+  }
+
+  &__error-message-area {
+    @include error-style;
+  }
+}
+
+// 生年月日
+.care_receiver-form__birthday {
+  margin-bottom: 2vw;
+  display: flex;
+  justify-content: center;
+}
+
+.birthday-care_receiver-form {
+  font-size: 1.5rem;
+
+  &__label {
+    @include label-style;
+  }
+
+  & .year {
+    @include select-style(8rem);
+  }
+
+  & .month {
+    @include select-style(5rem);
+  }
+
+  & .day {
+    @include select-style(5rem);
+  }
+
+  &__error-message-area {
+    @include error-style;
+  }
+}
+
+.care_receiver-form__submit {
+
+  &--btn {
+    width: 12rem;
+    height: 4rem;
+    margin: 0 auto;
+    border-radius: 10px;
+    border-bottom: solid 4px $button-shadow;
+    background-color: $button-color;
+    line-height: 4rem;
+    text-align: center;
+    font-size: 2rem;
+    color: $main-font;
+    display: block;
+
+    &:hover {
+      background-color: $hover-button;
+    }
+  }
+}

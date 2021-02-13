@@ -1,122 +1,76 @@
-$(document).on('turbolinks:load', function(){
-  let errorMessageErase = function(t, form){
-    t.removeClass('error-frame');
-    t.prevAll('label').first().removeClass('error-label');
+$(document).on('turbolinks:load', function() {
+  let addError = function(elem, message) {
+    $(elem).prevAll('label').addClass('error-label');
+    $(elem).addClass('error-frame');
+    $(elem).nextAll().last().text(message);
+  }
 
-    form == 'input' ? t.next().remove('.error-message') : t.parent().next().remove('.error-message');
-  };
+  let removeError = function(elem) {
+    $(elem).prevAll('label').removeClass('error-label');
+    $(elem).removeClass('error-frame');
+    $(elem).nextAll().last().text('');
+  }
 
-  let addErrorMessage = function(t, form, id, message){
-    t.addClass('error-frame');
-    t.prevAll('label').first().addClass('error-label');
-
-    if (form == 'input') {
-      t.next().remove('.error-message');
-      t.after(`<div id="${id}" class="error-message">${message}</div>`);
-
-    } else {
-      t.parent().next().remove('.error-message');
-      t.parent().after(`<div id="${id}" class="error-message">${message}</div>`);
-    };
-  };
-
-  $('form#care_receiver_form').keydown(function(e){
+  $('form#care_receiver-form').keydown(function(e){
     let key = e.which
     if (key == 13) {
       e.preventDefault();
     };
   });
 
-  $('#care_receiver-last_name').blur(function(){
-    let lastNameInputField = $(this);
-
-    if (lastNameInputField.val() == '') {
-      addErrorMessage(lastNameInputField, 'input', 'last_name-error', '入力してください');
+  $('#care_receiver-form-name input[type="text"]').blur(function() {
+    if ($(this).val() === '') {
+      addError(this, '入力してください');
 
     } else {
-      errorMessageErase(lastNameInputField, 'input');
-    };
+      removeError(this);
+    }
   });
 
-  $('#care_receiver-first_name').blur(function(){
-    let firstNameInputField = $(this);
+  $('#care_receiver-form-kana input[type="text"]').blur(function() {
+    if ($(this).val() === '') {
+      addError(this, '入力してください');
 
-    if (firstNameInputField.val() == '' ) {
-      addErrorMessage(firstNameInputField, 'input', 'first_name-error', '入力してください');
+    } else if (!$(this).val().match(/^[ぁ-んー－]+$/)) {
+      addError(this, 'ひらがなで入力してください');
 
     } else {
-      errorMessageErase(firstNameInputField, 'input');
-    };
+      removeError(this);
+    }
   });
 
-  $('#care_receiver-last_name_kana').blur(function(){
-    let lastNameKanaInputField = $(this);
+  $('#care_receiver-form-birthday select').blur(function() {
+    if ($(this).val() === '') {
+      addError(this, '選択してください');
 
-    if (lastNameKanaInputField.val() == '' ) {
-      addErrorMessage(lastNameKanaInputField, 'input', 'last_name_kana-error', '入力してください');
-
-    } else if (!lastNameKanaInputField.val().match(/^[ぁ-んー－]+$/)) {
-      addErrorMessage(lastNameKanaInputField, 'input', 'last_name-hiragana_error', 'ひらがなで入力してください');
+    } else if ($(this).siblings('.error-frame').length >= 1) {
+      $(this).removeClass('error-frame');
 
     } else {
-      errorMessageErase(lastNameKanaInputField, 'input');
-    };
+      removeError(this);
+    }
   });
 
-  $('#care_receiver-first_name_kana').blur(function(){
-    let firstNameKanaInputField = $(this);
+  $('form#care_receiver-form').submit(function() {
+    function mapFunc(index, elem) {
+      let elemBlank = $(elem).val() === '';
+      let inputElem = $(elem).prop('tagName') === 'INPUT'
+      let selectElem = $(elem).prop('tagName') === 'SELECT'
 
-    if (firstNameKanaInputField.val() == '') {
-      addErrorMessage(firstNameKanaInputField, 'input', 'first_name_kana-error', '入力してください');
+      if (elemBlank && inputElem) {
+        addError(elem, '入力してください');
+        return elem;
+      }
 
-    } else if (!firstNameKanaInputField.val().match(/^[ぁ-んー－]+$/)) {
-      addErrorMessage(firstNameKanaInputField, 'input', 'first_name-hiragana_error', 'ひらがなで入力してください');
-
-    } else {
-      errorMessageErase(firstNameKanaInputField, 'input');
+      if (elemBlank && selectElem) {
+        addError(elem, '選択してください');
+        return elem;
+      }
     };
-  });
 
-  $('#care_receiver_birthday_1i').blur(function(){
-    let birthdaySelectYear = $(this);
+    let formErrors = $(this).find('input, select').map(mapFunc);
 
-    if (birthdaySelectYear.val() == '') {
-      addErrorMessage(birthdaySelectYear, 'select', 'birthday-year-error', '選択してください');
-
-    } else if (birthdaySelectYear.siblings('.error-frame').length) {
-      birthdaySelectYear.removeClass('error-frame');
-
-    } else {
-      errorMessageErase(birthdaySelectYear, 'select');
-    };
-  });
-
-  $('#care_receiver_birthday_2i').blur(function(){
-    let birthdaySelectMonth = $(this);
-
-    if (birthdaySelectMonth.val() == '') {
-      addErrorMessage(birthdaySelectMonth, 'select', 'birthday-month-error', '選択してください');
-
-    } else if (birthdaySelectMonth.siblings('.error-frame').length) {
-      birthdaySelectMonth.removeClass('error-frame');
-
-    } else {
-      errorMessageErase(birthdaySelectMonth, 'select');
-    };
-  });
-
-  $('#care_receiver_birthday_3i').blur(function(){
-    let birthdaySelectDate = $(this);
-
-    if (birthdaySelectDate.val() == '') {
-      addErrorMessage(birthdaySelectDate, 'select', 'birthday-date-error', '選択してください');
-
-    } else if (birthdaySelectDate.siblings('.error-frame').length) {
-      birthdaySelectDate.removeClass('error-frame');
-
-    } else {
-      errorMessageErase(birthdaySelectDate, 'select');
-    };
+    if (formErrors.length >= 1) return false;
   });
 });
 

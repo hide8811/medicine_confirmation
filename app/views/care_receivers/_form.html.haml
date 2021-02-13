@@ -1,0 +1,49 @@
+.care_receiver-form
+  = form_with model: care_receiver, id: 'care_receiver-form' do |f|
+
+    #care_receiver-form-name.care_receiver-form__name
+      .last_name-care_receiver-form
+        = f.label :last_name, '名字', id: 'label-last_name-care_receiver-form', class: 'last_name-care_receiver-form__label'
+        = f.text_field :last_name, id: 'input-last_name-care_receiver-form', class: 'last_name-care_receiver-form__input'
+
+        #error-last_name-care_receiver-form.last_name-care_receiver-form__error-message-area
+          -# エラーメッセージ(jsで追加)
+
+      .first_name-care_receiver-form
+        = f.label :first_name, '名前', id: 'label-first_name-care_receiver-form', class: 'first_name-care_receiver-form__label'
+        = f.text_field :first_name, id: 'input-first_name-care_receiver-form', class: 'first_name-care_receiver-form__input'
+
+        #error-first_name-care_receiver-form.first_name-care_receiver-form__error-message-area
+          -# エラーメッセージ(jsで追加)
+
+    #care_receiver-form-kana.care_receiver-form__kana
+      .last_name_kana-care_receiver-form
+        = f.label :last_name_kana, 'みょうじ', id: 'label-last_name_kana-care_receiver-form', class: 'last_name_kana-care_receiver-form__label'
+        = f.text_field :last_name_kana, id: 'input-last_name_kana-care_receiver-form', class: 'last_name_kana-care_receiver-form__input'
+
+        #error-last_name_kana-care_receiver-form.last_name_kana-care_receiver-form__error-message-area
+          -# エラーメッセージ(jsで追加)
+
+      .first_name_kana-care_receiver-form
+        = f.label :first_name_kana, 'なまえ', id: 'label-first_name_kana-care_receiver-form', class: 'first_name_kana-care_receiver-form__label'
+        = f.text_field :first_name_kana, id: 'input-first_name_kana-care_receiver-form', class: 'first_name_kana-care_receiver-form__input'
+
+        #error-first_name_kana-care_receiver-form.first_name_kana-care_receiver-form__error-message-area
+          -# エラーメッセージ(jsで追加)
+
+    #care_receiver-form-birthday.care_receiver-form__birthday
+      .birthday-care_receiver-form
+        = f.label :birsthday, '生年月日', id: 'label-birthday-care_receiver-form', class: 'birthday-care_receiver-form__label'
+        = raw sprintf((f.date_select :birthday, {use_month_numbers: true,
+                                                 include_blank: true,
+                                                 start_year: Time.now.year - 150,
+                                                 end_year: Time.now.year,
+                                                 date_separator: '%s',
+                                                 with_css_classes: true},
+                                                {}), '年 ', '月 ') + '日'
+
+        #error-birthday-care_receiver-form.birthday-care_receiver-form__error-message-area
+          -# エラーメッセージ(jsで追加)
+
+    .care_receiver-form__submit
+      = f.submit '新規登録', class: 'care_receiver-form__submit--btn'
