@@ -1,10 +1,50 @@
 version: 2
 
 jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.7.1-node-browsers-legacy
+        environment:
+          RAILS_ENV: test
+          DB_HOST: '127.0.0.1'
+      - image: circleci/mysql:8.0.21
+        command: --default-authentication-plugin=mysql_native_password
+        envronment:
+          MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
+          MYSQL_DATAVASE: myapp_test
+
+    working_directory: ~/myapp
+
+    steps:
+      - checkout
+      - run:
+          name: データベースの起動を待機
+          command: dockerize -wait tcp://0.0.0.0:3306 -timeout 1m
+      - run:
+          name: yarn install
+          command: yarn install
+      - run:
+          name: bundle install
+          command: bundle install
+      - run:
+          name: Capybaraのドライバの設定変更
+          command: mv ./spec/support/capybara.rb.ci ./spec/support/capybara.rb
+      - run:
+          name: データベースの設定変更
+          command: mv ./config/database.yml.ci ./config/database.yml
+      - run:
+          name: データベースのセットアップ
+          command: bundle exec rails db:create && bundle exec rails db:schema:load
+      - run:
+          name: テストの実行
+          command: bundle exec rspec
+      - run:
+          name: RuboCopの実行
+          command: rubocop
+
   deploy:
     machine:
-      python:
-        version: 2.7.9
+      enabled: true
 
     steps:
       - checkout
@@ -22,4 +62,10 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - deploy
+      - buile
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
