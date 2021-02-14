@@ -43,10 +43,10 @@ shared_examples 'Form input button test' do |column_name, error_message|
   it { is_expected.to have_selector "#input-#{column_name}-care_receiver-form", class: 'error-frame' }
   it { is_expected.to have_selector "#error-#{column_name}-care_receiver-form", text: error_message }
 
-  context '新規登録でエラーが出た後、正しい値を入力したとき' do
+  context '登録でエラーが出た後、正しい値を入力したとき' do
     before do
       fill_in "care_receiver[#{column_name}]", with: valid_value # letで定義
-      click_on '新規登録'
+      click_on '登録'
     end
 
     it { is_expected.to have_content '登録しました' }
@@ -102,10 +102,10 @@ shared_examples 'Form select button test' do |date_position, valid_value|
   it { is_expected.to have_selector "#care_receiver_birthday_#{date_position}", class: 'error-frame' }
   it { is_expected.to have_selector '#error-birthday-care_receiver-form', text: '選択してください' }
 
-  context '新規登録でエラーが出た後、正しい値を入力したとき' do
+  context '登録でエラーが出た後、正しい値を入力したとき' do
     before do
       select valid_value, from: "care_receiver[birthday(#{date_position})]"
-      click_on '新規登録'
+      click_on '登録'
     end
 
     it { is_expected.to have_content '登録しました' }
@@ -208,16 +208,16 @@ RSpec.describe 'CareReceivers', type: :system do
           it { expect(current_path).to eq new_care_receiver_path }
         end
 
-        context '新規登録ボタンを押したとき' do
-          before { click_on '新規登録' }
+        context '登録ボタンを押したとき' do
+          before { click_on '登録' }
 
           it { is_expected.to have_content '登録しました' }
           it { is_expected.to have_content "#{care_receiver.last_name} #{care_receiver.first_name}" }
         end
       end
 
-      context '何も入力せず、新規登録ボタンを押した場合' do
-        before { click_on '新規登録' }
+      context '何も入力せず、登録ボタンを押した場合' do
+        before { click_on '登録' }
 
         it { is_expected.to have_css '.error-label', count: 5 }
         it { is_expected.to have_css '.error-frame', count: 7 }
@@ -238,7 +238,7 @@ RSpec.describe 'CareReceivers', type: :system do
       context '名字を入力しなかった場合' do
         it_behaves_like 'Form input focus test', 'last_name', '', '入力してください'
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           before do
             # 'care_receiver[last_name]' 入力しない
             fill_in 'care_receiver[first_name]', with: care_receiver.first_name
@@ -247,7 +247,7 @@ RSpec.describe 'CareReceivers', type: :system do
             select care_receiver.birthday.strftime('%Y'), from: 'care_receiver[birthday(1i)]'
             select care_receiver.birthday.strftime('%-m'), from: 'care_receiver[birthday(2i)]'
             select care_receiver.birthday.strftime('%-d'), from: 'care_receiver[birthday(3i)]'
-            click_on '新規登録'
+            click_on '登録'
           end
 
           it_behaves_like 'Form input button test', 'last_name', '入力してください'
@@ -267,7 +267,7 @@ RSpec.describe 'CareReceivers', type: :system do
       context '名前を入力しなかった場合' do
         it_behaves_like 'Form input focus test', 'first_name', '', '入力してください'
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           before do
             fill_in 'care_receiver[last_name]', with: care_receiver.last_name
             # 'care_receiver[first_name]' 入力しない
@@ -276,7 +276,7 @@ RSpec.describe 'CareReceivers', type: :system do
             select care_receiver.birthday.strftime('%Y'), from: 'care_receiver[birthday(1i)]'
             select care_receiver.birthday.strftime('%-m'), from: 'care_receiver[birthday(2i)]'
             select care_receiver.birthday.strftime('%-d'), from: 'care_receiver[birthday(3i)]'
-            click_on '新規登録'
+            click_on '登録'
           end
 
           it_behaves_like 'Form input button test', 'first_name', '入力してください'
@@ -295,7 +295,7 @@ RSpec.describe 'CareReceivers', type: :system do
           select care_receiver.birthday.strftime('%Y'), from: 'care_receiver[birthday(1i)]'
           select care_receiver.birthday.strftime('%-m'), from: 'care_receiver[birthday(2i)]'
           select care_receiver.birthday.strftime('%-d'), from: 'care_receiver[birthday(3i)]'
-          click_on '新規登録'
+          click_on '登録'
         end
       end
 
@@ -309,7 +309,7 @@ RSpec.describe 'CareReceivers', type: :system do
       context 'みょうじを入力しなかった場合' do
         it_behaves_like 'Form input focus test', 'last_name_kana', '', '入力してください'
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           before do
             fill_in 'care_receiver[last_name]', with: care_receiver.last_name
             fill_in 'care_receiver[first_name]', with: care_receiver.first_name
@@ -318,7 +318,7 @@ RSpec.describe 'CareReceivers', type: :system do
             select care_receiver.birthday.strftime('%Y'), from: 'care_receiver[birthday(1i)]'
             select care_receiver.birthday.strftime('%-m'), from: 'care_receiver[birthday(2i)]'
             select care_receiver.birthday.strftime('%-d'), from: 'care_receiver[birthday(3i)]'
-            click_on '新規登録'
+            click_on '登録'
           end
 
           it_behaves_like 'Form input button test', 'last_name_kana', '入力してください'
@@ -328,7 +328,7 @@ RSpec.describe 'CareReceivers', type: :system do
       context 'みょうじを漢字で入力した場合' do
         it_behaves_like 'Form input focus test', 'last_name_kana', Gimei.last.kanji, 'ひらがなで入力してください'
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           include_context 'Set of forms, violating last_name_kana', Gimei.last.kanji
 
           it_behaves_like 'Form input button test', 'last_name_kana', 'ひらがなで入力してください'
@@ -338,7 +338,7 @@ RSpec.describe 'CareReceivers', type: :system do
       context 'みょうじをカタカナで入力した場合' do
         it_behaves_like 'Form input focus test', 'last_name_kana', Gimei.last.katakana, 'ひらがなで入力してください'
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           include_context 'Set of forms, violating last_name_kana', Gimei.last.katakana
 
           it_behaves_like 'Form input button test', 'last_name_kana', 'ひらがなで入力してください'
@@ -348,7 +348,7 @@ RSpec.describe 'CareReceivers', type: :system do
       context 'みょうじをローマ字で入力した場合' do
         it_behaves_like 'Form input focus test', 'last_name_kana', Gimei.last.romaji, 'ひらがなで入力してください'
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           include_context 'Set of forms, violating last_name_kana', Gimei.last.romaji
 
           it_behaves_like 'Form input button test', 'last_name_kana', 'ひらがなで入力してください'
@@ -358,7 +358,7 @@ RSpec.describe 'CareReceivers', type: :system do
       context 'みょうじを記号を含んだ文字で入力した場合' do
         it_behaves_like 'Form input focus test', 'last_name_kana', "@#{Gimei.last.hiragana}", 'ひらがなで入力してください'
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           include_context 'Set of forms, violating last_name_kana', "@#{Gimei.last.hiragana}"
 
           it_behaves_like 'Form input button test', 'last_name_kana', 'ひらがなで入力してください'
@@ -377,7 +377,7 @@ RSpec.describe 'CareReceivers', type: :system do
           select care_receiver.birthday.strftime('%Y'), from: 'care_receiver[birthday(1i)]'
           select care_receiver.birthday.strftime('%-m'), from: 'care_receiver[birthday(2i)]'
           select care_receiver.birthday.strftime('%-d'), from: 'care_receiver[birthday(3i)]'
-          click_on '新規登録'
+          click_on '登録'
         end
       end
 
@@ -391,7 +391,7 @@ RSpec.describe 'CareReceivers', type: :system do
       context 'なまえを何も入力せず、フォーカスを外した場合' do
         it_behaves_like 'Form input focus test', 'first_name_kana', '', '入力してください'
 
-        context 'なまえを入力せず、新規登録ボタンを押した場合' do
+        context 'なまえを入力せず、登録ボタンを押した場合' do
           before do
             fill_in 'care_receiver[last_name]', with: care_receiver.last_name
             fill_in 'care_receiver[first_name]', with: care_receiver.first_name
@@ -400,7 +400,7 @@ RSpec.describe 'CareReceivers', type: :system do
             select care_receiver.birthday.strftime('%Y'), from: 'care_receiver[birthday(1i)]'
             select care_receiver.birthday.strftime('%-m'), from: 'care_receiver[birthday(2i)]'
             select care_receiver.birthday.strftime('%-d'), from: 'care_receiver[birthday(3i)]'
-            click_on '新規登録'
+            click_on '登録'
           end
 
           it_behaves_like 'Form input button test', 'first_name_kana', '入力してください'
@@ -410,7 +410,7 @@ RSpec.describe 'CareReceivers', type: :system do
       context 'なまえを漢字で入力した場合' do
         it_behaves_like 'Form input focus test', 'first_name_kana', Gimei.first.kanji, 'ひらがなで入力してください'
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           include_context 'Set of forms, violating first_name_kana', Gimei.first.kanji
 
           it_behaves_like 'Form input button test', 'first_name_kana', 'ひらがなで入力してください'
@@ -420,7 +420,7 @@ RSpec.describe 'CareReceivers', type: :system do
       context 'なまえをカタカナで入力した場合' do
         it_behaves_like 'Form input focus test', 'first_name_kana', Gimei.first.katakana, 'ひらがなで入力してください'
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           include_context 'Set of forms, violating first_name_kana', Gimei.first.katakana
 
           it_behaves_like 'Form input button test', 'first_name_kana', 'ひらがなで入力してください'
@@ -430,7 +430,7 @@ RSpec.describe 'CareReceivers', type: :system do
       context 'なまえをローマ字で入力した場合' do
         it_behaves_like 'Form input focus test', 'first_name_kana', Gimei.first.romaji, 'ひらがなで入力してください'
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           include_context 'Set of forms, violating first_name_kana', Gimei.first.romaji
 
           it_behaves_like 'Form input button test', 'first_name_kana', 'ひらがなで入力してください'
@@ -440,7 +440,7 @@ RSpec.describe 'CareReceivers', type: :system do
       context 'なまえを記号を含んだ文字で入力した場合' do
         it_behaves_like 'Form input focus test', 'first_name_kana', "@#{Gimei.first.hiragana}", 'ひらがなで入力してください'
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           include_context 'Set of forms, violating first_name_kana', "@#{Gimei.first.hiragana}"
 
           it_behaves_like 'Form input button test', 'first_name_kana', 'ひらがなで入力してください'
@@ -477,7 +477,7 @@ RSpec.describe 'CareReceivers', type: :system do
           include_context 'Form select focus test, if there are other errors', '1i', Faker::Date.birthday(max_age: 150).strftime('%Y')
         end
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           let(:care_receiver) { build(:care_receiver) }
 
           before do
@@ -488,7 +488,7 @@ RSpec.describe 'CareReceivers', type: :system do
             # 'care_receiver[birthday(1i)]' 選択しない。
             select care_receiver.birthday.strftime('%-m'), from: 'care_receiver[birthday(2i)]'
             select care_receiver.birthday.strftime('%-d'), from: 'care_receiver[birthday(3i)]'
-            click_on '新規登録'
+            click_on '登録'
           end
 
           include_context 'Form select button test', '1i', Faker::Date.birthday(max_age: 150).strftime('%Y')
@@ -518,7 +518,7 @@ RSpec.describe 'CareReceivers', type: :system do
           include_context 'Form select focus test, if there are other errors', '2i', Faker::Date.birthday.strftime('%-m')
         end
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           let(:care_receiver) { build(:care_receiver) }
 
           before do
@@ -529,7 +529,7 @@ RSpec.describe 'CareReceivers', type: :system do
             select care_receiver.birthday.strftime('%Y'), from: 'care_receiver[birthday(1i)]'
             # 'care_receiver[birthday(2i)]' 選択しない。
             select care_receiver.birthday.strftime('%-d'), from: 'care_receiver[birthday(3i)]'
-            click_on '新規登録'
+            click_on '登録'
           end
 
           include_context 'Form select button test', '2i', Faker::Date.birthday.strftime('%-m')
@@ -559,7 +559,7 @@ RSpec.describe 'CareReceivers', type: :system do
           include_context 'Form select focus test, if there are other errors', '3i', Faker::Date.birthday.strftime('%-d')
         end
 
-        context '新規登録ボタンを押したとき' do
+        context '登録ボタンを押したとき' do
           let(:care_receiver) { build(:care_receiver) }
 
           before do
@@ -570,7 +570,7 @@ RSpec.describe 'CareReceivers', type: :system do
             select care_receiver.birthday.strftime('%Y'), from: 'care_receiver[birthday(1i)]'
             select care_receiver.birthday.strftime('%-m'), from: 'care_receiver[birthday(2i)]'
             # 'care_receiver[birthday(3i)]' 選択しない。
-            click_on '新規登録'
+            click_on '登録'
           end
 
           include_context 'Form select button test', '3i', Faker::Date.birthday.strftime('%-d')
@@ -596,17 +596,26 @@ RSpec.describe 'CareReceivers', type: :system do
     end
 
     describe 'ご利用者様 情報表示' do
-      let(:name) { "#{care_receiver.last_name} #{care_receiver.first_name} 様" }
       let(:birthday) { care_receiver.birthday.strftime('%Y年 %-m月 %-d日') }
       let(:age) { (Date.today.strftime('%Y%m%d').to_i - care_receiver.birthday.strftime('%Y%m%d').to_i) / 10_000 }
 
       include_context 'Page transition to show_care_receiver'
 
-      it { is_expected.to have_content name }
+      it 'ご利用者様の情報が表示されること' do
+        aggregate_failures do
+          is_expected.to have_content care_receiver.last_name
+          is_expected.to have_content care_receiver.first_name
+          is_expected.to have_content care_receiver.last_name_kana
+          is_expected.to have_content care_receiver.first_name_kana
+          is_expected.to have_content birthday
+          is_expected.to have_content age
+        end
+      end
 
-      it { is_expected.to have_content birthday }
-
-      it { is_expected.to have_content age }
+      context '"編集"ボタンを押した場合' do
+        before { click_on '編集', class: 'information-show-care_receiver__besides--edit-btn' }
+        it { expect(current_path).to eq edit_care_receiver_path(care_receiver) }
+      end
     end
 
     describe '服薬 一覧' do
@@ -633,7 +642,7 @@ RSpec.describe 'CareReceivers', type: :system do
 
         include_context 'Page transition to show_care_receiver'
 
-        it { is_expected.to have_css '.dosing_time-show_care_receiver__list--item', count: 2 }
+        it { is_expected.to have_css '.dosing_times-show_care_receiver__list--item', count: 2 }
 
         it { is_expected.to have_css '.medicine-dosing_time-show_care_receiver', count: 10 }
       end
@@ -699,6 +708,175 @@ RSpec.describe 'CareReceivers', type: :system do
         include_context 'Page transition to show_care_receiver'
 
         it { is_expected.not_to have_content other_dosing_time.timeframe.name }
+      end
+    end
+  end
+
+  describe '編集 edit' do
+    let(:care_receiver) { create(:care_receiver) }
+
+    subject { page }
+
+    before { visit edit_care_receiver_path(care_receiver) }
+
+    it 'フォームに利用者の情報が入力・選択されていること' do
+      aggregate_failures do
+        is_expected.to have_field 'care_receiver[last_name]', with: care_receiver.last_name
+        is_expected.to have_field 'care_receiver[first_name]', with: care_receiver.first_name
+        is_expected.to have_field 'care_receiver[last_name_kana]', with: care_receiver.last_name_kana
+        is_expected.to have_field 'care_receiver[first_name_kana]', with: care_receiver.first_name_kana
+        is_expected.to have_select 'care_receiver[birthday(1i)]', selected: care_receiver.birthday.strftime('%Y')
+        is_expected.to have_select 'care_receiver[birthday(2i)]', selected: care_receiver.birthday.strftime('%-m')
+        is_expected.to have_select 'care_receiver[birthday(3i)]', selected: care_receiver.birthday.strftime('%-d')
+      end
+    end
+
+    context '"中止"ボタンを押した場合' do
+      before { click_on '中止' }
+      it { expect(current_path).to eq care_receiver_path(care_receiver) }
+    end
+
+    context 'フォームの内容を変更し、"中止"ボタンを押した場合' do
+      let(:other_name) { Gimei.last.kanji }
+
+      before do
+        fill_in 'care_receiver[last_name]', with: other_name
+        click_on '中止'
+      end
+
+      it { is_expected.to have_content care_receiver.last_name }
+      it { is_expected.not_to have_content other_name }
+    end
+
+    context '名字を変更登録した場合' do
+      let(:other_last_name) { Gimei.last.kanji }
+
+      before do
+        fill_in 'care_receiver[last_name]', with: other_last_name
+        click_on '登録'
+      end
+
+      it '名字のみが変更されていること' do
+        is_expected.not_to have_content care_receiver.last_name
+        is_expected.to have_content other_last_name
+        is_expected.to have_content care_receiver.first_name
+        is_expected.to have_content care_receiver.last_name_kana
+        is_expected.to have_content care_receiver.first_name_kana
+        is_expected.to have_content care_receiver.birthday.strftime('%Y年 %-m月 %-d日')
+      end
+    end
+
+    context '名前を変更登録した場合' do
+      let(:other_first_name) { Gimei.first.kanji }
+
+      before do
+        fill_in 'care_receiver[first_name]', with: other_first_name
+        click_on '登録'
+      end
+
+      it '名前のみが変更されていること' do
+        is_expected.to have_content care_receiver.last_name
+        is_expected.not_to have_content care_receiver.first_name
+        is_expected.to have_content other_first_name
+        is_expected.to have_content care_receiver.last_name_kana
+        is_expected.to have_content care_receiver.first_name_kana
+        is_expected.to have_content care_receiver.birthday.strftime('%Y年 %-m月 %-d日')
+      end
+    end
+
+    context 'みょうじを変更登録した場合' do
+      let(:other_last_name_kana) { Gimei.last.hiragana }
+
+      before do
+        fill_in 'care_receiver[last_name_kana]', with: other_last_name_kana
+        click_on '登録'
+      end
+
+      it 'みょうじのみが変更されていること' do
+        is_expected.to have_content care_receiver.last_name
+        is_expected.to have_content care_receiver.first_name
+        is_expected.not_to have_content care_receiver.last_name_kana
+        is_expected.to have_content other_last_name_kana
+        is_expected.to have_content care_receiver.first_name_kana
+        is_expected.to have_content care_receiver.birthday.strftime('%Y年 %-m月 %-d日')
+      end
+    end
+
+    context 'なまえを変更登録した場合' do
+      let(:other_first_name_kana) { Gimei.first.hiragana }
+
+      before do
+        fill_in 'care_receiver[first_name_kana]', with: other_first_name_kana
+        click_on '登録'
+      end
+
+      it 'なまえのみが変更されていること' do
+        is_expected.to have_content care_receiver.last_name
+        is_expected.to have_content care_receiver.first_name
+        is_expected.to have_content care_receiver.last_name_kana
+        is_expected.not_to have_content care_receiver.first_name_kana
+        is_expected.to have_content other_first_name_kana
+        is_expected.to have_content care_receiver.birthday.strftime('%Y年 %-m月 %-d日')
+      end
+    end
+
+    context '生年月日の西暦を変更登録した場合' do
+      let(:other_birthday_year) { Faker::Date.birthday(max_age: 150).strftime('%Y') }
+
+      before do
+        select other_birthday_year, from: 'care_receiver[birthday(1i)]'
+        click_on '登録'
+      end
+
+      it '生年月日の西暦のみが変更されていること' do
+        is_expected.to have_content care_receiver.last_name
+        is_expected.to have_content care_receiver.first_name
+        is_expected.to have_content care_receiver.last_name_kana
+        is_expected.to have_content care_receiver.first_name_kana
+        is_expected.not_to have_content care_receiver.birthday.strftime('%Y年')
+        is_expected.to have_content "#{other_birthday_year}年"
+        is_expected.to have_content care_receiver.birthday.strftime('%-m月')
+        is_expected.to have_content care_receiver.birthday.strftime('%-d日')
+      end
+    end
+
+    context '生年月日の月を変更登録した場合' do
+      let(:other_birthday_month) { Faker::Date.birthday.strftime('%-m') }
+
+      before do
+        select other_birthday_month, from: 'care_receiver[birthday(2i)]'
+        click_on '登録'
+      end
+
+      it '生年月日の月のみが変更されていること' do
+        is_expected.to have_content care_receiver.last_name
+        is_expected.to have_content care_receiver.first_name
+        is_expected.to have_content care_receiver.last_name_kana
+        is_expected.to have_content care_receiver.first_name_kana
+        is_expected.to have_content care_receiver.birthday.strftime('%Y年')
+        is_expected.not_to have_content care_receiver.birthday.strftime('%-m月')
+        is_expected.to have_content "#{other_birthday_month}月"
+        is_expected.to have_content care_receiver.birthday.strftime('%-d日')
+      end
+    end
+
+    context '生年月日の日を変更登録した場合' do
+      let(:other_birthday_day) { Faker::Date.birthday.strftime('%-d') }
+
+      before do
+        select other_birthday_day, from: 'care_receiver[birthday(3i)]'
+        click_on '登録'
+      end
+
+      it '生年月日の日のみが変更されていること' do
+        is_expected.to have_content care_receiver.last_name
+        is_expected.to have_content care_receiver.first_name
+        is_expected.to have_content care_receiver.last_name_kana
+        is_expected.to have_content care_receiver.first_name_kana
+        is_expected.to have_content care_receiver.birthday.strftime('%Y年')
+        is_expected.to have_content care_receiver.birthday.strftime('%-m月')
+        is_expected.not_to have_content care_receiver.birthday.strftime('%-d日')
+        is_expected.to have_content "#{other_birthday_day}日"
       end
     end
   end
