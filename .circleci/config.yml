@@ -43,17 +43,16 @@ jobs:
           command: rubocop
 
   deploy:
-    machine:
-      enabled: true
+    docker:
+      - image: amazon/aws-cli
+        envronment:
+          AWS_PAGER: ""
 
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints:
             - ${FINGERPRINT_KEY}
-      - run:
-          name: AWS CLIのインストール
-          command: sudo pip install awscli
       - run:
           name: デプロイ
           command: ./.circleci/deploy.sh
