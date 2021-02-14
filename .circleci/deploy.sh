@@ -11,5 +11,7 @@ trap "aws ec2 revoke-security-group-ingress --group-id ${AWS_SECURITY_GROUP} --p
 aws ec2 authorize-security-group-ingress --group-id ${AWS_SECURITY_GROUP} --protocol tcp --port 22 --cidr $MY_IP/32
 ssh ${USER_NAME}@${HOST_IP} 'cd medicine_confirmation && \
                              git pull && \
+                             docker-compose -f docker-compose.pro.yml stop && \
                              docker-compose -f docker-compose.pro.yml run --rm web rails assets:precompile RAILS_ENV=production && \
-                             docker-compose -f docker-compose.pro.yml up -d --build'
+                             docker-compose -f docker-compose.pro.yml build && \
+                             docker-compose -f docker-compose.pro.yml up -d'
