@@ -12,8 +12,8 @@ jobs:
           fingerprints:
             - ${FINGERPRINT_KEY}
       - run:
-          name: ssh install
-          command: yum -y install openssh-server openssh-clients
+          name: AWS CLIのインストール
+          command: sudo pip install awscli
       - run:
           name: デプロイ
           command: ./.circleci/deploy.sh
