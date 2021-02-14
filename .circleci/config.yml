@@ -2,10 +2,9 @@ version: 2
 
 jobs:
   deploy:
-    docker:
-      - image: amazon/aws-cli
-        envronment:
-          AWS_PAGER: ""
+    machine:
+      python:
+        version: 2.7.9
 
     steps:
       - checkout
