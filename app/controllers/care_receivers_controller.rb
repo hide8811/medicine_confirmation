@@ -27,6 +27,21 @@ class CareReceiversController < ApplicationController
     @dosing_times = DosingTime.kept.where(care_receiver_id: @care_receiver.id).includes(:medicines)
   end
 
+  def edit
+    @care_receiver = CareReceiver.find(params[:id])
+  end
+
+  def update
+    care_receiver = CareReceiver.find(params[:id])
+
+    if care_receiver.update(care_receiver_params)
+      flash[:delete] = '削除しました'
+      redirect_to action: :show
+    else
+      render :edit
+    end
+  end
+
   private
 
   def care_receiver_params

@@ -1,0 +1,11 @@
+.edit-care_receiver
+  .side-edit-care_receiver
+    .side-edit-care_receiver__cancel
+      = link_to '中止', care_receiver_path(@care_receiver), class: 'side-edit-care_receiver__cancel--btn'
+
+  .main-edit-care_receiver
+    .main-edit-care_receiver__title
+      = "#{@care_receiver.last_name} #{@care_receiver.first_name}様 編集"
+
+    .main-edit-care_receiver__form
+      = render partial: 'form', locals: { care_receiver: @care_receiver }

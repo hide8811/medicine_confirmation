@@ -1,33 +1,50 @@
 .show-care_receiver
   .show-care_receiver__upper_half_content
-    .show-care_receiver__side_button
-      = link_to '戻る', root_path, class: 'show-care_receiver__side_button--back-link'
+    .side_btn-show-care_receiver
+      = link_to '戻る', root_path, class: 'side_btn-show-care_receiver__back-btn'
 
-    .show-care_receiver__main
-      .show-care_receiver__main--name
-        = "#{@care_receiver.last_name} #{@care_receiver.first_name} 様"
+    .information-show-care_receiver
+      .information-show-care_receiver__name
+        .last_name-show-care_receiver
+          .last_name-show-care_receiver__kana
+            = @care_receiver.last_name_kana
 
-      .show-care_receiver__main--birthday
-        .show-care_receiver__main--birthday--date
+          .last_name-show-care_receiver__main
+            = @care_receiver.last_name
+
+        .first_name-show-care_receiver
+          .first_name-show-care_receiver__kana
+            = @care_receiver.first_name_kana
+
+          .first_name-show-care_receiver__main
+            = @care_receiver.first_name
+
+        .honorific_title-show-care_receiver
+          様
+
+      .information-show-care_receiver__besides
+        .information-show-care_receiver__besides--birthday
           = @care_receiver.birthday.strftime('%Y年 %-m月 %-d日')
 
-        .show-care_receiver__main--birthday--age
+        .information-show-care_receiver__besides--age
           = "#{@care_receiver_age} 歳"
 
+        = link_to '編集', edit_care_receiver_path(@care_receiver), class: 'information-show-care_receiver__besides--edit-btn'
+
   .show-care_receiver__lower_half_content
-    .dosing_time-show_care_receiver
-      .dosing_time-show_care_receiver__title
+    .dosing_times-show_care_receiver
+      .dosing_times-show_care_receiver__title
         服薬 一覧
 
       - if @dosing_times.blank?
-        .dosing_time-show_care_receiver__not-exist
+        .dosing_times-show_care_receiver__not-exist
           服薬はありません
 
       - else
-        %lu.dosing_time-show_care_receiver__list
+        %lu.dosing_times-show_care_receiver__list
           - @dosing_times.each do |dosing_time|
 
-            %li.dosing_time-show_care_receiver__list--item
+            %li.dosing_times-show_care_receiver__list--item
 
               .timeframe-dosing_time-show_care_receiver
                 %div{ class: "show_care_receiver-dosing_time_#{dosing_time.id}-name timeframe-dosing_time-show_care_receiver__name" }
@@ -36,7 +53,7 @@
                 .timeframe-dosing_time-show_care_receiver__time
                   = dosing_time.time.strftime('%_H:%0M')
 
-              %ul.medicine-dosing_time-show_care_receiver-list
+              %ul.medicines-dosing_time-show_care_receiver-list
 
                 -# dosing_time.medicinesとしたかったが、論理削除したデータの除外がうまくいかず以下のようになりました。要修正。
                 - dosing_time.medicine_dosing_times.select(&:undiscarded?).each do |medicine_dosing_time|
