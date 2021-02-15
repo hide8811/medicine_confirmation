@@ -1,5 +1,24 @@
 @import 'color';
 
+@mixin button-style($color, $shadow-color, $hover-color) {
+  display: block;
+  width: 8.5rem;
+  height: 4rem;
+  margin: 0 auto;
+  border-radius: 10px;
+  border-bottom: solid 4px $shadow-color;
+  background-color: $color;
+  line-height: 4rem;
+  text-align: center;
+  font-size: 2rem;
+  color: $main-font;
+  text-decoration: none;
+
+  &:hover {
+    background-color: $hover-color;
+  }
+}
+
 .edit-care_receiver {
   margin: 5vw;
   display: flex;
@@ -10,20 +29,17 @@
   margin-left: 2vw;
 
   &__cancel {
+    margin: 3rem;
 
     &--btn {
-      display: block;
-      width: 8.5rem;
-      height: 4rem;
-      margin: 0 auto;
-      border-radius: 10px;
-      border-bottom: solid 4px $button-shadow;
-      background-color: $button-color;
-      line-height: 4rem;
-      text-align: center;
-      font-size: 2rem;
-      color: $main-font;
-      text-decoration: none;
+      @include button-style($button-color, $button-shadow, $hover-button);
+    }
+  }
+
+  &__delete {
+
+    &--btn {
+      @include button-style($red-button-color, $red-button-shadow, $red-hover-button);
     }
   }
 }

@@ -1,4 +1,6 @@
 class CareReceiver < ApplicationRecord
+  include Discard::Model
+
   has_many :dosing_times
   has_many :takes
 
@@ -9,6 +11,4 @@ class CareReceiver < ApplicationRecord
     p.validates :first_name_kana, format: { with: /\A[ぁ-んー－]+\z/ }
     p.validates :birthday
   end
-
-  validates :enroll, inclusion: { in: [true, false] }
 end

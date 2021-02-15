@@ -30,6 +30,25 @@
   text-decoration: none;
 }
 
+@mixin flash-style($color) {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: 8rem;
+  background-color: $color;
+  text-align: center;
+  line-height: 8rem;
+  font-size: 4rem;
+}
+
+.flash-success {
+  @include flash-style($green-flash-color);
+}
+
+.flash-delete {
+  @include flash-style($red-flash-color);
+}
+
 .care_receivers {
   margin: 5vw 0;
   display: flex;

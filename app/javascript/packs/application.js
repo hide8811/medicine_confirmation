@@ -9,6 +9,7 @@ require("@rails/activestorage").start()
 require("channels")
 require("jquery")
 require("users/form.js")
+require("care_receivers/index.js")
 require("care_receivers/form.js")
 require("dosing_times/index.js")
 

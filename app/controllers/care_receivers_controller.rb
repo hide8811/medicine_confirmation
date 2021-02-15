@@ -3,7 +3,7 @@ class CareReceiversController < ApplicationController
   protect_from_forgery prepend: true
 
   def index
-    @care_receivers = CareReceiver.all
+    @care_receivers = CareReceiver.kept
   end
 
   def new
@@ -35,11 +35,17 @@ class CareReceiversController < ApplicationController
     care_receiver = CareReceiver.find(params[:id])
 
     if care_receiver.update(care_receiver_params)
-      flash[:delete] = '削除しました'
       redirect_to action: :show
     else
-      render :edit
+      render action: :edit
     end
+  end
+
+  def destroy
+    care_receiver = CareReceiver.find(params[:id])
+    care_receiver.discard
+
+    redirect_to root_path, flash: { delete: '削除しました' }
   end
 
   private
