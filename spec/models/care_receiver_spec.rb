@@ -182,24 +182,4 @@ RSpec.describe CareReceiver, type: :model do
       end
     end
   end
-
-  describe 'column: enroll' do
-    context 'trueの場合' do
-      let(:care_receiver) { build(:care_receiver, enroll: true) }
-      it_behaves_like '有効'
-    end
-
-    context 'falseの場合' do
-      let(:care_receiver) { build(:care_receiver, enroll: false) }
-      it_behaves_like '有効'
-    end
-
-    context 'nilの場合' do
-      it '無効であること' do
-        care_receiver = build(:care_receiver, enroll: nil)
-        care_receiver.valid?
-        expect(care_receiver.errors[:enroll]).to include('is not included in the list')
-      end
-    end
-  end
 end

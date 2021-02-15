@@ -1,6 +1,5 @@
-- if flash.keys[0] == 'success'
-  %p.flash-success
-    = flash[:success]
+- flash.each do |key, value|
+  = content_tag :p, value, id: 'care_receiver-flash', class: "flash-#{key}"
 
 .care_receivers
 

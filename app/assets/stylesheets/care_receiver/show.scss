@@ -4,7 +4,6 @@
   display: block;
   width: 8.5rem;
   height: 4rem;
-  margin: 0 auto;
   border-radius: 10px;
   border-bottom: solid 4px $button-shadow;
   background-color: $button-color;
@@ -13,6 +12,10 @@
   font-size: 2rem;
   color: $main-font;
   text-decoration: none;
+
+  &:hover {
+    background-color: $hover-button;
+  }
 }
 
 @mixin headline-style {
@@ -25,51 +28,86 @@
 }
 /*---------- 上半分 ----------------------------------------*/
 .show-care_receiver__upper_half_content {
-  margin: 5%;
+  margin: 5vw;
   display: flex;
   justify-content: center;
 }
 
-.show-care_receiver__side_button {
-  width: 30%;
-  margin-right: 2%;
+.side_btn-show-care_receiver {
+  width: 23vw;
+  margin-right: 2vw;
 
-  &--back-link {
+  &__back-btn {
     @include button;
-
-    &:hover {
-      background-color: $hover-button;
-    }
+    margin: 0 auto;
   }
 }
 
-.show-care_receiver__main {
-  width: 70%;
-  margin-left: 2%;
+.information-show-care_receiver {
+  width: 63vw;
+  margin-left: 2vw;
   background-color: $sub-background;
 
-  &--name {
+  &__name {
     margin: 1rem;
-    padding: 2rem;
+    padding: 2rem 0;
     text-align: center;
-    font-size: 3rem;
-    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
     background-color: $list-color;
+
+    .last_name-show-care_receiver {
+
+      &__kana {
+        font-size: 1.5rem;
+      }
+
+      &__main {
+        font-size: 3rem;
+        font-weight: bold;
+      }
+    }
+
+    .first_name-show-care_receiver {
+      margin-left: 2rem;
+
+      &__kana {
+        font-size: 1.5rem;
+      }
+
+      &__main {
+        font-size: 3rem;
+        font-weight: bold;
+      }
+    }
+
+    .honorific_title-show-care_receiver {
+      margin-left: 2rem;
+      font-size: 3rem;
+    }
   }
 
-  &--birthday {
+  &__besides {
     margin: 2rem 1rem;
-    display: flex;
     font-size: 2rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 
-    &--date {
-      width: 70%;
+    &--birthday {
+      margin-left: 3vw;
       text-align: center;
     }
 
     &--age {
-      width: 30%;
+      margin-left: 3rem;
       text-align: center;
+    }
+
+    &--edit-btn {
+      margin-left: auto;
+      @include button;
     }
   }
 }
@@ -81,8 +119,8 @@
   justify-content: center;
 }
 
-.dosing_time-show_care_receiver {
-  width: 50%;
+.dosing_times-show_care_receiver {
+  width: 80%;
   background-color: $sub-background;
 
   &__title {
@@ -139,7 +177,7 @@
 }
 
 /* list-item 薬 */
-.medicine-dosing_time-show_care_receiver-list {
+.medicines-dosing_time-show_care_receiver-list {
   margin-left: 5vw;
   background-color: $sub-list-color;
   list-style: none;
@@ -149,18 +187,20 @@
     margin-top: .3vw;
     border-bottom: .1vw solid $main-font;
     display: flex;
+    justify-content: flex-end;
     flex-wrap: wrap;
     align-items: center;
 
     &__name {
       width: 12rem;
       font-size: 1.5rem;
+      margin-right: auto;
     }
 
     &__no-image {
       width: 6.5rem;
       height: 4rem;
-      margin: 0 .5vw;
+      margin-right: .4rem;
       background-color: $no-image;
       line-height: 4rem;
       text-align: center;
@@ -168,10 +208,11 @@
     }
 
     &__image {
+
       &--item {
       width: 6.5rem;
       height: 4rem;
-      margin: 0 .5vw;
+      margin-right: .4rem;
       object-fit: contain;
       }
     }
@@ -179,9 +220,13 @@
     &__no-url {
       width: 8rem;
       height: 2.4rem;
+      margin-right: .4rem;
     }
 
     &__url {
+      width: 8rem;
+      height: 2.4rem;
+      margin-right: .4rem;
 
       &--btn {
         display: inline-block;
@@ -208,9 +253,6 @@
 
   &--btn {
     @include button;
-
-    &:hover {
-      background-color: $hover-button;
-    }
+    margin: 0 auto;
   }
 }
