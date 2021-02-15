@@ -880,4 +880,17 @@ RSpec.describe 'CareReceivers', type: :system do
       end
     end
   end
+
+  describe '削除 destroy' do
+    let(:care_receiver) { create(:care_receiver) }
+
+    before do
+      visit edit_care_receiver_path(care_receiver)
+      click_on '削除'
+    end
+
+    it { expect(current_path).to eq root_path }
+    it { expect(page).not_to have_content "#{care_receiver.last_name} #{care_receiver.first_name} 様" }
+    it { expect(page).to have_content '削除しました' }
+  end
 end
