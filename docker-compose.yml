@@ -3,11 +3,12 @@ version: '3'
 volumes:
   db-data:
   public-data:
+  tmp-data:
 
 services:
   web:
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s"
     ports:
       - '3000:3000'
     volumes:
@@ -34,3 +35,18 @@ services:
 
   selenium_chrome:
     image: selenium/standalone-chrome-debug
+
+  nginx:
+    build:
+      context: nginx
+      args:
+        USER_NAME: $BASIC_AUTHENTICATION_USER_NAME
+        PASSWORD: $BASIC_AUTHENTICATION_PASSWORD
+    volumes:
+      - '.:/myapp'
+      - 'public-data:/myapp/public'
+      - 'tmp-data:/myapp/log'
+    ports:
+      - '80:80'
+    depends_on:
+      - web
