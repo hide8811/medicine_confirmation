@@ -114,20 +114,20 @@
   margin: 0 auto;
   padding: 0;
   background-color: $sub-background;
-  overflow: hidden;
+  overflow: scroll;
 }
 
 .care_receivers-list-item {
   margin: 1rem 5vw;
-  display: flex;
   border-bottom: .2vw solid $main-font;
   border-right: .2vw solid $main-font;
   background-color: $list-color;
-  justify-content: space-around;
+  display: flex;
   align-items: center;
 
   &__name {
     font-size: 1.5rem;
+    margin-left: 4vw;
 
     &--span {
       font-size: 2.5rem;
@@ -135,6 +135,8 @@
   }
 
   &__show-link {
+    margin-left: auto;
+    margin-right: 4vw;
 
     &--btn {
       @include main-button;
