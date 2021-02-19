@@ -624,27 +624,61 @@ RSpec.describe 'CareReceivers', type: :system do
 
         include_context 'Page transition to show_care_receiver'
 
-        it { is_expected.to have_selector ".show_care_receiver-dosing_time_#{dosing_time.id}-name", text: dosing_time.timeframe.name }
+        it { is_expected.to have_selector "#show_care_receiver-dosing_time_#{dosing_time.id}-name", text: dosing_time.timeframe.name }
 
-        it { is_expected.to have_selector ".show_care_receiver-dosing_time_#{dosing_time.id}-medicine_#{medicine.id}-name", text: medicine.name }
+        it { is_expected.to have_selector "#show_care_receiver-dosing_time_#{dosing_time.id}-medicine_#{medicine.id}-name", text: medicine.name }
 
         it { is_expected.not_to have_content '服薬はありません' }
       end
 
       context '複数の服薬がある場合' do
-        let(:dosing_time_am) { create(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver.id) }
-        let(:dosing_time_pm) { create(:dosing_time, timeframe_id: 2, care_receiver_id: care_receiver.id) }
+        context '時間帯が複数あるとき' do
+          let!(:after_lunch) { create(:dosing_time, timeframe_id: 10, care_receiver_id: care_receiver.id) }
+          let!(:after_dinner) { create(:dosing_time, timeframe_id: 15, care_receiver_id: care_receiver.id) }
+          let!(:after_breakfast) { create(:dosing_time, timeframe_id: 5, care_receiver_id: care_receiver.id) }
+          let!(:before_sleeping) { create(:dosing_time, timeframe_id: 17, care_receiver_id: care_receiver.id) }
 
-        before do
-          create_list(:medicine_dosing_time, 5, dosing_time_id: dosing_time_am.id)
-          create_list(:medicine_dosing_time, 5, dosing_time_id: dosing_time_pm.id)
+          include_context 'Page transition to show_care_receiver'
+
+          it { is_expected.to have_css '.timeframe-dosing_time-show_care_receiver__name', count: 4 }
+
+          it '時間帯順に並んでいること' do
+            aggregate_failures do
+              expect(page.all('.timeframe-dosing_time-show_care_receiver__name')[0]).to have_content after_breakfast.timeframe.name
+              expect(page.all('.timeframe-dosing_time-show_care_receiver__name')[1]).to have_content after_lunch.timeframe.name
+              expect(page.all('.timeframe-dosing_time-show_care_receiver__name')[2]).to have_content after_dinner.timeframe.name
+              expect(page.all('.timeframe-dosing_time-show_care_receiver__name')[3]).to have_content before_sleeping.timeframe.name
+            end
+          end
         end
 
-        include_context 'Page transition to show_care_receiver'
+        context '薬が複数あるとき' do
+          let(:dosing_time) { create(:dosing_time, care_receiver_id: care_receiver.id) }
+          let!(:medicine_a) { create(:medicine) }
+          let!(:medicine_b) { create(:medicine) }
+          let!(:medicine_c) { create(:medicine) }
+          let!(:medicine_d) { create(:medicine) }
 
-        it { is_expected.to have_css '.dosing_times-show_care_receiver__list--item', count: 2 }
+          before do
+            create(:medicine_dosing_time, dosing_time_id: dosing_time.id, medicine_id: medicine_b.id)
+            create(:medicine_dosing_time, dosing_time_id: dosing_time.id, medicine_id: medicine_c.id)
+            create(:medicine_dosing_time, dosing_time_id: dosing_time.id, medicine_id: medicine_a.id)
+            create(:medicine_dosing_time, dosing_time_id: dosing_time.id, medicine_id: medicine_d.id)
+          end
 
-        it { is_expected.to have_css '.medicine-dosing_time-show_care_receiver', count: 10 }
+          include_context 'Page transition to show_care_receiver'
+
+          it { is_expected.to have_css '.medicine-dosing_time-show_care_receiver', count: 4 }
+
+          it '薬の登録順に並んでいること' do
+            aggregate_failures do
+              expect(page.all('.medicine-dosing_time-show_care_receiver__name')[0]).to have_content medicine_a.name
+              expect(page.all('.medicine-dosing_time-show_care_receiver__name')[1]).to have_content medicine_b.name
+              expect(page.all('.medicine-dosing_time-show_care_receiver__name')[2]).to have_content medicine_c.name
+              expect(page.all('.medicine-dosing_time-show_care_receiver__name')[3]).to have_content medicine_d.name
+            end
+          end
+        end
       end
 
       context '服薬する薬に画像データがある場合' do

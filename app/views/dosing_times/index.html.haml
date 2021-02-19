@@ -19,7 +19,9 @@
 
     - else
       %ul.main-dosing_time__list
+
         - @dosing_times.each do |dosing_time|
+
           %li.main-dosing_time__list--item{ id: "dosing_time-#{dosing_time.id}" }
             .timeframe-dosing_time
               .timeframe-dosing_time__name
@@ -38,10 +40,8 @@
 
             .medicines-dosing_time
               %ul.medicines-dosing_time__list
-                -# dosing_time.medicinesとしたかったが、論理削除したデータの除外がうまくいかず以下のようになりました。要修正。
-                - dosing_time.medicine_dosing_times.select(&:undiscarded?).each do |medicine_dosing_time|
 
-                  - medicine = medicine_dosing_time.medicine
+                - dosing_time.active_medicines.each do |medicine|
 
                   %li{ id: "medicine-#{medicine.id}-#{dosing_time.id}", class: 'medicine-dosing_time-item' }
                     %div{ id: "medicine-#{medicine.id}-#{dosing_time.id}__name", class: 'medicine-dosing_time-item__name' }
@@ -56,7 +56,7 @@
                         ×
 
                     .medicine-dosing_time-item__delete
-                      = link_to '削除', medicine_dosing_time_path(id: medicine_dosing_time.id, care_receiver_id: @care_receiver.id),
+                      = link_to '削除', medicine_dosing_times_path(medicine_id: medicine.id, dosing_time_id: dosing_time.id, care_receiver_id: @care_receiver.id),
                                         method: :delete,
                                         remote: true,
                                         id: "delete-medicine_dosing_time-#{medicine.id}-#{dosing_time.id}",
@@ -67,7 +67,7 @@
                 = form_with model: @medicine_dosing_time, class: 'new-medicine_dosing_time-form' do |f|
                   .new-medicine_dosing_time-form__medicine
                     = f.collection_select :medicine_id,
-                                          @medicines - dosing_time.medicine_dosing_times.select(&:undiscarded?).map(&:medicine),
+                                          @medicines - dosing_time.active_medicines,
                                           :id,
                                           :name,
                                           { prompt: '--' },
