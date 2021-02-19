@@ -51,19 +51,39 @@ RSpec.describe 'DosingTimes', type: :system do
       end
 
       context '服薬時間が登録されている場合' do
-        let!(:dosing_time_am) { create(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver.id) }
-        let!(:dosing_tiem_pm) { create(:dosing_time, timeframe_id: 2, care_receiver_id: care_receiver.id) }
+        let!(:dosing_time) { create(:dosing_time, timeframe_id: 1, care_receiver_id: care_receiver.id) }
 
         before do
           visit care_receiver_path(care_receiver.id)
           click_on '編集', class: 'dosing_time-show_care_receiver__edit--btn'
         end
 
-        it { is_expected.to have_selector '.timeframe-dosing_time__name', text: dosing_time_am.timeframe.name }
+        it { is_expected.to have_selector '.timeframe-dosing_time__name', text: dosing_time.timeframe.name }
 
-        it { is_expected.to have_selector '.timeframe-dosing_time__time', text: dosing_time_am.time.strftime('%-H:%0M') }
+        it { is_expected.to have_selector '.timeframe-dosing_time__time', text: dosing_time.time.strftime('%-H:%0M') }
+      end
 
-        it { is_expected.to have_css '.timeframe-dosing_time__name', count: 2 }
+      context '複数の服薬時間が登録されている場合' do
+        let!(:after_lunch) { create(:dosing_time, timeframe_id: 10, care_receiver_id: care_receiver.id) }
+        let!(:after_dinner) { create(:dosing_time, timeframe_id: 15, care_receiver_id: care_receiver.id) }
+        let!(:after_breakfast) { create(:dosing_time, timeframe_id: 5, care_receiver_id: care_receiver.id) }
+        let!(:before_sleeping) { create(:dosing_time, timeframe_id: 17, care_receiver_id: care_receiver.id) }
+
+        before do
+          visit care_receiver_path(care_receiver.id)
+          click_on '編集', class: 'dosing_time-show_care_receiver__edit--btn'
+        end
+
+        it { is_expected.to have_css '.timeframe-dosing_time__name', count: 4 }
+
+        it '時間帯順に並んでいること' do
+          aggregate_failures do
+            expect(page.all('.timeframe-dosing_time__name')[0]).to have_content after_breakfast.timeframe.name
+            expect(page.all('.timeframe-dosing_time__name')[1]).to have_content after_lunch.timeframe.name
+            expect(page.all('.timeframe-dosing_time__name')[2]).to have_content after_dinner.timeframe.name
+            expect(page.all('.timeframe-dosing_time__name')[3]).to have_content before_sleeping.timeframe.name
+          end
+        end
       end
     end
 
