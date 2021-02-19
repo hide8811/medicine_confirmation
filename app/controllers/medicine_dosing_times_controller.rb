@@ -7,7 +7,7 @@ class MedicineDosingTimesController < ApplicationController
   end
 
   def destroy
-    MedicineDosingTime.find(params[:id]).discard
+    MedicineDosingTime.find_by(medicine_id: params[:medicine_id], dosing_time_id: params[:dosing_time_id], discarded_at: nil).discard
 
     redirect_to controller: :dosing_times, action: :index, care_receiver_id: params[:care_receiver_id]
   end

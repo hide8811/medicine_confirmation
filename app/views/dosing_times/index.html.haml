@@ -56,7 +56,7 @@
                         ×
 
                     .medicine-dosing_time-item__delete
-                      = link_to '削除', medicine_dosing_time_path(id: medicine_dosing_time.id, care_receiver_id: @care_receiver.id),
+                      = link_to '削除', medicine_dosing_times_path(medicine_id: medicine.id, dosing_time_id: dosing_time.id, care_receiver_id: @care_receiver.id),
                                         method: :delete,
                                         remote: true,
                                         id: "delete-medicine_dosing_time-#{medicine.id}-#{dosing_time.id}",
