@@ -1,7 +1,7 @@
 class DosingTimesController < ApplicationController
   def index
     @care_receiver = CareReceiver.find(params[:care_receiver_id])
-    @dosing_times = DosingTime.kept.where(care_receiver_id: @care_receiver.id).includes(:medicines)
+    @dosing_times = DosingTime.list_fetch(@care_receiver)
     @medicine_dosing_time = MedicineDosingTime.new
     @medicines = Medicine.kept
     @dosing_time = DosingTime.new

@@ -42,12 +42,13 @@
 
       - else
         %lu.dosing_times-show_care_receiver__list
+
           - @dosing_times.each do |dosing_time|
 
             %li.dosing_times-show_care_receiver__list--item
 
               .timeframe-dosing_time-show_care_receiver
-                %div{ class: "show_care_receiver-dosing_time_#{dosing_time.id}-name timeframe-dosing_time-show_care_receiver__name" }
+                %div{ id: "show_care_receiver-dosing_time_#{dosing_time.id}-name", class: 'timeframe-dosing_time-show_care_receiver__name' }
                   = dosing_time.timeframe.name
 
                 .timeframe-dosing_time-show_care_receiver__time
@@ -55,12 +56,10 @@
 
               %ul.medicines-dosing_time-show_care_receiver-list
 
-                -# dosing_time.medicinesとしたかったが、論理削除したデータの除外がうまくいかず以下のようになりました。要修正。
-                - dosing_time.medicine_dosing_times.select(&:undiscarded?).each do |medicine_dosing_time|
-                  - medicine = medicine_dosing_time.medicine
+                - dosing_time.active_medicines.each do |medicine|
 
                   %li.medicine-dosing_time-show_care_receiver
-                    %div{ class: "show_care_receiver-dosing_time_#{dosing_time.id}-medicine_#{medicine.id}-name medicine-dosing_time-show_care_receiver__name" }
+                    %div{ id: "show_care_receiver-dosing_time_#{dosing_time.id}-medicine_#{medicine.id}-name", class: 'medicine-dosing_time-show_care_receiver__name' }
                       = medicine.name
 
                     - if medicine.image.blank?
@@ -69,7 +68,7 @@
 
                     - else
                       .medicine-dosing_time-show_care_receiver__image
-                        = image_tag "#{medicine_dosing_time.medicine.image}", class: 'medicine-dosing_time-show_care_receiver__image--item'
+                        = image_tag "#{medicine.image}", class: 'medicine-dosing_time-show_care_receiver__image--item'
 
                     - if medicine.url.blank?
                       .medicine-dosing_time-show_care_receiver__no-url
