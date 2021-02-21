@@ -79,7 +79,7 @@ https://www.medicine-confirmation.tk
 | last_name_kana | string | NOT NULL |
 | first_name_kana | string | NOT NULL |
 | birthday | date | NOT NULL |
-| enroll | boolean | NOT NULL |
+| discarded_at | datetime ||
 
 ### medicines
 | Field | Type | Constraint |
@@ -124,8 +124,6 @@ https://www.medicine-confirmation.tk
 ## 今後、修正・追加したい機能
 
 - 職員の編集・削除機能
-- 服薬者の編集・削除機能
-- 論理削除に関連したデータ取得の改善
 - Takesテーブルを使用した、服薬チェック機能
 - コードの統一化
 
