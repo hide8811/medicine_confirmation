@@ -7,22 +7,63 @@ RSpec.describe 'Medicines', type: :system do
   end
 
   describe 'サイドボタン' do
-    before do
-      visit root_path
-      click_on '薬'
-    end
+    context 'ホーム画面から遷移してきた場合' do
+      before do
+        visit root_path
+        click_on '薬'
+      end
 
-    context '戻るボタンを押した時' do
-      it '元の画面に戻ること' do
-        click_on '戻る'
-        expect(current_path).to eq root_path
+      it { expect(page).to have_link 'ホーム' }
+
+      it { expect(page).not_to have_link '戻る' }
+
+      context '遷移後すぐホームボタンを押したとき' do
+        before { click_on 'ホーム' }
+        it { expect(current_path).to eq root_path }
+      end
+
+      context '薬を登録後、ホームボタンを押したとき' do
+        let(:medicine_name) { Faker::Lorem.word }
+
+        before do
+          fill_in 'medicine[name]', with: medicine_name
+          click_on '新規登録'
+          find('.medicines_list__item', text: medicine_name)
+          click_on 'ホーム'
+        end
+
+        it { expect(current_path).to eq root_path }
       end
     end
 
-    context 'ホームボタンを押した時' do
-      it 'ホーム画面に戻ること' do
-        click_on 'ホーム'
-        expect(current_path).to eq root_path
+    context '服薬編集画面から遷移してきた場合' do
+      let(:care_receiver) { create(:care_receiver) }
+
+      before do
+        visit care_receiver_dosing_times_path(care_receiver)
+        click_on '薬 新規登録'
+      end
+
+      it { expect(page).to have_link '戻る' }
+
+      it { expect(page).not_to have_link 'ホーム' }
+
+      context '遷移後すぐ戻るボタンを押したとき' do
+        before { click_on '戻る' }
+        it { expect(current_path).to eq care_receiver_dosing_times_path(care_receiver) }
+      end
+
+      context '薬を登録後、戻るボタンを押したとき' do
+        let(:medicine_name) { Faker::Lorem.word }
+
+        before do
+          fill_in 'medicine[name]', with: medicine_name
+          click_on '新規登録'
+          find('.medicines_list__item', text: medicine_name)
+          click_on '戻る'
+        end
+
+        it { expect(current_path).to eq care_receiver_dosing_times_path(care_receiver) }
       end
     end
   end
