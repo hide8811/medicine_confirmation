@@ -1,8 +1,12 @@
 .medicine-index
   .medicine-index__side_content
     .medicin-index__side_content--link
-      = link_to '戻る', :back, class: 'medicine-index__side_content--link--back-link'
-      = link_to 'ホーム', root_path, class: 'medicine-index__side_content--link--home-link'
+
+      - if @care_receiver_id.blank?
+        = link_to 'ホーム', root_path, class: 'medicine-index__side_content--link--home-link'
+
+      - else
+        = link_to '戻る', care_receiver_dosing_times_path(@care_receiver_id), class: 'medicine-index__side_content--link--back-link'
 
     .new-medicine
       .new-medicine-title
@@ -22,6 +26,8 @@
           .new-medicine-form__url
             = f.label :url, '参考サイト', class: 'new-medicine-form__url--label'
             = f.text_field :url, class: 'new-medicine-form__url--input-text'
+
+          = f.hidden_field :care_receiver_id, value: @care_receiver_id
 
           .new-medicine-form__submit
             = f.submit '新規登録', class: 'new-medicine-form__submit--button'
