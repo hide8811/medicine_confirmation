@@ -1,7 +1,7 @@
 class MedicinesController < ApplicationController
   def index
     @care_receiver_id = care_receiver_id_params
-    @medicines = Medicine.all
+    @medicines = Medicine.kept
     @new_medicine = Medicine.new
   end
 
@@ -12,6 +12,15 @@ class MedicinesController < ApplicationController
     else
       render action: :index
     end
+  end
+
+  def destroy
+    medicine = Medicine.find(params[:id])
+    medicine.discard
+    medicine_dosing_times = MedicineDosingTime.where(medicine_id: medicine.id, discarded_at: nil)
+    medicine_dosing_times.discard_all
+
+    redirect_to action: :index, care_receiver_id: params[:care_receiver_id]
   end
 
   private

@@ -10,6 +10,6 @@ Rails.application.routes.draw do
     resources :dosing_times, only: %i[index create destroy]
   end
 
-  resources :medicines, only: %i[index create]
+  resources :medicines, only: %i[index create destroy]
   resource :medicine_dosing_times, only: %i[create destroy]
 end
