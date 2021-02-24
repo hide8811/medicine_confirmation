@@ -54,4 +54,10 @@
             - else
               %p.medicines_list__item--no_url<>
 
+            = link_to '削除', medicine_path(id:medicine.id, care_receiver_id: @care_receiver_id),
+                              method: :delete,
+                              id: "medicine-#{medicine.id}-delete_btn",
+                              class: 'medicines_list__item--delete_btn',
+                              data: { confirm: "【 #{medicine.name} 】を本当に削除しますか？" }
+
             -# 編集ボタン追加予定
