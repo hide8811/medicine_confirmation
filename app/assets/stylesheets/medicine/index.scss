@@ -146,6 +146,8 @@
       display: inline-block;
       margin-left: 1vw;
       font-size: 3.2vw;
+      white-space: pre;
+      overflow: scroll;
     }
     &--image {
       display: inline-block;

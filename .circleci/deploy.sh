@@ -14,5 +14,4 @@ ssh ${USER_NAME}@${HOST_IP} 'cd medicine_confirmation && \
                              docker-compose -f docker-compose.pro.yml stop && \
                              docker-compose -f docker-compose.pro.yml run --rm web rails db:migrate && \
                              docker-compose -f docker-compose.pro.yml run --rm web rails assets:precompile RAILS_ENV=production && \
-                             docker-compose -f docker-compose.pro.yml build && \
                              docker-compose -f docker-compose.pro.yml up -d'

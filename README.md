@@ -40,13 +40,49 @@ Basic認証<br>
 - パソコンが苦手な職員もいる。
 
 <span id='function'></span>
-### 機能
+## 機能
 
-- 職員登録
-- 服薬者登録
-- 薬登録
-- 服薬時間帯(いつ服薬するのか)の表示・追加・削除
-- 服薬する薬の表示・追加・削除
+### 職員登録・バリデーションエラー
+
+![職員登録 バリデーションエラー](https://user-images.githubusercontent.com/65598351/128631460-f3ca828f-6efb-498c-a34c-5da0c4c476b2.gif)
+
+### 服薬者 登録
+
+※名前は全て偽名です。
+
+![利用者 新規登録](https://user-images.githubusercontent.com/65598351/128632795-d4bbbff5-13df-48cb-829f-3d9cc6f2126b.gif)
+
+### 服薬者 編集
+
+![利用者 編集](https://user-images.githubusercontent.com/65598351/128632846-2a6b4f0d-086c-49af-a8e9-114922647757.gif)
+
+### 服薬者 削除
+
+![利用者 削除](https://user-images.githubusercontent.com/65598351/128632865-a8201c58-df9a-4b2f-b621-e9c5768a1a05.gif)
+
+### 薬 登録
+
+![薬 新規登録](https://user-images.githubusercontent.com/65598351/128632895-599d4f84-b060-4222-9aa2-cadddbb09190.gif)
+
+### 参考サイト・薬 削除
+
+![薬 削除](https://user-images.githubusercontent.com/65598351/128632905-8bbc5701-5b87-4ec5-9ee0-6933c03ffbcb.gif)
+
+### 服薬時間・薬 登録
+
+![服薬時間 新規登録](https://user-images.githubusercontent.com/65598351/128632915-7580bd69-d67b-483e-9fcc-dbf81afd97e1.gif)
+
+### 服薬時間・薬 編集
+
+![服薬時間 編集](https://user-images.githubusercontent.com/65598351/128632971-0981aea4-aeaa-4122-a62d-fe94c06dd796.gif)
+
+### 服薬時間・薬 削除
+
+![服薬時間 削除](https://user-images.githubusercontent.com/65598351/128633004-ab73fb49-5625-4b52-99be-2390f7896b00.gif)
+
+### 薬 追加登録
+
+![服薬時間 薬 新規登録](https://user-images.githubusercontent.com/65598351/128633058-c0fc5998-0afb-4e19-b4a5-ebff2becbc69.gif)
 
 <span id='technology'></span>
 ## 使用技術
