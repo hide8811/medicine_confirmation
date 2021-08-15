@@ -1,4 +1,7 @@
-version: 2
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@2.0.3
 
 jobs:
   build:
@@ -9,8 +12,8 @@ jobs:
           DB_HOST: '127.0.0.1'
       - image: circleci/mysql:8.0.21
         command: --default-authentication-plugin=mysql_native_password
-        envronment:
-          MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
+        environment:
+          MYSQL_ROOT_PASSWORD: ''
           MYSQL_DATAVASE: myapp_test
 
     working_directory: ~/myapp
@@ -51,9 +54,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - ${FINGERPRINT_KEY}
-      - run:
-          name: AWS CLIのインストール
-          command: sudo pip install awscli
+      - aws-cli/setup
       - run:
           name: デプロイ
           command: ./.circleci/deploy.sh

@@ -48,7 +48,7 @@ Basic認証<br>
 
 ### 服薬者 登録
 
-※名前は全て偽名です。
+※名前は全て仮名です。
 
 ![利用者 新規登録](https://user-images.githubusercontent.com/65598351/128632795-d4bbbff5-13df-48cb-829f-3d9cc6f2126b.gif)
 
