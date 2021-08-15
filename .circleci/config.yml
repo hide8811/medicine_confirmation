@@ -1,4 +1,7 @@
-version: 2
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@2.0.3
 
 jobs:
   build:
@@ -51,9 +54,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - ${FINGERPRINT_KEY}
-      - run:
-          name: AWS CLIのインストール
-          command: sudo pip install awscli
+      - aws-cli/setup
       - run:
           name: デプロイ
           command: ./.circleci/deploy.sh
