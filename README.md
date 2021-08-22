@@ -172,7 +172,7 @@ Basic認証<br>
 | user_id | references | NOT NULL, FOREIGN KEY |
 | care_receiver_id | references | NOT NULL, FOREIGN KEY |
 
-※ Takesテーブルを使用した機能は未実装です。
+※ Takesテーブルを使用した機能は現在実装中です。
 
 <span id='reflection'></span>
 ## 課題点
